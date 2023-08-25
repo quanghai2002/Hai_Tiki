@@ -1,7 +1,7 @@
 function App() {
   return (
     <>
-      <h1>MUI React</h1>
+      <h1>MUI React BASE</h1>
     </>
   );
 }
