@@ -1,7 +1,11 @@
+import Board from '~/pages/Boards';
+
 function App() {
   return (
     <>
-      <h1>MUI React BASE</h1>
+      {/* react routers route dom */}
+      {/* board details */}
+      <Board />
     </>
   );
 }

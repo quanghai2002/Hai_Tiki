@@ -1,0 +1,20 @@
+{
+  "folders": [
+	{
+		"path": "../MongoDB_Docker"
+	},
+	{
+		"path": "../BackEnd_NodeJs_MonGoDB"
+	},
+	{
+		"path": "../Project_Redux_Toolkit"
+	},
+	{
+		"path": "."
+	}
+],
+  "settings": {
+    "cSpell.words": ["hiện", "persistor", "recaptcha", "thực"],
+    "liveServer.settings.multiRootWorkspaceName": "MUI_React"
+  }
+}
