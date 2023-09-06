@@ -4,6 +4,9 @@
 }
 
 * {
+  // css => font-size:62.5% => 1rem => 10px
+  font-size: 62.5%;
+  // thanh cuộn => scrollbar
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
