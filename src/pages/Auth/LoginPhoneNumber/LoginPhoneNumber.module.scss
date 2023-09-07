@@ -11,9 +11,25 @@
   //   verify OTP
   .verifyPhoneNumber {
     margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .wrapInputOtp {
       .inputOtp {
         user-select: none;
+        font-size: 3rem;
+      }
+
+      & :global input {
+        border-radius: 50%;
+        border: 1px solid #15231d;
+        background-color: #fff8f8;
+        user-select: none;
+
+        &:focus-visible {
+          outline: 1px solid red;
+        }
       }
     }
     .btnSendCode {
@@ -131,6 +147,9 @@
     width: 100%;
     margin-top: 13px;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .inputOtp {
       font-size: 1.6rem;
       width: 100%;
@@ -160,16 +179,13 @@
     }
 
     .btnSendInput {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      right: 0px;
       background-color: #ccc;
       color: #757575;
       cursor: not-allowed;
       height: 42.9px;
       padding: 0 41px;
       border-radius: 42px;
+      width: 100%;
       &:hover {
         color: #757575;
         border-color: transparent;
@@ -202,7 +218,13 @@
       }
     }
   }
-
+  .hidenBtn {
+    cursor: not-allowed;
+    opacity: 0.5;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+  }
   .btnPhoneNUmber {
     padding: 8px 16px;
     width: 100%;

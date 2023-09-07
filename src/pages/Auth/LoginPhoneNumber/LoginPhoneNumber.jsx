@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import style from './LoginPhoneNumber.module.scss';
 import clsx from 'clsx';
+import OtpInput from 'react-otp-input';
 import OTPInput from 'otp-input-react';
 import { Button, Spin } from 'antd';
 import PhoneInput from 'react-phone-input-2';
@@ -26,19 +27,35 @@ function LoginPhoneNumber() {
   const [user, setUser] = useState(false);
   // hiển thị xác nhận gửi mã khi số điện thoại nhập vào đủ
   const [showSendCode, setShowSendCode] = useState(false);
+  const [hideBtn, setHideBtn] = useState(false);
+  const inputRef = useRef();
 
   // sau khi gửi mã 30s sau mới cho gửi tiếp => tránh spam
   const [timeoutSendOtp, setTimeoutSendOtp] = useState(false);
 
   // nếu số điện thoại lớn hơn 10 số set show send =true
+  // || timeoutSendOtp === false
+  useEffect(() => {
+    if (phone.length >= 10) {
+      setShowSendCode(true);
+
+      if (otp.length < 6) {
+        setHideBtn(true);
+      } else {
+        setHideBtn(false);
+      }
+    } else {
+      setShowSendCode(false);
+    }
+  }, [otp]);
 
   useEffect(() => {
-    if (phone.length >= 10 && timeoutSendOtp === false) {
+    if (phone.length >= 10) {
       setShowSendCode(true);
     } else {
       setShowSendCode(false);
     }
-  });
+  }, [phone]);
 
   // xác thực capchath=> => send code phone Number
   function onCaptchaVerify() {
@@ -74,7 +91,7 @@ function LoginPhoneNumber() {
         // setShowOTP(true);
         // setTimeoutSendOtp(true);
         setTimeoutSendOtp(true);
-
+        setShowOTP(true);
         toast.success('Gửi mã OTP thành công', {
           position: 'top-right',
           autoClose: 3000,
@@ -113,7 +130,6 @@ function LoginPhoneNumber() {
         // setUser(response.user);
         setLoading(false);
 
-        console.log(response);
         // data phone Number
         // const dataPhoneNumber = await response?.user?.phoneNumber;
         console.log({ response });
@@ -183,16 +199,63 @@ function LoginPhoneNumber() {
 
   return (
     <>
-      {user ? (
-        <h1>Login Success </h1>
-      ) : (
-        <>
-          <div id="recaptcha-container"></div>
-          <div className={clsx(style.wrapLoginPhoneNumber)}>
-            {showOTP ? (
-              // verify OTP
+      <div id="recaptcha-container"></div>
+
+      <div className={clsx(style.wrapLoginPhoneNumber)}>
+        {/* // LOGIN width Phone Number */}
+
+        <div className={clsx(style.loginWithPhoneNumber)}>
+          <div className={clsx(style.wrapTitle)}>
+            <Link to="/login" className={clsx(style.backLoginPhone)}>
+              <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
+            </Link>
+            <h1 className={clsx(style.title)}>Đăng nhập với số điện thoại</h1>
+          </div>
+          <div className={clsx(style.wrapLabel)}>
+            <span className={clsx(style.phone)}>Số điện thoại</span>
+            <Link to="/login" className={clsx(style.linkswitchEmail)}>
+              <span className={clsx(style.switchEmail)}>Đăng nhập với email</span>
+            </Link>
+          </div>
+          <PhoneInput country="vn" value={phone} onChange={setPhone} className={clsx(style.inputPhone)} />
+
+          {/* khi OTP đang gửi => hiển thị loading Spin */}
+          {loading ? (
+            <>
+              <div className={clsx(style.wrapOtp)}>
+                <Button disabled className={clsx(style.btnSendInput)}>
+                  <span className={clsx(style.text)}> Gửi mã</span>
+                  <Spin className={clsx(style.spinIcon)} />
+                </Button>
+              </div>
+            </>
+          ) : (
+            // loading => false => hiện thị bình thường
+            <div className={clsx(style.wrapOtp)}>
+              <Button
+                disabled={!showSendCode ? true : false}
+                className={clsx(style.btnSendInput, {
+                  [style.active]: showSendCode,
+                })}
+                onClick={onSignup}
+              >
+                {timeoutSendOtp ? (
+                  <span className={clsx(style.wrapSendCode)}>
+                    <span className={clsx(style.timeout)}> Gửi lại mã </span>
+                    <Countdown date={Date.now() + 60000} renderer={renderer} onComplete={handleStopCountdown} />
+                  </span>
+                ) : (
+                  <span className={clsx(style.text)}> Gửi mã</span>
+                )}
+              </Button>
+            </div>
+          )}
+
+          {/*  showOTP hiện thị show OTP => và đăng nhập */}
+          {/* verify OTP */}
+          {showOTP ? (
+            <>
               <div className={clsx(style.verifyPhoneNumber)}>
-                <h1>Verify Phone Number</h1>
                 <div className={clsx(style.wrapInputOtp)}>
                   <OTPInput
                     value={otp}
@@ -205,77 +268,22 @@ function LoginPhoneNumber() {
                     className={clsx(style.inputOtp)}
                   />
                 </div>
-                <button onClick={onOTPverify} className={clsx(style.btnSendCode)}>
-                  {loading && <Spin className={clsx(style.spin)} />}
-                  Verify OTP
-                </button>
               </div>
-            ) : (
-              // LOGIN width Phone Number
-              <div className={clsx(style.loginWithPhoneNumber)}>
-                <div className={clsx(style.wrapTitle)}>
-                  <Link to="/login" className={clsx(style.backLoginPhone)}>
-                    <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
-                  </Link>
-                  <h1 className={clsx(style.title)}>Đăng nhập với số điện thoại</h1>
-                </div>
-                <div className={clsx(style.wrapLabel)}>
-                  <span className={clsx(style.phone)}>Số điện thoại</span>
-                  <Link to="/login" className={clsx(style.linkswitchEmail)}>
-                    <span className={clsx(style.switchEmail)}>Đăng nhập với email</span>
-                  </Link>
-                </div>
-                <PhoneInput country="vn" value={phone} onChange={setPhone} className={clsx(style.inputPhone)} />
 
-                {/* khi OTP đang gửi => hiển thị loading Spin */}
-
-                {loading ? (
-                  <>
-                    <div className={clsx(style.wrapOtp)}>
-                      <input
-                        className={clsx(style.inputOtp, {
-                          [style.activeShow]: !showSendCode,
-                        })}
-                      />
-                      <Button disabled className={clsx(style.btnSendInput)}>
-                        <span className={clsx(style.text)}> Gửi mã</span>
-                        <Spin className={clsx(style.spinIcon)} />
-                      </Button>
-                    </div>
-                  </>
-                ) : (
-                  // loading => false => hiện thị bình thường
-                  <div className={clsx(style.wrapOtp)}>
-                    <input
-                      className={clsx(style.inputOtp, {
-                        [style.activeShow]: !showSendCode,
-                      })}
-                    />
-                    <Button
-                      disabled={!showSendCode ? true : false}
-                      className={clsx(style.btnSendInput, {
-                        [style.active]: showSendCode,
-                      })}
-                      onClick={onSignup}
-                    >
-                      {timeoutSendOtp ? (
-                        <span className={clsx(style.wrapSendCode)}>
-                          <span className={clsx(style.timeout)}> Gửi lại mã </span>
-                          <Countdown date={Date.now() + 60000} renderer={renderer} onComplete={handleStopCountdown} />
-                        </span>
-                      ) : (
-                        <span className={clsx(style.text)}> Gửi mã</span>
-                      )}
-                    </Button>
-                  </div>
-                )}
-
-                <button className={clsx(style.btnPhoneNUmber)}>Đăng nhập</button>
-              </div>
-            )}
-          </div>
-        </>
-      )}
+              <button
+                className={clsx(style.btnPhoneNUmber, {
+                  [style.hidenBtn]: hideBtn,
+                })}
+                onClick={onOTPverify}
+              >
+                Đăng nhập
+              </button>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
 
       <ToastContainer className={clsx(style.toastMessage)} />
     </>
