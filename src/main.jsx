@@ -7,7 +7,9 @@ import GlobalStyle from '~/components/GlobalStyle';
 import { BrowserRouter } from 'react-router-dom';
 import LazyLoaderApp from '~/components/LazyLoaderApp';
 import { Suspense } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
+const clientIds = import.meta.env.VITE_CLIENT_ID_LOGIN_GOOGLE;
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
   <CssVarsProvider theme={theme}>
@@ -15,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <CssBaseline />
       <BrowserRouter>
         <Suspense fallback={<LazyLoaderApp />}>
-          <App />
+          <GoogleOAuthProvider clientId={clientIds}>
+            <App />
+          </GoogleOAuthProvider>
         </Suspense>
       </BrowserRouter>
     </GlobalStyle>

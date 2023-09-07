@@ -1,0 +1,27 @@
+.wrapLoginGoogle {
+  margin-top: 13px;
+  width: 100%;
+
+  & .loginGoogle {
+    height: 45px !important;
+    line-height: 44px !important;
+    border-radius: 999px !important;
+    width: 100% !important;
+    div {
+      border-radius: 50% !important;
+      width: 0 !important ;
+      height: 0 !important;
+      svg {
+        width: 43px !important;
+        height: 43px !important;
+        background-color: #fff !important;
+        border-radius: 50% !important;
+      }
+    }
+    span {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+  }
+}

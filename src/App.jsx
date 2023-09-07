@@ -4,6 +4,7 @@ import { RegisterLoadingForm } from '~/pages/Auth/RegisterUser';
 
 const RegisterForm = lazy(() => import('~/pages/Auth/RegisterUser'));
 const LoginFormEmail = lazy(() => import('~/pages/Auth/LoginUser'));
+const LoginPhoneNumber = lazy(() => import('~/pages/Auth/LoginPhoneNumber'));
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         {/* <Suspense fallback={<RegisterLoadingForm />}>
           <Route path="/login" element={<LoginFormEmail />}></Route>
         </Suspense> */}
+        <Route path="loginPhoneNumber" element={<LoginPhoneNumber />}></Route>
       </Routes>
     </>
   );

@@ -9,14 +9,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
+import Button from '@mui/material/Button';
 import { Spin } from 'antd';
 // import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import userApi from '~/apis/userApi';
+import SingInGoogle from '~/pages/Auth/googleSingIn';
+import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 
 // import { loginPending, loginFulfilled, loginRejected } from '~/redux/userSlice.js';
-
-// import SingInGoogle from '../googleSingIn/SingInGoogle';
 
 function LogInForm() {
   // navigate
@@ -77,9 +78,36 @@ function LogInForm() {
       const response = await userApi.loginEmail(dataLoginEmail);
       console.log(response);
       setIsLoading(false);
+
+      toast.success('Đăng nhập thành công', {
+        position: 'top-right',
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+
+      // sau 4s chuyển sang trang chủ
+      // setTimeout(() => {
+      //   navigate('/login');
+      //   reset();
+      // }, 4000);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setIsLoading(false);
+      toast.error('Sai Email hoặc mật khẩu', {
+        position: 'top-right',
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
     }
   };
 
@@ -199,9 +227,9 @@ function LogInForm() {
             </form>
 
             {/* login google */}
-            {/* <div className={clsx(style.loginGoogle)}>
-            <SingInGoogle />
-          </div> */}
+            <div className={clsx(style.loginGoogle)}>
+              <SingInGoogle />
+            </div>
 
             {/* Login phone Number */}
             {/* <Link to="/loginPhoneNumber">
@@ -308,15 +336,28 @@ function LogInForm() {
           </form>
 
           {/* login google */}
-          {/* <div className={clsx(style.loginGoogle)}>
+          <div className={clsx(style.loginGoogle)}>
             <SingInGoogle />
-          </div> */}
+          </div>
 
-          {/* Login phone Number */}
-          {/* <Link to="/loginPhoneNumber">
-            <button>Login Width Phone Number</button>
-          </Link> */}
+          {/* Login PHONE Number */}
+          <Link
+            to="/loginPhoneNumber"
+            style={{
+              width: '100%',
+            }}
+          >
+            <Button
+              startIcon={<PermPhoneMsgIcon />}
+              size="large"
+              variant="contained"
+              className={clsx(style.btnLoginPhoneNumber)}
+            >
+              <span>Đăng nhập với số điện thoại</span>
+            </Button>
+          </Link>
 
+          {/* action => switch => login || register */}
           <div className={clsx(style.switchForm)}>
             <p>Bạn chưa có tài khoản? </p>
             <Link to="/register" className={clsx(style.link)}>

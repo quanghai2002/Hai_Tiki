@@ -1,0 +1,237 @@
+.wrapLoginPhoneNumber {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url('~/assets/anh1.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  //   verify OTP
+  .verifyPhoneNumber {
+    margin-top: 30px;
+    .wrapInputOtp {
+      .inputOtp {
+        user-select: none;
+      }
+    }
+    .btnSendCode {
+      .spin {
+        margin-right: 3px;
+      }
+    }
+  }
+
+  //   loginWithPhoneNumber
+  .loginWithPhoneNumber {
+    background-color: #fff;
+    min-width: 400px;
+    max-width: calc(100vw - 32px);
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 0 1px #e5e5e5;
+  }
+
+  .wrapTitle {
+    .iconBack {
+      font-size: 2rem;
+      cursor: pointer;
+      &:hover {
+        color: red;
+      }
+    }
+    .title {
+      font-size: 2.2rem;
+      text-align: center;
+      user-select: none;
+    }
+  }
+
+  .backLoginPhone {
+    color: #000;
+  }
+  .wrapLabel {
+    font-size: 2.3rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .phone {
+      cursor: default;
+    }
+
+    .linkswitchEmail {
+      font-size: 2.3rem;
+      text-decoration: none;
+      color: #000;
+    }
+    .switchEmail {
+      cursor: pointer;
+      transition: all 0.1s linear;
+      &:hover {
+        color: #1dbfaf;
+      }
+    }
+  }
+
+  .inputPhone {
+    width: 100%;
+    margin-top: 3px;
+
+    & :global .flag-dropdown {
+      background-color: rgba(22, 24, 35, 0.06);
+      border: 1px solid rgba(22, 24, 35, 0.06);
+      border-top-left-radius: 44px;
+      border-bottom-left-radius: 44px;
+      padding-left: 8px;
+    }
+
+    & :global .selected-flag {
+      background-color: transparent;
+      &:hover {
+        background-color: transparent;
+      }
+
+      &.open {
+        background-color: transparent;
+      }
+    }
+
+    & :global .flag-dropdown.open {
+      background-color: #79f0e4;
+      border: 1px solid rgba(22, 24, 35, 0.06);
+      border-top-left-radius: 44px;
+      border-bottom-left-radius: 44px;
+      padding-left: 8px;
+
+      & .selected-flag.open {
+        background-color: transparent;
+      }
+    }
+
+    & :global .country-list {
+      font-size: 4rem;
+    }
+
+    & :global .form-control {
+      font-size: 1.6rem;
+      width: 100%;
+      border-radius: 44px;
+      height: 42.9px;
+      overflow: hidden;
+      background-color: rgba(22, 24, 35, 0.06);
+      border: 1px solid rgba(22, 24, 35, 0.06);
+      caret-color: #f05123;
+    }
+  }
+
+  .wrapOtp {
+    width: 100%;
+    margin-top: 13px;
+    position: relative;
+    .inputOtp {
+      font-size: 1.6rem;
+      width: 100%;
+      border-radius: 44px;
+      height: 42.9px;
+      overflow: hidden;
+      background-color: rgba(22, 24, 35, 0.06);
+      border: 1px solid rgba(22, 24, 35, 0.06);
+      caret-color: #f05123;
+      outline: none;
+      padding-left: 16px;
+    }
+
+    .wrapSendCode {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      span {
+        font-size: 1.6rem;
+      }
+      .timeout {
+        margin-right: 3px;
+      }
+    }
+    .activeShow {
+      pointer-events: none;
+    }
+
+    .btnSendInput {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0px;
+      background-color: #ccc;
+      color: #757575;
+      cursor: not-allowed;
+      height: 42.9px;
+      padding: 0 41px;
+      border-radius: 42px;
+      &:hover {
+        color: #757575;
+        border-color: transparent;
+      }
+
+      & .text {
+        font-size: 1.6rem;
+        font-weight: 500;
+      }
+
+      & .spinIcon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10px;
+        & :global .ant-spin-dot-item {
+          background-color: #605555;
+        }
+      }
+    }
+
+    .active {
+      background-color: #f05123;
+      color: #fff;
+      cursor: pointer;
+      &:hover {
+        cursor: pointer;
+        opacity: 0.9;
+        color: #fff;
+      }
+    }
+  }
+
+  .btnPhoneNUmber {
+    padding: 8px 16px;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    background-color: #1dbfaf;
+    background-image: linear-gradient(70.06deg, #2cccff -5%, #22dfbf 106%);
+    background-size: 100% 200%;
+    border: 0;
+    border-radius: 44px;
+    height: 44px;
+    transition: background-position 0.15s cubic-bezier(0.2, 0.2, 0.2, 1);
+    margin-top: 30px;
+  }
+}
+
+.toastMessage {
+  & :global .Toastify__toast-body {
+    font-size: 2.2rem;
+  }
+}
+
+.timeout {
+  font-size: 3rem;
+  line-height: 42.9px;
+}
