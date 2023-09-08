@@ -231,10 +231,22 @@ function LogInForm() {
               <SingInGoogle />
             </div>
 
-            {/* Login phone Number */}
-            {/* <Link to="/loginPhoneNumber">
-            <button>Login Width Phone Number</button>
-          </Link> */}
+            {/* Login PHONE Number */}
+            <Link
+              to="/loginPhoneNumber"
+              style={{
+                width: '100%',
+              }}
+            >
+              <Button
+                startIcon={<PermPhoneMsgIcon />}
+                size="large"
+                variant="contained"
+                className={clsx(style.btnLoginPhoneNumber)}
+              >
+                <span>Đăng nhập với số điện thoại</span>
+              </Button>
+            </Link>
 
             <div className={clsx(style.switchForm)}>
               <p>Bạn chưa có tài khoản? </p>

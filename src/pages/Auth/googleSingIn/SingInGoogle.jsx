@@ -5,10 +5,14 @@ import clsx from 'clsx';
 import { useGoogleLogin } from '@react-oauth/google';
 import GoogleButton from 'react-google-button';
 import userApi from '~/apis/userApi';
+import { ToastContainer, toast } from 'react-toastify';
+import { Spin } from 'antd';
 
 SingInGoogle.propTypes = {};
 
 function SingInGoogle() {
+  const [showSpin, setShowSpin] = useState(false);
+
   const googleLogin = useGoogleLogin({
     onSuccess: async (response) => {
       const { code } = response;
@@ -16,21 +20,50 @@ function SingInGoogle() {
       const param = {
         code,
       };
-
-      console.log({ code });
-      // try {
-      //   // const responseUser = await userApi.loginGoogle(param);
-      //   // console.log(responseUser);
-      //   // if (responseUser) {
-      //   //   console.log('Đăng Nhập Thành Công');
-      //   // }
-      // } catch (error) {
-      //   console.log(error);
-      // }
+      setShowSpin(true);
+      try {
+        const responseLoginGoogle = await userApi.loginGoogle(param);
+        console.log(responseLoginGoogle);
+        setShowSpin(false);
+        if (responseLoginGoogle) {
+          console.log('Đăng Nhập Thành Công');
+          toast.success('Đăng nhập thành công', {
+            position: 'top-right',
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+        }
+      } catch (error) {
+        setShowSpin(false);
+        console.log(error);
+        toast.error('Đăng nhập thất bại', {
+          position: 'top-right',
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      }
     },
     flow: 'auth-code',
   });
-  return (
+  return showSpin ? (
+    // khi đang đăng nhập => google => hiển thị show spin
+    <Spin size="large" className={clsx(style.spinLoginGoogle)}>
+      <div className={clsx(style.wrapLoginGoogle)}>
+        <GoogleButton type="dark" label="Đăng nhập với Google" className={clsx(style.loginGoogle)} />
+      </div>
+    </Spin>
+  ) : (
+    //  không thì để như bình thường
     <div className={clsx(style.wrapLoginGoogle)}>
       <GoogleButton
         type="dark"

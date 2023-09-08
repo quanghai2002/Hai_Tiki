@@ -25,3 +25,9 @@
     }
   }
 }
+
+.spinLoginGoogle {
+  & :global .ant-spin-dot-item {
+    background-color: #3e2727;
+  }
+}

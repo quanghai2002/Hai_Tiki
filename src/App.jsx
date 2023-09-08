@@ -24,7 +24,7 @@ function App() {
         {/* <Suspense fallback={<RegisterLoadingForm />}>
           <Route path="/login" element={<LoginFormEmail />}></Route>
         </Suspense> */}
-        <Route path="loginPhoneNumber" element={<LoginPhoneNumber />}></Route>
+        <Route path="/loginPhoneNumber" element={<LoginPhoneNumber />}></Route>
       </Routes>
     </>
   );
