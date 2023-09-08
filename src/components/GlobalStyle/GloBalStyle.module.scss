@@ -3,8 +3,18 @@
   // font-family: 'Roboto', sans-serif;
 }
 
-* {
+html {
   // css => font-size:62.5% => 1rem => 10px
+  // font-size: 62.5%;
+  // font-size: 1.6rem;
+  // css override => tô
+  & :global .MuiTooltip-tooltip {
+    font-size: 1.3rem;
+    margin-top: 3px !important;
+  }
+}
+
+* {
   font-size: 62.5%;
   // thanh cuộn => scrollbar
   ::-webkit-scrollbar {

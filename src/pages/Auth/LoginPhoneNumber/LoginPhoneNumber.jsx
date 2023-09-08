@@ -17,7 +17,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function LoginPhoneNumber() {
   // fix thời gian đếm ngược => luôn là 60s
   const [startTime, setStartTime] = useState(Date.now());
-
+  const navigate = useNavigate();
   // value OTP
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -142,6 +142,11 @@ function LoginPhoneNumber() {
             progress: undefined,
             theme: 'light',
           });
+
+          // sau 3s chuyển sang trang chủ
+          setTimeout(() => {
+            navigate('/homepage');
+          }, 3000);
         } catch (error) {
           console.log(error);
         }

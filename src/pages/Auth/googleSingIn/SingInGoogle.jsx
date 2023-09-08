@@ -7,11 +7,13 @@ import GoogleButton from 'react-google-button';
 import userApi from '~/apis/userApi';
 import { ToastContainer, toast } from 'react-toastify';
 import { Spin } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 SingInGoogle.propTypes = {};
 
 function SingInGoogle() {
   const [showSpin, setShowSpin] = useState(false);
+  const navigate = useNavigate();
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (response) => {
@@ -37,6 +39,11 @@ function SingInGoogle() {
             progress: undefined,
             theme: 'light',
           });
+
+          // sau 4s chuyển sang trang chủ
+          setTimeout(() => {
+            navigate('/homepage');
+          }, 4000);
         }
       } catch (error) {
         setShowSpin(false);

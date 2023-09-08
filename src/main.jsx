@@ -8,6 +8,9 @@ import { BrowserRouter } from 'react-router-dom';
 import LazyLoaderApp from '~/components/LazyLoaderApp';
 import { Suspense } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from '~/redux/store.js';
 
 const clientIds = import.meta.env.VITE_CLIENT_ID_LOGIN_GOOGLE;
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -18,7 +21,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Suspense fallback={<LazyLoaderApp />}>
           <GoogleOAuthProvider clientId={clientIds}>
-            <App />
+            <Provider store={store}>
+              <PersistGate persistor={persistor}>
+                <App />
+              </PersistGate>
+            </Provider>
           </GoogleOAuthProvider>
         </Suspense>
       </BrowserRouter>

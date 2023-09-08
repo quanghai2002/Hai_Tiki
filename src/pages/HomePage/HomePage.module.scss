@@ -1,0 +1,27 @@
+.header {
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+
+    .navItem {
+      cursor: pointer;
+      font-size: 1.6rem;
+
+      .linkAuth {
+        text-decoration: none;
+        color: #fff;
+      }
+    }
+    .navAuth {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+  }
+}
+
+.wrapCard {
+  font-size: 1.6rem;
+}

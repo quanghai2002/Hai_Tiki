@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ContentLoader from 'react-content-loader';
+import clsx from 'clsx';
+import style from './LazyLoaderApp.module.scss';
 
 LazyLoaderApp.propTypes = {};
 
 function LazyLoaderApp(props) {
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%,-50%)',
-      }}
-    >
+    <div className={clsx(style.wrapLoader)}>
       <ContentLoader viewBox="0 0 500 300" height={300} width={500} {...props}>
         <rect x="0" y="8" rx="0" ry="0" width="40" height="18" />
         <circle cx="492" cy="16" r="8" />

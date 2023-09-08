@@ -27,6 +27,7 @@ function LogInForm() {
   // loading
   // const isLoading = useSelector((state) => state.user?.isLoading);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // validation form yup
   const emailRegex = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+\.)+[cC][oO][mM]$/;
@@ -91,10 +92,10 @@ function LogInForm() {
       });
 
       // sau 4s chuyển sang trang chủ
-      // setTimeout(() => {
-      //   navigate('/login');
-      //   reset();
-      // }, 4000);
+      setTimeout(() => {
+        navigate('/homepage');
+        reset();
+      }, 4000);
     } catch (error) {
       // console.log(error);
       setIsLoading(false);
