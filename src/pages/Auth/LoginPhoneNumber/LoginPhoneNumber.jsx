@@ -13,8 +13,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import userApi from '~/apis/userApi';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+// action login
+import { login } from '~/redux/userSlice.js';
 
 function LoginPhoneNumber() {
+  const dispatch = useDispatch();
+
   // fix thời gian đếm ngược => luôn là 60s
   const [startTime, setStartTime] = useState(Date.now());
   const navigate = useNavigate();
@@ -131,7 +137,6 @@ function LoginPhoneNumber() {
             phone: dataPhoneNumber,
           });
 
-          console.log({ dataUserLoginPhone });
           toast.success('Đăng nhập thành công', {
             position: 'top-right',
             autoClose: 3000,
@@ -143,6 +148,10 @@ function LoginPhoneNumber() {
             theme: 'light',
           });
 
+          // dispatch => lưu user vào redux
+          // console.log({ dataUserLoginPhone });
+          // dispatch login phone number
+          dispatch(login(dataUserLoginPhone));
           // sau 3s chuyển sang trang chủ
           setTimeout(() => {
             navigate('/homepage');

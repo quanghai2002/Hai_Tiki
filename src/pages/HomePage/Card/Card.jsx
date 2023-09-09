@@ -9,13 +9,16 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
-Card.propTypes = {};
 
-function CardItem(props) {
+CardItem.propTypes = {
+  phoneItem: PropTypes.object.isRequired,
+};
+
+function CardItem({ phoneItem }) {
   const [value, setValue] = useState(4);
 
   // chuyển đỗi từ số sang string => có dấu ngăn cách
-  const number = 16000000;
+  const number = phoneItem?.price;
   const formattedNumber = number.toLocaleString('vi-VN');
   // console.log(formattedNumber);
 
@@ -28,7 +31,7 @@ function CardItem(props) {
           }}
           component="img"
           height="227"
-          image="https://salt.tikicdn.com/cache/280x280/ts/product/ab/60/db/281c3074dd8d6b13fe1b66d855c5f526.jpg.webp"
+          image={phoneItem?.image_urls[0]}
           alt="green iguana"
         />
 
@@ -52,8 +55,7 @@ function CardItem(props) {
             }}
             // noWrap
           >
-            Điện Thoại Nokia C30 (2GB/32GB) - Hàng Chính Hãng Điện Thoại Nokia C30 (2GB/32GB) - Hàng Chính Hãng Hàng
-            Chính Hãng Điện Thoại Nokia C30 (2GB/32GB) - Hàng Chính Hãng
+            {phoneItem?.name}
           </Typography>
           <Rating
             name="read-only"
@@ -107,7 +109,7 @@ function CardItem(props) {
 
             <Typography variant="h4" color={(theme) => theme.palette.primary} className={clsx(style.percents)}>
               <span>-</span>
-              <span>28</span>
+              <span>{phoneItem?.promotion}</span>
               <span>%</span>
             </Typography>
           </Box>

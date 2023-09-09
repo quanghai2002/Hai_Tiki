@@ -8,12 +8,19 @@ import userApi from '~/apis/userApi';
 import { ToastContainer, toast } from 'react-toastify';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+// action login => redux
+import { login } from '~/redux/userSlice.js';
 
 SingInGoogle.propTypes = {};
 
 function SingInGoogle() {
   const [showSpin, setShowSpin] = useState(false);
   const navigate = useNavigate();
+
+  // displatch
+  const dispatch = useDispatch();
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (response) => {
@@ -25,7 +32,7 @@ function SingInGoogle() {
       setShowSpin(true);
       try {
         const responseLoginGoogle = await userApi.loginGoogle(param);
-        console.log(responseLoginGoogle);
+        // console.log(responseLoginGoogle);
         setShowSpin(false);
         if (responseLoginGoogle) {
           console.log('Đăng Nhập Thành Công');
@@ -40,6 +47,8 @@ function SingInGoogle() {
             theme: 'light',
           });
 
+          // dispatch => lưu thông tin User => redux
+          dispatch(login(responseLoginGoogle));
           // sau 4s chuyển sang trang chủ
           setTimeout(() => {
             navigate('/homepage');

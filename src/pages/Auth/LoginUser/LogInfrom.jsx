@@ -16,11 +16,19 @@ import { ToastContainer, toast } from 'react-toastify';
 import userApi from '~/apis/userApi';
 import SingInGoogle from '~/pages/Auth/googleSingIn';
 import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
+import Cookies from 'universal-cookie';
+// action login => Redux
+import { login } from '~/redux/userSlice.js';
+import { useDispatch } from 'react-redux';
+// set tokenCookie
+import setTokenCookie from '~/utils/setTokenCookie.js';
+import setRefreshToken from '~/utils/setRefreshToken';
 
 // import { loginPending, loginFulfilled, loginRejected } from '~/redux/userSlice.js';
 
 function LogInForm() {
   // navigate
+
   // const navigate = useNavigate();
   // redux
   // const dispatch = useDispatch();
@@ -28,6 +36,9 @@ function LogInForm() {
   // const isLoading = useSelector((state) => state.user?.isLoading);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // dispatch => gửi dispatch => đến redux
+  const dispatch = useDispatch();
 
   // validation form yup
   const emailRegex = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+\.)+[cC][oO][mM]$/;
@@ -76,8 +87,22 @@ function LogInForm() {
     setIsLoading(true);
     // POST => Login
     try {
+      // data User trả về khi đăng nhập thành công
       const response = await userApi.loginEmail(dataLoginEmail);
-      console.log(response);
+      // console.log(response);
+
+      // lưu token => vào cookies => assetsToken
+      const token = response.token;
+      setTokenCookie(token);
+
+      // refreshToken => lưu cookies => refresh token
+      const refreshToken = response.refreshToken;
+      setRefreshToken(refreshToken);
+
+      // lưu data login thành công => vào redux
+      dispatch(login(response));
+
+      // setLoading => false
       setIsLoading(false);
 
       toast.success('Đăng nhập thành công', {
@@ -91,11 +116,11 @@ function LogInForm() {
         theme: 'light',
       });
 
-      // sau 4s chuyển sang trang chủ
+      // sau 3s chuyển sang trang chủ
       setTimeout(() => {
         navigate('/homepage');
         reset();
-      }, 4000);
+      }, 3000);
     } catch (error) {
       // console.log(error);
       setIsLoading(false);

@@ -6,6 +6,7 @@ const RegisterForm = lazy(() => import('~/pages/Auth/RegisterUser'));
 const LoginFormEmail = lazy(() => import('~/pages/Auth/LoginUser'));
 const LoginPhoneNumber = lazy(() => import('~/pages/Auth/LoginPhoneNumber'));
 const HomePage = lazy(() => import('~/pages/HomePage'));
+const HomePageDeLogIn = lazy(() => import('~/pages/HomePageDeLogIn'));
 function App() {
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
       {/* routes */}
 
       <Routes>
+        <Route path="/" element={<HomePageDeLogIn />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
         <Route path="/login" element={<LoginFormEmail />}></Route>
 
