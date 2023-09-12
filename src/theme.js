@@ -7,8 +7,16 @@ const theme = extendTheme({
     // light mode
     light: {
       palette: {
-        primary: teal,
-        secondary: deepOrange
+        primary: {
+          main: '#7e57c2',
+          light: '#f1c40f'
+        },
+        secondary: {
+          main: '#00cec9',
+          light: '#2196f3'
+        }
+
+
 
         // ....
       },

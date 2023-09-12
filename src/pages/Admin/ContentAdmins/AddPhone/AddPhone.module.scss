@@ -1,0 +1,33 @@
+.wrapForm {
+  margin-top: 30px !important;
+  width: 80%;
+  margin: 0 auto;
+  font-size: 1.8rem;
+
+  & :global .css-dev-only-do-not-override-nnuwmp {
+    display: block !important;
+  }
+  & :global .css-dev-only-do-not-override-nnuwmp {
+    text-align: start;
+    & label {
+      font-size: 1.6rem;
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  & :global .ant-input {
+    caret-color: #e74c3c;
+    padding: 6px 11px;
+  }
+
+  & :global .ant-form-item-explain-error {
+    font-size: 1.3rem;
+    padding-left: 1px;
+  }
+
+  & :global .css-5i1zjy-MuiButtonBase-root-MuiButton-root {
+    font-size: 1.3rem !important;
+  }
+}

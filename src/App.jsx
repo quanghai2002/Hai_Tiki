@@ -7,6 +7,7 @@ const LoginFormEmail = lazy(() => import('~/pages/Auth/LoginUser'));
 const LoginPhoneNumber = lazy(() => import('~/pages/Auth/LoginPhoneNumber'));
 const HomePage = lazy(() => import('~/pages/HomePage'));
 const HomePageDeLogIn = lazy(() => import('~/pages/HomePageDeLogIn'));
+const Admin = lazy(() => import('~/pages/Admin'));
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<HomePageDeLogIn />}></Route>
         <Route path="/register" element={<RegisterForm />}></Route>
         <Route path="/login" element={<LoginFormEmail />}></Route>
+        <Route path="/admin" element={<Admin />}></Route>
 
         {/* <Suspense fallback={<RegisterLoadingForm />}>
           <Route path="/login" element={<LoginFormEmail />}></Route>

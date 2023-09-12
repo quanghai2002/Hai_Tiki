@@ -1,11 +1,38 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import userApi from '~/apis/userApi.js';
+import phoneApi from '~/apis/phoneApi.js';
 
 // thunk API
 //// First, create the AsyncThunk
-const getAllPhoneProducts = createAsyncThunk(
-  'get-ALL-PHONE-PRODUCTS',
+const getAllPhoneProductsNoPagination = createAsyncThunk(
+  'get-ALL-PHONE-PRODUCTS-No-Pagination',
   async (param, thunkAPI) => {
+    try {
+      const dataGellAllPhone = await phoneApi.getAllPhones();
+
+      // console.log({ dataGellAllPhone });
+      return dataGellAllPhone;
+
+    } catch (error) {
+      console.log(error);
+    }
+    // const response = await userApi.checkLogin(param);
+    // return response.data
+  }
+);
+
+// delete => Phone
+const deletePhone = createAsyncThunk(
+  'DELETE => phone',
+  async (param, thunkAPI) => {
+    try {
+      const deletePhone = await phoneApi.deletePhones(param);
+      // console.log({ dataGellAllPhone });
+      thunkAPI.dispatch(getAllPhoneProductsNoPagination());
+      console.log({ deletePhone });
+
+    } catch (error) {
+      console.log(error);
+    }
     // const response = await userApi.checkLogin(param);
     // return response.data
   }
@@ -16,7 +43,9 @@ const getAllPhoneProducts = createAsyncThunk(
 const phoneSlice = createSlice({
   name: 'Phone',
   initialState: {
-    phone: {},
+    isLoading: false,
+    phone: [],
+
     // các thông tin khác nếu cần
   },
   reducers: {
@@ -24,24 +53,40 @@ const phoneSlice = createSlice({
 
 
   },
-  // extraReducers: (builder) => {
 
-  //     builder.addCase(checkLoginUser.pending, (state) => {
-  //         state.isLoading = true;
+  extraReducers: (builder) => {
 
-  //     });
+    // get all phone
+    builder.addCase(getAllPhoneProductsNoPagination.pending, (state) => {
+      state.isLoading = true;
 
-  //     builder.addCase(checkLoginUser.fulfilled, (state, action) => {
-  //         state.isLoading = false;
-  //         state.user = action.payload;
-  //     });
-  //     builder.addCase(checkLoginUser.rejected, (state) => {
-  //         state.isLoading = false;
-  //         state.user = {};
-  //     });
+    });
 
+    builder.addCase(getAllPhoneProductsNoPagination.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.phone = action.payload;
+    });
+    builder.addCase(getAllPhoneProductsNoPagination.rejected, (state) => {
+      state.isLoading = false;
+      state.phone = [];
+    });
 
-  // }
+    // delete phone
+    builder.addCase(deletePhone.pending, (state) => {
+      state.isLoading = true;
+
+    });
+
+    builder.addCase(deletePhone.fulfilled, (state, action) => {
+      state.isLoading = false;
+
+    });
+    builder.addCase(deletePhone.rejected, (state) => {
+      state.isLoading = false;
+      state.phone = [];
+    });
+
+  }
 });
 
 // export action and reduceSlide
@@ -51,5 +96,5 @@ export default reducer;
 // các acion nội bộ =>trong redux
 // export const { } = actions;
 
-//  action AsyncThunk => => để call API
-// export { checkLoginUser }; // action Async thunk
+//  action => Action => AsyncThunk => => để call API
+export { getAllPhoneProductsNoPagination, deletePhone }; // action Async thunk

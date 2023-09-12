@@ -210,9 +210,11 @@ function HomePage(props) {
 
                 {isAdmin && (
                   <Tooltip className={clsx(style.tooltip)} title="Trang quản trị" arrow>
-                    <Box>
-                      <h1 className={clsx(style.navItem)}>Trang Quản Trị</h1>
-                    </Box>
+                    <Link to="/admin" className={clsx(style.linkAdmin)}>
+                      <Box>
+                        <h1 className={clsx(style.navItem)}>Trang Quản Trị</h1>
+                      </Box>
+                    </Link>
                   </Tooltip>
                 )}
               </>
