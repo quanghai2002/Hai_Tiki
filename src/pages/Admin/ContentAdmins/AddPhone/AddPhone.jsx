@@ -15,7 +15,11 @@ import * as yup from 'yup';
 import { Modal } from 'antd';
 import axiosClient from '~/apis/axiosClient.js';
 import getTokenCookie from '~/utils/getTokenCookie';
-
+import categoryApi from '~/apis/category.js';
+import brandsApi from '~/apis/brands.js';
+import phoneApi from '~/apis/phoneApi.js';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 // upload ảnh
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -28,6 +32,7 @@ const getBase64 = (file) =>
 // Sử dụng forwardRef để truyền ref vào function component
 function AddPhone(props, ref) {
   const token = getTokenCookie();
+  const navigate = useNavigate();
   // yup validation
   const schema = yup.object().shape({
     namePhone: yup.string().required('Vui lòng nhập tên sản phẩm !').min(5, 'Nhập tối thiểu 5 kí tự cho sản phẩm !'),
@@ -71,6 +76,7 @@ function AddPhone(props, ref) {
   const [listUrlImage, setListUrlImgae] = useState([]);
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
+
   // console.log({ fileList });
   const handleCancel = () => setPreviewOpen(false);
 
@@ -135,39 +141,104 @@ function AddPhone(props, ref) {
   // console.log('danh sách hình ảnh', fileList.length);
   // console.log({ listUrlImage });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    setLoading(true);
     // nếu đã chọn ít nhất 1 ảnh => mới cho gửi data => nếu không foucs vào input giả gần đó
     if (uploadError) {
       // console.log({ data });
       // data creat category and brand
-      const category = data?.category.trim();
-      const brand = data?.brand.trim();
-
-      console.log({ category });
-      console.log({ brand });
-
-      //new data => add phone
-      const newData = {
-        name: data?.namePhone,
-        description: data?.description,
-        price: data?.pricePhone,
-        dung_luong_pin: data?.dungluong_pin,
-        mau_sac: data?.mausac,
-        bo_nho: data?.bo_nho,
-        kich_thuoc_man_hinh: data?.kich_thuoc_man_hinh,
-        camera: data?.camera,
-        CPU: data?.CPU,
-        RAM: data?.RAM,
-        ROM: data?.ROM,
-        he_dieu_hanh: data?.he_dieu_hanh,
-        stock_quantity: data?.stock_quantity,
-        image_urls: listUrlImage,
-        promotion: data?.promotion,
-        category: 'idcaterogy',
-        brand: 'id brand',
+      const category = data?.category.trim().toUpperCase();
+      const brand = data?.brand.trim().toUpperCase();
+      // POST => tạo danh mục sản phẩm trước
+      const paramCategory = {
+        name: category,
+        products: [], // chưa có sản phẩm để
       };
 
-      console.log({ newData });
+      // param thương hiệu sản phẩm
+      const paramBrands = {
+        name: brand,
+        description: '',
+        logo_url: '',
+        products: [],
+      };
+
+      try {
+        // add danh mục sản phẩm => và lấy id danh mục sản phẩm về
+        const category = await categoryApi.insertCategory(paramCategory);
+        const idCategory = category?.data?._id;
+
+        // add thương hiệu ==> brand => và lấy id thương hiệu sản phẩm => brands
+        const brand = await brandsApi.insertBrand(paramBrands);
+        const idBrand = brand?.data?._id;
+
+        // sau khi có id caterogy và id của brand => thêm sản phẩm mới thôi => yup !
+        //new data => add phone
+        const newData = {
+          name: data?.namePhone,
+          description: data?.description,
+          price: Number.parseFloat(data?.pricePhone),
+          dung_luong_pin: `${data?.dungluong_pin} mAh`,
+          mau_sac: data?.mausac,
+          bo_nho: data?.bo_nho,
+          kich_thuoc_man_hinh: Number.parseFloat(data?.kich_thuoc_man_hinh),
+          camera: `${data?.camera}MP`,
+          CPU: data?.CPU,
+          RAM: data?.RAM,
+          ROM: data?.ROM,
+          he_dieu_hanh: data?.he_dieu_hanh,
+          stock_quantity: Number.parseInt(data?.stock_quantity),
+          image_urls: listUrlImage,
+          promotion: `${data?.promotion}%`,
+          category: idCategory,
+          brand: idBrand,
+          reviews: [],
+        };
+        // thêm sản phẩm => lấy id của phone
+        // console.log({ newData });
+        const dataResponsePhone = await phoneApi.insetPhone(newData);
+        // console.log({ dataResponsePhone });
+        const idPhone = dataResponsePhone?.data?._id;
+
+        // sau khi thêm sản phẩm thành công update ngược lại => thêm sản phẩm đó vào danh mục sản phẩm và thương hiệu đó
+        // phải get danh mục sản phẩm trước sau đó mới => update lại => để bản tồn sản phẩm trong đó
+        // let newParamCaterogy = {
+        //   ...paramCategory,
+        //   products: [...paramCategory.products, idPhone],
+        // };
+        // const updataCategory = await categoryApi.insertCategory(newParamCaterogy);
+        // console.log({ updataCategory });
+
+        setLoading(false);
+        toast.success('Thêm sản phẩm thành công', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+        // chuyển đến trang xem các sản phẩm
+        setTimeout(() => {
+          navigate('/homepage');
+        }, 3000);
+        // navigatae => đến trang home
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        toast.error('Thêm sản phẩm thất bại thử lại !', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      }
     } else {
       uploadRef.current.focus();
     }
@@ -1075,6 +1146,7 @@ function AddPhone(props, ref) {
           </Form>
         </Paper>
       )}
+      <ToastContainer className={style.toastMessage} />;
     </Box>
   );
 }

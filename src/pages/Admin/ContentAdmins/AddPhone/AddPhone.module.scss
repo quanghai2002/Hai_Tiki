@@ -147,3 +147,11 @@ body {
     background-color: #2e333b !important;
   }
 }
+
+//  toast messages
+.toastMessage {
+  font-size: 1.6rem;
+  & :global .Toastify__toast-body {
+    font-size: 2.6rem;
+  }
+}

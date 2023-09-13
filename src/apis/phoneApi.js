@@ -18,6 +18,11 @@ const phoneApi = {
         // console.log('params', params);
         return axiosClient.post(url, params);
     },
+    insetPhone: (params) => {
+        const url = '/phone/insert';
+        // console.log('params', params);
+        return axiosClient.post(url, params);
+    }
 };
 
 export default phoneApi;
