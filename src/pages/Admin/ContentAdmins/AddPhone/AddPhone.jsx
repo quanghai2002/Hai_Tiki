@@ -1,57 +1,33 @@
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import style from './AddPhone.module.scss';
 import clsx from 'clsx';
 import { PlusOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import {
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
-} from 'antd';
-
-// import { NumericFormat } from 'react-number-format';
-// import { NumberFormat } from 'react-number-format';
-
-import ReactDOM from 'react-dom';
-import Select from 'react-select';
+import { useEffect, useRef, useState } from 'react';
+import { Form, Input, Upload, Select, Spin } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
-// import { Checkbox, Input } from '@material-ui/core';
-import { Input as AntdInput } from 'antd';
 import Box from '@mui/material/Box';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { NumericFormat } from 'react-number-format';
+import { Modal } from 'antd';
+import axiosClient from '~/apis/axiosClient.js';
+import getTokenCookie from '~/utils/getTokenCookie';
+
+// upload ảnh
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 // Sử dụng forwardRef để truyền ref vào function component
 function AddPhone(props, ref) {
-  const { RangePicker } = DatePicker;
-  const { TextArea } = Input;
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
-
+  const token = getTokenCookie();
   // yup validation
   const schema = yup.object().shape({
     namePhone: yup.string().required('Vui lòng nhập tên sản phẩm !').min(5, 'Nhập tối thiểu 5 kí tự cho sản phẩm !'),
@@ -71,6 +47,8 @@ function AddPhone(props, ref) {
     he_dieu_hanh: yup.string().required('Vui lòng nhập hệ điều hành!'),
     stock_quantity: yup.string().required('Vui lòng nhập số lượng sản phẩm !'),
     promotion: yup.string().required('Vui lòng nhập khuyễn mãi cho sản phẩm !'),
+    category: yup.string().required('Vui lòng nhập danh mục sản phẩm !'),
+    brand: yup.string().required('Vui lòng nhập tên thương hiệu sản phẩm !'),
   });
 
   // react hook form
@@ -80,369 +58,1025 @@ function AddPhone(props, ref) {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { namePhone: '', pricePhone: '' }, // Thêm defaultValues ở đây
+    defaultValues: { namePhone: '', pricePhone: '' }, // Thêm defaultValues ở đây bo_nho: '32GB'
   });
 
-  console.log({ errors });
-  const onSubmit = (data) => {
-    alert(JSON.stringify(data));
+  // upload => ảnh
+  const [uploadError, setUploadError] = useState(false);
+  const uploadRef = useRef();
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [fileList, setFileList] = useState([]);
+  const [listUrlImage, setListUrlImgae] = useState([]);
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  // console.log({ fileList });
+  const handleCancel = () => setPreviewOpen(false);
+
+  // console.log({ uploadError });
+  // xem privew hình ảnh
+  const handlePreview = async (file) => {
+    // console.log({ file });
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
 
+  // khi onchange hình ảnh =bắt buộc phải chọn ít nhất 1 ảnh => và requet lên server để lấy lại url hình ảnh
+  const handleChange = ({ fileList: newFileList }) => {
+    // số lượng ảnh đã chọn
+    const countImage = newFileList.length;
+    // console.log({ newFileList });
+    // console.log({ countImage });
+    // nếu có > 0 sản phẩm xóa error upload đi
+    if (countImage > 0) {
+      setUploadError(true);
+    } else {
+      setUploadError(false);
+    }
+
+    // khi vào onchange thay đổi hình ảnh => thì requet lấy lại danh sách url hình ảnh => cho đồng nhất
+
+    // Tạo một đối tượng FormData để gửi tệp tin và token
+    const formData = new FormData();
+
+    // uploade => nhiều ảnh 1 lúc
+    // Duyệt qua từng tệp trong fileList và thêm vào formData
+    newFileList.forEach((file, index) => {
+      formData.append('image_urls', file.originFileObj); // upload nhiều ảnh 1 lúc
+    });
+    // formData.append('image_urls', file); // upload 1 ảnh
+    formData.append('token', token);
+
+    axiosClient
+      .post('/phone/uploadurl/url', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Đặt tiêu đề Content-Type
+        },
+      })
+      .then((response) => {
+        setListUrlImgae(response?.data);
+        // onSuccess();
+      })
+      .catch((err) => {
+        console.log(err);
+        // onError();
+      });
+
+    return setFileList(newFileList);
+  };
+
+  // khi dữ liệu đã đủ => gửi biểu mẫu
+
+  // console.log('danh sách hình ảnh', fileList.length);
+  // console.log({ listUrlImage });
+
+  const onSubmit = (data) => {
+    // nếu đã chọn ít nhất 1 ảnh => mới cho gửi data => nếu không foucs vào input giả gần đó
+    if (uploadError) {
+      // console.log({ data });
+      // data creat category and brand
+      const category = data?.category.trim();
+      const brand = data?.brand.trim();
+
+      console.log({ category });
+      console.log({ brand });
+
+      //new data => add phone
+      const newData = {
+        name: data?.namePhone,
+        description: data?.description,
+        price: data?.pricePhone,
+        dung_luong_pin: data?.dungluong_pin,
+        mau_sac: data?.mausac,
+        bo_nho: data?.bo_nho,
+        kich_thuoc_man_hinh: data?.kich_thuoc_man_hinh,
+        camera: data?.camera,
+        CPU: data?.CPU,
+        RAM: data?.RAM,
+        ROM: data?.ROM,
+        he_dieu_hanh: data?.he_dieu_hanh,
+        stock_quantity: data?.stock_quantity,
+        image_urls: listUrlImage,
+        promotion: data?.promotion,
+        category: 'idcaterogy',
+        brand: 'id brand',
+      };
+
+      console.log({ newData });
+    } else {
+      uploadRef.current.focus();
+    }
+  };
+
+  // button upload
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
+
+  // custom requet gửi upload => sau đó lưu các ảnh đó vào => setListUrlImgae
+
+  const customRequest = ({ onSuccess, onError }) => {
+    // Tạo một đối tượng FormData để gửi tệp tin và token
+    const formData = new FormData();
+
+    // uploade => nhiều ảnh 1 lúc
+    // Duyệt qua từng tệp trong fileList và thêm vào formData
+    fileList.forEach((file, index) => {
+      formData.append('image_urls', file.originFileObj); // upload nhiều ảnh 1 lúc
+    });
+    // formData.append('image_urls', file); // upload 1 ảnh
+    formData.append('token', token);
+
+    axiosClient
+      .post('/phone/uploadurl/url', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Đặt tiêu đề Content-Type
+        },
+      })
+      .then((response) => {
+        setListUrlImgae(response?.data);
+        onSuccess();
+      })
+      .catch((err) => {
+        console.log(err);
+        onError();
+      });
+  };
+
+  // console.log({ errors });
   return (
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
-      {/* 
-        
-        
-        
-        <Form.Item label="Ảnh sản phẩm" valuePropName="fileList" getValueFromEvent={normFile}>
-          <Upload action="/upload.do" listType="picture-card">
-            <div>
-              <PlusOutlined />
-              <div
-                style={{
-                  marginTop: 8,
-                }}
+    // khi đang loading => gửi yêu cầu đến server => hiện loading
+    <Box
+      sx={{
+        backgroundColor: '#ffff',
+        boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2)',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        maxWidth: 936,
+        margin: 'auto',
+      }}
+    >
+      {loading ? (
+        <Spin>
+          <Paper sx={{ maxWidth: 936, maxHeight: 520, marginRight: '6px', overflow: 'auto', boxShadow: 'none' }}>
+            <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
+              {/* url link sản phẩm*/}
+              <Form.Item
+                label="Ảnh sản phẩm"
+                validateStatus={!uploadError ? 'error' : ''}
+                help={!uploadError && 'Chọn ít nhất 1 ảnh cho sản phẩm'}
+                // validateStatus={errors.image_urls ? 'error' : ''}
+                // help={errors.image_urls && errors.image_urls.message}
+                htmlFor="image_urls"
               >
-                Upload
-              </div>
-            </div>
-          </Upload>
-        </Form.Item>
+                <Controller
+                  name="image_urls"
+                  control={control}
+                  render={({ field }) => (
+                    <Box className={clsx(style.wrapUpload)}>
+                      <Upload
+                        // action="http://localhost:8080/api/phone/uploadurl/url" // url tải lên
+                        customRequest={customRequest}
+                        listType="picture-card"
+                        enctype="multipart/form-data"
+                        name="image_urls"
+                        fileList={fileList} // danh sách các tệp đc tải lên
+                        onPreview={handlePreview}
+                        onChange={handleChange}
+                        maxCount={10} // Số lượng tối đa cho phép
+                        multiple // cho phép upload nhiều
+                        className={clsx({
+                          [style.error]: uploadError === false,
+                          // [style.error]: Boolean(errors.image_urls),
+                        })}
+                      >
+                        {fileList.length >= 8 ? null : uploadButton}
+                      </Upload>
 
-     
-        <Form.Item label="Danh mục sản phẩm">
-          <Input />
-        </Form.Item>
+                      {/* input ẩn để focus => khi chưa chọn ảnh nào */}
+                      <input className={clsx(style.inputHide)} ref={uploadRef} />
+                      {/*  */}
+                      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                        <img
+                          alt="example"
+                          style={{
+                            width: '100%',
+                          }}
+                          src={previewImage}
+                        />
+                      </Modal>
+                    </Box>
+                  )}
+                />
+              </Form.Item>
 
-        <Form.Item label="Thương hiệu ">
-          <Input />
-        </Form.Item>
+              {/* tên sản phẩm */}
+              <Form.Item
+                label="Tên sản phẩm"
+                name="namePhone"
+                validateStatus={errors.namePhone ? 'error' : ''}
+                help={errors.namePhone && errors.namePhone.message}
+                htmlFor="namePhone"
+              >
+                <Controller
+                  name="namePhone"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Tên sản phẩm" id="namePhone" />}
+                />
+              </Form.Item>
 
-        <Form.Item label="Cascader">
-          <Cascader
-            options={[
-              {
-                value: 'zhejiang',
-                label: 'Zhejiang',
-                children: [
-                  {
-                    value: 'hangzhou',
-                    label: 'Hangzhou',
-                  },
-                ],
-              },
-            ]}
-          />
-        </Form.Item>
+              {/* giá sản phẩm */}
+              <Form.Item
+                label="Giá sản phẩm"
+                name="pricePhone"
+                validateStatus={errors.pricePhone ? 'error' : ''}
+                help={errors.pricePhone && errors.pricePhone.message}
+                htmlFor="pricePhone"
+                step={2}
+              >
+                <Controller
+                  name="pricePhone"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" type="number" min={1} />
+                    // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
+                  )}
+                />
+              </Form.Item>
+              {/* mô tả sản phẩm */}
+              <Form.Item
+                label="Mô tả sản phẩm"
+                name="description"
+                validateStatus={errors.description ? 'error' : ''}
+                help={errors.description && errors.description.message}
+                htmlFor="description"
+              >
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Nhập mô tả sản phẩm" id="description" />}
+                />
+              </Form.Item>
 
-        <Button>Thêm sản phẩm</Button>
-      </Form> */}
+              {/* dung lượng pin */}
+              <Form.Item
+                label="Dung lượng pin"
+                name="dungluong_pin"
+                validateStatus={errors.dungluong_pin ? 'error' : ''}
+                help={errors.dungluong_pin && errors.dungluong_pin.message}
+                htmlFor="dungluong_pin"
+              >
+                <Controller
+                  name="dungluong_pin"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="Nhập dung lượng pin sản phẩm"
+                      id="dungluong_pin"
+                      type="number"
+                      min={0}
+                    />
+                  )}
+                />
+              </Form.Item>
 
-      {/* <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
-        <Box>
-          <label>Tên sản phẩm</label>
-          <Controller
-            render={({ field }) => {
-              return <Input {...field} placeholder="Nhập tên sản phẩm" />;
-            }}
-            name="namePhone"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: 'Vui lòng nhập',
-            }}
-            className="materialUIInput"
-          />
-        </Box>
+              {/* màu sắc */}
+              <Form.Item
+                label="Màu sắc"
+                name="mausac"
+                validateStatus={errors.mausac ? 'error' : ''}
+                help={errors.mausac && errors.mausac.message}
+                htmlFor="mausac"
+              >
+                <Controller
+                  name="mausac"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Nhập màu sắc sản phẩm" id="mausac" />}
+                />
+              </Form.Item>
 
-        <label>First Name</label>
-        <Controller
-          render={({ field }) => <AntdInput {...field} />}
-          name="lastName"
-          control={control}
-          defaultValue=""
-        />
+              {/* bộ nhớ */}
+              <Form.Item
+                label="Bộ nhớ"
+                name="bo_nho"
+                validateStatus={errors.bo_nho ? 'error' : ''}
+                help={errors.bo_nho && errors.bo_nho.message}
+                htmlFor="bo_nho"
+              >
+                <Controller
+                  name="bo_nho"
+                  control={control}
+                  render={({ field }) => {
+                    // return <Input {...field} placeholder="Nhập bộ nhớ" id="bo_nho" type="number" min={0} />;
+                    return (
+                      // <Select {...field}>
+                      //   <Select.Option value="32GB">32GB</Select.Option>
+                      //   <Select.Option value="64GB">64GB</Select.Option>
+                      //   <Select.Option value="1TB">1TB</Select.Option>
+                      // </Select>
+                      <Select
+                        {...field}
+                        // defaultValue="32GB"
+                        className={clsx(style.inputSelect)}
+                        allowClear // cho phép hiển thị nút xóa
+                        placeholder="Chọn bộ nhớ sản phẩm"
+                        id="bo_nho"
+                        options={[
+                          {
+                            value: '32GB',
+                            label: '32GB',
+                          },
+                          {
+                            value: '64GB',
+                            label: '64GB',
+                          },
+                          {
+                            value: '1TB',
+                            label: '1TB',
+                          },
+                        ]}
+                      />
+                    );
+                  }}
+                />
+              </Form.Item>
 
-        <label>Ice Cream Preference</label>
-        <Controller
-          name="iceCreamType"
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={[
-                { value: 'chocolate', label: 'Chocolate' },
-                { value: 'strawberry', label: 'Strawberry' },
-                { value: 'vanilla', label: 'Vanilla' },
-              ]}
-            />
-          )}
-          control={control}
-          defaultValue=""
-        />
-      </form> */}
-      <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
-        {/* tên sản phẩm */}
-        <Form.Item
-          label="Tên sản phẩm"
-          name="namePhone"
-          validateStatus={errors.namePhone ? 'error' : ''}
-          help={errors.namePhone && errors.namePhone.message}
-          htmlFor="namePhone"
-        >
-          <Controller
-            name="namePhone"
-            control={control}
-            render={({ field }) => <Input {...field} placeholder="Tên sản phẩm" id="namePhone" />}
-          />
-        </Form.Item>
+              {/* kich_thuoc_man_hinh */}
+              <Form.Item
+                label="Kích thước mà hình"
+                name="kich_thuoc_man_hinh"
+                validateStatus={errors.kich_thuoc_man_hinh ? 'error' : ''}
+                help={errors.kich_thuoc_man_hinh && errors.kich_thuoc_man_hinh.message}
+                htmlFor="kich_thuoc_man_hinh"
+              >
+                <Controller
+                  name="kich_thuoc_man_hinh"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="Nhập kích thước màn hình"
+                      id="kich_thuoc_man_hinh"
+                      type="number"
+                      min={0}
+                      step="0.1"
+                    />
+                  )}
+                />
+              </Form.Item>
 
-        {/* giá sản phẩm */}
-        <Form.Item
-          label="Giá sản phẩm"
-          name="pricePhone"
-          validateStatus={errors.pricePhone ? 'error' : ''}
-          help={errors.pricePhone && errors.pricePhone.message}
-          htmlFor="pricePhone"
-        >
-          <Controller
-            name="pricePhone"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" type="number" min={0} />
-            )}
-          />
-        </Form.Item>
-        {/* mô tả sản phẩm */}
-        <Form.Item
-          label="Mô tả sản phẩm"
-          name="description"
-          validateStatus={errors.description ? 'error' : ''}
-          help={errors.description && errors.description.message}
-          htmlFor="description"
-        >
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => <Input {...field} placeholder="Nhập mô tả sản phẩm" id="description" />}
-          />
-        </Form.Item>
+              {/* camera */}
+              <Form.Item
+                label="Thông số camera"
+                name="camera"
+                validateStatus={errors.camera ? 'error' : ''}
+                help={errors.camera && errors.camera.message}
+                htmlFor="camera"
+              >
+                <Controller
+                  name="camera"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Nhập thông số camera,Vd:48MP" id="camera" />}
+                />
+              </Form.Item>
 
-        {/* dung lượng pin */}
-        <Form.Item
-          label="Dung lượng pin"
-          name="dungluong_pin"
-          validateStatus={errors.dungluong_pin ? 'error' : ''}
-          help={errors.dungluong_pin && errors.dungluong_pin.message}
-          htmlFor="dungluong_pin"
-        >
-          <Controller
-            name="dungluong_pin"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder="Nhập dung lượng pin sản phẩm"
-                id="dungluong_pin"
-                type="number"
-                min={0}
-                step="0.01"
+              {/* CPU */}
+              <Form.Item
+                label="Thông số CPU"
+                name="CPU"
+                validateStatus={errors.CPU ? 'error' : ''}
+                help={errors.CPU && errors.CPU.message}
+                htmlFor="CPU"
+              >
+                <Controller
+                  name="CPU"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Nhập thông số CPU,Vd:4 nhân 2.35 GHz & 4 nhân 1.8 GHz" id="CPU" />
+                  )}
+                />
+              </Form.Item>
+              {/* RAM */}
+              <Form.Item
+                label="Thông số RAM"
+                name="RAM"
+                validateStatus={errors.RAM ? 'error' : ''}
+                help={errors.RAM && errors.RAM.message}
+                htmlFor="RAM"
+              >
+                <Controller
+                  name="RAM"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        {...field}
+                        className={clsx(style.inputSelect)}
+                        allowClear // cho phép hiển thị nút xóa
+                        placeholder="Chọn thông số RAM"
+                        id="RAM"
+                        options={[
+                          {
+                            value: '4GB',
+                            label: '4GB',
+                          },
+                          {
+                            value: '6GB',
+                            label: '6GB',
+                          },
+                          {
+                            value: '8GB',
+                            label: '8GB',
+                          },
+                          {
+                            value: '12GB',
+                            label: '12GB',
+                          },
+                          {
+                            value: '16GB',
+                            label: '16GB',
+                          },
+                        ]}
+                      />
+                    );
+                    // <Input {...field} placeholder="Nhập thông số RAM" id="RAM" type="number" min={0} />
+                  }}
+                />
+              </Form.Item>
+
+              {/* ROM */}
+              <Form.Item
+                label="Thông số ROM"
+                name="ROM"
+                validateStatus={errors.ROM ? 'error' : ''}
+                help={errors.ROM && errors.ROM.message}
+                htmlFor="ROM"
+              >
+                <Controller
+                  name="ROM"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        {...field}
+                        className={clsx(style.inputSelect)}
+                        allowClear // cho phép hiển thị nút xóa
+                        placeholder="Chọn thông số ROM"
+                        id="ROM"
+                        options={[
+                          {
+                            value: '128GB',
+                            label: '128GB',
+                          },
+                          {
+                            value: '256GB',
+                            label: '256GB',
+                          },
+                          {
+                            value: '512GB',
+                            label: '512GB',
+                          },
+                        ]}
+                      />
+                    );
+                    // <Input {...field} placeholder="Nhập thông số ROM" id="ROM" type="number" min={0} />
+                  }}
+                />
+              </Form.Item>
+
+              {/* he_dieu_hanh */}
+              <Form.Item
+                label="Hệ điều hành"
+                name="he_dieu_hanh"
+                validateStatus={errors.he_dieu_hanh ? 'error' : ''}
+                help={errors.he_dieu_hanh && errors.he_dieu_hanh.message}
+                htmlFor="he_dieu_hanh"
+              >
+                <Controller
+                  name="he_dieu_hanh"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Nhập thông số he_dieu_hanh" id="he_dieu_hanh" />
+                  )}
+                />
+              </Form.Item>
+
+              {/* số lượng sản phẩm */}
+              <Form.Item
+                label="Số lượng sản phẩm"
+                name="stock_quantity"
+                validateStatus={errors.stock_quantity ? 'error' : ''}
+                help={errors.stock_quantity && errors.stock_quantity.message}
+                htmlFor="stock_quantity"
+              >
+                <Controller
+                  name="stock_quantity"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Nhập số lượng sản phẩm " id="stock_quantity" type="number" min={0} />
+                  )}
+                />
+              </Form.Item>
+
+              {/* khuyến mãi */}
+              <Form.Item
+                label="Khuyến mãi"
+                name="promotion"
+                validateStatus={errors.promotion ? 'error' : ''}
+                help={errors.promotion && errors.promotion.message}
+                htmlFor="promotion"
+              >
+                <Controller
+                  name="promotion"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="Nhập % khuyễn mãi cho sản phẩm: Vd:30% "
+                      id="promotion"
+                      type="number"
+                      min={0}
+                    />
+                  )}
+                />
+              </Form.Item>
+
+              {/* category => danh mục sản phẩm */}
+              <Form.Item
+                label="Danh mục sản phẩm"
+                name="category"
+                validateStatus={errors.category ? 'error' : ''}
+                help={errors.category && errors.category.message}
+                htmlFor="category"
+              >
+                <Controller
+                  name="category"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Nhập danh mục sản phẩm " id="category" />}
+                />
+              </Form.Item>
+
+              {/* brand => thương hiệu sản phẩm */}
+              <Form.Item
+                label="Thương hiệu sản phẩm"
+                name="brand"
+                validateStatus={errors.brand ? 'error' : ''}
+                help={errors.brand && errors.brand.message}
+                htmlFor="brand"
+              >
+                <Controller
+                  name="brand"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Nhập tên thương hiệu sản phẩm " id="brand" />}
+                />
+              </Form.Item>
+              {/* button submit */}
+              <Form.Item>
+                <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                  Thêm sản phẩm
+                </Button>
+              </Form.Item>
+            </Form>
+          </Paper>
+        </Spin>
+      ) : (
+        <Paper sx={{ maxWidth: 936, maxHeight: 520, marginRight: '6px', overflow: 'auto', boxShadow: 'none' }}>
+          <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
+            {/* url link sản phẩm*/}
+            <Form.Item
+              label="Ảnh sản phẩm"
+              validateStatus={!uploadError ? 'error' : ''}
+              help={!uploadError && 'Chọn ít nhất 1 ảnh cho sản phẩm'}
+              // validateStatus={errors.image_urls ? 'error' : ''}
+              // help={errors.image_urls && errors.image_urls.message}
+              htmlFor="image_urls"
+            >
+              <Controller
+                name="image_urls"
+                control={control}
+                render={({ field }) => (
+                  <Box className={clsx(style.wrapUpload)}>
+                    <Upload
+                      // action="http://localhost:8080/api/phone/uploadurl/url" // url tải lên
+                      customRequest={customRequest}
+                      listType="picture-card"
+                      enctype="multipart/form-data"
+                      name="image_urls"
+                      fileList={fileList} // danh sách các tệp đc tải lên
+                      onPreview={handlePreview}
+                      onChange={handleChange}
+                      maxCount={10} // Số lượng tối đa cho phép
+                      multiple // cho phép upload nhiều
+                      className={clsx({
+                        [style.error]: uploadError === false,
+                        // [style.error]: Boolean(errors.image_urls),
+                      })}
+                    >
+                      {fileList.length >= 8 ? null : uploadButton}
+                    </Upload>
+
+                    {/* input ẩn để focus => khi chưa chọn ảnh nào */}
+                    <input className={clsx(style.inputHide)} ref={uploadRef} />
+                    {/*  */}
+                    <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                      <img
+                        alt="example"
+                        style={{
+                          width: '100%',
+                        }}
+                        src={previewImage}
+                      />
+                    </Modal>
+                  </Box>
+                )}
               />
-            )}
-          />
-        </Form.Item>
+            </Form.Item>
 
-        {/* màu sắc */}
-        <Form.Item
-          label="Màu sắc"
-          name="mausac"
-          validateStatus={errors.mausac ? 'error' : ''}
-          help={errors.mausac && errors.mausac.message}
-          htmlFor="mausac"
-        >
-          <Controller
-            name="mausac"
-            control={control}
-            render={({ field }) => <Input {...field} placeholder="Nhập màu sắc sản phẩm" id="mausac" />}
-          />
-        </Form.Item>
-
-        {/* bộ nhớ */}
-        <Form.Item
-          label="Bộ nhớ"
-          name="bo_nho"
-          validateStatus={errors.bo_nho ? 'error' : ''}
-          help={errors.bo_nho && errors.bo_nho.message}
-          htmlFor="bo_nho"
-        >
-          <Controller
-            name="bo_nho"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Nhập bộ nhớ" id="bo_nho" type="number" min={0} step="0.01" />
-            )}
-          />
-        </Form.Item>
-
-        {/* kich_thuoc_man_hinh */}
-        <Form.Item
-          label="Kích thước mà hình"
-          name="kich_thuoc_man_hinh"
-          validateStatus={errors.kich_thuoc_man_hinh ? 'error' : ''}
-          help={errors.kich_thuoc_man_hinh && errors.kich_thuoc_man_hinh.message}
-          htmlFor="kich_thuoc_man_hinh"
-        >
-          <Controller
-            name="kich_thuoc_man_hinh"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder="Nhập kích thước màn hình"
-                id="kich_thuoc_man_hinh"
-                type="number"
-                min={0}
-                step="0.01"
+            {/* tên sản phẩm */}
+            <Form.Item
+              label="Tên sản phẩm"
+              name="namePhone"
+              validateStatus={errors.namePhone ? 'error' : ''}
+              help={errors.namePhone && errors.namePhone.message}
+              htmlFor="namePhone"
+            >
+              <Controller
+                name="namePhone"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Tên sản phẩm" id="namePhone" />}
               />
-            )}
-          />
-        </Form.Item>
+            </Form.Item>
 
-        {/* camera */}
-        <Form.Item
-          label="Thông số camera"
-          name="camera"
-          validateStatus={errors.camera ? 'error' : ''}
-          help={errors.camera && errors.camera.message}
-          htmlFor="camera"
-        >
-          <Controller
-            name="camera"
-            control={control}
-            render={({ field }) => <Input {...field} placeholder="Nhập thông số camera,Vd:48MP" id="camera" />}
-          />
-        </Form.Item>
-
-        {/* CPU */}
-        <Form.Item
-          label="Thông số CPU"
-          name="CPU"
-          validateStatus={errors.CPU ? 'error' : ''}
-          help={errors.CPU && errors.CPU.message}
-          htmlFor="CPU"
-        >
-          <Controller
-            name="CPU"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Nhập thông số CPU,Vd:4 nhân 2.35 GHz & 4 nhân 1.8 GHz" id="CPU" />
-            )}
-          />
-        </Form.Item>
-        {/* RAM */}
-        <Form.Item
-          label="Thông số RAM"
-          name="RAM"
-          validateStatus={errors.RAM ? 'error' : ''}
-          help={errors.RAM && errors.RAM.message}
-          htmlFor="RAM"
-        >
-          <Controller
-            name="RAM"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Nhập thông số RAM" id="RAM" type="number" min={0} step="0.01" />
-            )}
-          />
-        </Form.Item>
-
-        {/* ROM */}
-        <Form.Item
-          label="Thông số ROM"
-          name="ROM"
-          validateStatus={errors.ROM ? 'error' : ''}
-          help={errors.ROM && errors.ROM.message}
-          htmlFor="ROM"
-        >
-          <Controller
-            name="ROM"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} placeholder="Nhập thông số ROM" id="ROM" type="number" min={0} step="0.01" />
-            )}
-          />
-        </Form.Item>
-
-        {/* he_dieu_hanh */}
-        <Form.Item
-          label="Hệ điều hành"
-          name="he_dieu_hanh"
-          validateStatus={errors.he_dieu_hanh ? 'error' : ''}
-          help={errors.he_dieu_hanh && errors.he_dieu_hanh.message}
-          htmlFor="he_dieu_hanh"
-        >
-          <Controller
-            name="he_dieu_hanh"
-            control={control}
-            render={({ field }) => <Input {...field} placeholder="Nhập thông số he_dieu_hanh" id="he_dieu_hanh" />}
-          />
-        </Form.Item>
-
-        {/* số lượng sản phẩm */}
-        <Form.Item
-          label="Số lượng sản phẩm"
-          name="stock_quantity"
-          validateStatus={errors.stock_quantity ? 'error' : ''}
-          help={errors.stock_quantity && errors.stock_quantity.message}
-          htmlFor="stock_quantity"
-        >
-          <Controller
-            name="stock_quantity"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder="Nhập số lượng sản phẩm "
-                id="stock_quantity"
-                type="number"
-                min={0}
-                step="0.01"
+            {/* giá sản phẩm */}
+            <Form.Item
+              label="Giá sản phẩm"
+              name="pricePhone"
+              validateStatus={errors.pricePhone ? 'error' : ''}
+              help={errors.pricePhone && errors.pricePhone.message}
+              htmlFor="pricePhone"
+              step={2}
+            >
+              <Controller
+                name="pricePhone"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" type="number" min={1} />
+                  // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
+                )}
               />
-            )}
-          />
-        </Form.Item>
-
-        {/* khuyến mãi */}
-        <Form.Item
-          label="Khuyến mãi"
-          name="promotion"
-          validateStatus={errors.promotion ? 'error' : ''}
-          help={errors.promotion && errors.promotion.message}
-          htmlFor="promotion"
-        >
-          <Controller
-            name="promotion"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                placeholder="Nhập khuyễn mãi cho sản phẩm "
-                id="promotion"
-                type="number"
-                min={0}
-                step="0.01"
+            </Form.Item>
+            {/* mô tả sản phẩm */}
+            <Form.Item
+              label="Mô tả sản phẩm"
+              name="description"
+              validateStatus={errors.description ? 'error' : ''}
+              help={errors.description && errors.description.message}
+              htmlFor="description"
+            >
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Nhập mô tả sản phẩm" id="description" />}
               />
-            )}
-          />
-        </Form.Item>
-        {/* button submit */}
-        <Form.Item>
-          <Button type="primary" htmltype="submit" variant="contained">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </Paper>
+            </Form.Item>
+
+            {/* dung lượng pin */}
+            <Form.Item
+              label="Dung lượng pin"
+              name="dungluong_pin"
+              validateStatus={errors.dungluong_pin ? 'error' : ''}
+              help={errors.dungluong_pin && errors.dungluong_pin.message}
+              htmlFor="dungluong_pin"
+            >
+              <Controller
+                name="dungluong_pin"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="Nhập dung lượng pin sản phẩm"
+                    id="dungluong_pin"
+                    type="number"
+                    min={0}
+                  />
+                )}
+              />
+            </Form.Item>
+
+            {/* màu sắc */}
+            <Form.Item
+              label="Màu sắc"
+              name="mausac"
+              validateStatus={errors.mausac ? 'error' : ''}
+              help={errors.mausac && errors.mausac.message}
+              htmlFor="mausac"
+            >
+              <Controller
+                name="mausac"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Nhập màu sắc sản phẩm" id="mausac" />}
+              />
+            </Form.Item>
+
+            {/* bộ nhớ */}
+            <Form.Item
+              label="Bộ nhớ"
+              name="bo_nho"
+              validateStatus={errors.bo_nho ? 'error' : ''}
+              help={errors.bo_nho && errors.bo_nho.message}
+              htmlFor="bo_nho"
+            >
+              <Controller
+                name="bo_nho"
+                control={control}
+                render={({ field }) => {
+                  // return <Input {...field} placeholder="Nhập bộ nhớ" id="bo_nho" type="number" min={0} />;
+                  return (
+                    // <Select {...field}>
+                    //   <Select.Option value="32GB">32GB</Select.Option>
+                    //   <Select.Option value="64GB">64GB</Select.Option>
+                    //   <Select.Option value="1TB">1TB</Select.Option>
+                    // </Select>
+                    <Select
+                      {...field}
+                      // defaultValue="32GB"
+                      className={clsx(style.inputSelect)}
+                      allowClear // cho phép hiển thị nút xóa
+                      placeholder="Chọn bộ nhớ sản phẩm"
+                      id="bo_nho"
+                      options={[
+                        {
+                          value: '32GB',
+                          label: '32GB',
+                        },
+                        {
+                          value: '64GB',
+                          label: '64GB',
+                        },
+                        {
+                          value: '1TB',
+                          label: '1TB',
+                        },
+                      ]}
+                    />
+                  );
+                }}
+              />
+            </Form.Item>
+
+            {/* kich_thuoc_man_hinh */}
+            <Form.Item
+              label="Kích thước mà hình"
+              name="kich_thuoc_man_hinh"
+              validateStatus={errors.kich_thuoc_man_hinh ? 'error' : ''}
+              help={errors.kich_thuoc_man_hinh && errors.kich_thuoc_man_hinh.message}
+              htmlFor="kich_thuoc_man_hinh"
+            >
+              <Controller
+                name="kich_thuoc_man_hinh"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="Nhập kích thước màn hình"
+                    id="kich_thuoc_man_hinh"
+                    type="number"
+                    min={0}
+                    step="0.1"
+                  />
+                )}
+              />
+            </Form.Item>
+
+            {/* camera */}
+            <Form.Item
+              label="Thông số camera"
+              name="camera"
+              validateStatus={errors.camera ? 'error' : ''}
+              help={errors.camera && errors.camera.message}
+              htmlFor="camera"
+            >
+              <Controller
+                name="camera"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Nhập thông số camera,Vd:48MP" id="camera" />}
+              />
+            </Form.Item>
+
+            {/* CPU */}
+            <Form.Item
+              label="Thông số CPU"
+              name="CPU"
+              validateStatus={errors.CPU ? 'error' : ''}
+              help={errors.CPU && errors.CPU.message}
+              htmlFor="CPU"
+            >
+              <Controller
+                name="CPU"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Nhập thông số CPU,Vd:4 nhân 2.35 GHz & 4 nhân 1.8 GHz" id="CPU" />
+                )}
+              />
+            </Form.Item>
+            {/* RAM */}
+            <Form.Item
+              label="Thông số RAM"
+              name="RAM"
+              validateStatus={errors.RAM ? 'error' : ''}
+              help={errors.RAM && errors.RAM.message}
+              htmlFor="RAM"
+            >
+              <Controller
+                name="RAM"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Select
+                      {...field}
+                      className={clsx(style.inputSelect)}
+                      allowClear // cho phép hiển thị nút xóa
+                      placeholder="Chọn thông số RAM"
+                      id="RAM"
+                      options={[
+                        {
+                          value: '4GB',
+                          label: '4GB',
+                        },
+                        {
+                          value: '6GB',
+                          label: '6GB',
+                        },
+                        {
+                          value: '8GB',
+                          label: '8GB',
+                        },
+                        {
+                          value: '12GB',
+                          label: '12GB',
+                        },
+                        {
+                          value: '16GB',
+                          label: '16GB',
+                        },
+                      ]}
+                    />
+                  );
+                  // <Input {...field} placeholder="Nhập thông số RAM" id="RAM" type="number" min={0} />
+                }}
+              />
+            </Form.Item>
+
+            {/* ROM */}
+            <Form.Item
+              label="Thông số ROM"
+              name="ROM"
+              validateStatus={errors.ROM ? 'error' : ''}
+              help={errors.ROM && errors.ROM.message}
+              htmlFor="ROM"
+            >
+              <Controller
+                name="ROM"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <Select
+                      {...field}
+                      className={clsx(style.inputSelect)}
+                      allowClear // cho phép hiển thị nút xóa
+                      placeholder="Chọn thông số ROM"
+                      id="ROM"
+                      options={[
+                        {
+                          value: '128GB',
+                          label: '128GB',
+                        },
+                        {
+                          value: '256GB',
+                          label: '256GB',
+                        },
+                        {
+                          value: '512GB',
+                          label: '512GB',
+                        },
+                      ]}
+                    />
+                  );
+                  // <Input {...field} placeholder="Nhập thông số ROM" id="ROM" type="number" min={0} />
+                }}
+              />
+            </Form.Item>
+
+            {/* he_dieu_hanh */}
+            <Form.Item
+              label="Hệ điều hành"
+              name="he_dieu_hanh"
+              validateStatus={errors.he_dieu_hanh ? 'error' : ''}
+              help={errors.he_dieu_hanh && errors.he_dieu_hanh.message}
+              htmlFor="he_dieu_hanh"
+            >
+              <Controller
+                name="he_dieu_hanh"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Nhập thông số he_dieu_hanh" id="he_dieu_hanh" />}
+              />
+            </Form.Item>
+
+            {/* số lượng sản phẩm */}
+            <Form.Item
+              label="Số lượng sản phẩm"
+              name="stock_quantity"
+              validateStatus={errors.stock_quantity ? 'error' : ''}
+              help={errors.stock_quantity && errors.stock_quantity.message}
+              htmlFor="stock_quantity"
+            >
+              <Controller
+                name="stock_quantity"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Nhập số lượng sản phẩm " id="stock_quantity" type="number" min={0} />
+                )}
+              />
+            </Form.Item>
+
+            {/* khuyến mãi */}
+            <Form.Item
+              label="Khuyến mãi"
+              name="promotion"
+              validateStatus={errors.promotion ? 'error' : ''}
+              help={errors.promotion && errors.promotion.message}
+              htmlFor="promotion"
+            >
+              <Controller
+                name="promotion"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="Nhập % khuyễn mãi cho sản phẩm: Vd:30% "
+                    id="promotion"
+                    type="number"
+                    min={0}
+                  />
+                )}
+              />
+            </Form.Item>
+
+            {/* category => danh mục sản phẩm */}
+            <Form.Item
+              label="Danh mục sản phẩm"
+              name="category"
+              validateStatus={errors.category ? 'error' : ''}
+              help={errors.category && errors.category.message}
+              htmlFor="category"
+            >
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Nhập danh mục sản phẩm " id="category" />}
+              />
+            </Form.Item>
+
+            {/* brand => thương hiệu sản phẩm */}
+            <Form.Item
+              label="Thương hiệu sản phẩm"
+              name="brand"
+              validateStatus={errors.brand ? 'error' : ''}
+              help={errors.brand && errors.brand.message}
+              htmlFor="brand"
+            >
+              <Controller
+                name="brand"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Nhập tên thương hiệu sản phẩm " id="brand" />}
+              />
+            </Form.Item>
+            {/* button submit */}
+            <Form.Item>
+              <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                Thêm sản phẩm
+              </Button>
+            </Form.Item>
+          </Form>
+        </Paper>
+      )}
+    </Box>
   );
 }
 
-export default React.forwardRef(AddPhone);
+export default AddPhone;

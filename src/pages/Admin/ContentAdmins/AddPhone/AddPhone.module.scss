@@ -30,4 +30,120 @@
   & :global .css-5i1zjy-MuiButtonBase-root-MuiButton-root {
     font-size: 1.3rem !important;
   }
+
+  & :global .ant-upload {
+    font-size: 4.6rem;
+  }
+
+  & :global .anticon {
+    svg {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
+  }
+
+  & :global .ant-upload-list-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  & :global .ant-tooltip-inner {
+    font-size: 1.4rem;
+  }
+  & :global .ant-upload-list-item-thumbnail {
+    font-size: 1.4rem;
+  }
+
+  & :global .ant-progress-bg {
+    height: 3px !important;
+  }
+  & :global .ant-progress-outer {
+    height: 3px !important;
+  }
+  .error {
+    & :global .ant-upload-select {
+      border: 1px solid red !important;
+    }
+  }
+
+  & :global .ant-select-selection-item {
+    font-size: 1.35rem !important;
+  }
+
+  & :global .ant-select-selector {
+    height: 35.6px !important;
+  }
+  .wrapUpload {
+    position: relative;
+    .inputHide {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      &:focus {
+        background-color: transparent;
+        border: none;
+        outline: none;
+      }
+    }
+  }
+
+  & .ant-select-item-option-content {
+    color: red !important;
+  }
+  .btnAdd {
+    font-size: 1.6rem !important;
+  }
+}
+
+// .inputSelect {
+//   & :global .rc-virtual-list-holder-inner {
+//     background-color: red !important;
+//   }
+// }
+
+body {
+  & :global .ant-select-item-option-content {
+    font-size: 1.3rem !important;
+  }
+
+  & :global .anticon-down {
+    svg {
+      width: 1.8rem !important;
+      height: 1.8rem !important;
+    }
+  }
+  & :global .anticon-close-circle {
+    svg {
+      width: 2rem !important;
+      height: 2rem !important;
+    }
+  }
+
+  & :global .ant-select-clear {
+    transform: translateY(-50%);
+    margin-right: 6px;
+  }
+
+  & :global .ant-select-selection-placeholder {
+    font-size: 1.4rem;
+  }
+
+  & :global .ant-spin {
+    max-height: unset !important;
+  }
+
+  & :global .ant-spin-dot-spin {
+    font-size: 26px !important;
+  }
+
+  & :global .ant-spin-dot-item {
+    width: 11px !important;
+    height: 11px !important;
+    background-color: #2e333b !important;
+  }
 }
