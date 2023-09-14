@@ -34,11 +34,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { deletePhone, getAllPhoneProductsNoPagination } from '~/redux/PhoneSlice.js';
-import phoneApi from '~/apis/phoneApi.js';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Space, Spin } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Modal } from 'antd';
+import AddPhone from '~/pages/Admin/ContentAdmins/AddPhone';
+import phoneApi from '~/apis/phoneApi.js';
 
 // so sánh giảm dần
 function descendingComparator(a, b, orderBy) {
@@ -477,7 +479,8 @@ export default function EnhancedTable() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   // số lượng sản phẩm trên 1 trang
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [phoneBuyId, setPhoneBuyId] = useState({});
 
   // id 1 hoặc nhiều id sản phẩm được chọn => dùng để delete
   // console.log({ selected });
@@ -558,134 +561,176 @@ export default function EnhancedTable() {
     [order, orderBy, page, rowsPerPage],
   );
 
-  // handleClickUpdate
-  const handleClickUpdate = (id) => {
-    console.log('click update id :', id);
+  //  hiện modal => khi click update
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const showModal = () => {
+  //   setIsModalOpen(true);
+  // };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
+  // handleClickUpdate= =chỉnh sửa điện thoại => hiện lên popup để chỉnh sửa => get lấy sản phẩm theo id đó => để chuẩn bị update
+  const handleClickUpdate = async (id) => {
+    console.log('click update id :', id);
+
+    try {
+      const dataphoneBuyId = await phoneApi.getPhoneBuyID(id);
+      // console.log({ dataphoneBuyId });
+      setPhoneBuyId(dataphoneBuyId?.data);
+
+      // sau khi lấy được data => mới hiện popup để => hiển thị thông tin update => thì dataPhoneBuyId => sẽ đc đồng bộ
+      // khi có data rồi => mới hiện popup => đảm bảo khi hiện popup => luôn có dữ liệu => phone truyền vào
+      setIsModalOpen(true);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  // console.log({ phoneBuyId });
   return (
-    <Box sx={{ width: '100%' }} className={clsx(style.wrapTable)}>
-      <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
-        {/* EnhancedTableToolbar */}
-        {/* {console.log(selected.length)} */}
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
+    <Box className={clsx(style.wrapGetAllPhone)}>
+      <Box sx={{ width: '100%' }} className={clsx(style.wrapTable)}>
+        <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
+          {/* EnhancedTableToolbar */}
+          {/* {console.log(selected.length)} */}
+          <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} />
 
-        {/* table container */}
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            stickyHeader
-            aria-label="sticky table"
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows && rows.length}
-            />
+          {/* table container */}
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              stickyHeader
+              aria-label="sticky table"
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows && rows.length}
+              />
 
-            {/*  body table */}
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row._id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+              {/*  body table */}
+              <TableBody>
+                {visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row._id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row._id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row._id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer', textAlign: 'center' }}
-                    className={clsx(style.wrapPhoneList)}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      sx={{
-                        position: 'sticky',
-                        left: '42px',
-                        zIndex: 1,
-                        backgroundColor: '#ece8e5',
-                      }}
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row._id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row._id}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer', textAlign: 'center' }}
+                      className={clsx(style.wrapPhoneList)}
                     >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.price}</TableCell>
-                    <TableCell align="right">{row.RAM}</TableCell>
-                    <TableCell align="right">{row.ROM}</TableCell>
-                    <TableCell align="right">{row.kich_thuoc_man_hinh}</TableCell>
-                    <TableCell align="right">{row?.category?.name}</TableCell>
-                    <TableCell align="right">{row.promotion}</TableCell>
-                    <TableCell align="right">{row.description}</TableCell>
-                    <TableCell align="right">{row.dung_luong_pin}</TableCell>
-                    <TableCell align="right">{row.mau_sac}</TableCell>
-                    <TableCell align="right">{row.bo_nho}</TableCell>
-                    <TableCell align="right">{row.camera}</TableCell>
-                    <TableCell align="right">{row.he_dieu_hanh}</TableCell>
-                    <TableCell align="right">{row.stock_quantity}</TableCell>
-                    <TableCell align="right">{row.image_urls[0]}</TableCell>
-                    {/* action update phone */}
-                    <TableCell align="right" className={clsx(style.actionUpdate)}>
-                      <Box className={clsx(style.wrapIconUpdate)}>
-                        {
-                          <BorderColorIcon
-                            onClick={() => {
-                              handleClickUpdate(row._id);
-                            }}
-                          />
-                        }
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
 
-        {/* panination */}
-        <TablePagination
-          // rowsPerPageOptions={[5, 10, 25]}
-          rowsPerPageOptions={[10]}
-          component="div"
-          count={rows.length} // tổng số trang
-          rowsPerPage={rowsPerPage} // số sản phẩm trên mỗi 1 trang
-          page={page}
-          onPageChange={handleChangePage} // kích hoạt khi trang được thay đổi
-          onRowsPerPageChange={handleChangeRowsPerPage} // gọi lại khi số lượng trang b
-        />
-      </Paper>
-      {/* <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" /> */}
-      <ToastContainer className={style.toastMessage} />
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        sx={{
+                          position: 'sticky',
+                          left: '42px',
+                          zIndex: 1,
+                          backgroundColor: '#ece8e5',
+                        }}
+                      >
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">{row.price}</TableCell>
+                      <TableCell align="right">{row.RAM}</TableCell>
+                      <TableCell align="right">{row.ROM}</TableCell>
+                      <TableCell align="right">{row.kich_thuoc_man_hinh}</TableCell>
+                      <TableCell align="right">{row?.category?.name}</TableCell>
+                      <TableCell align="right">{row.promotion}</TableCell>
+                      <TableCell align="right">{row.description}</TableCell>
+                      <TableCell align="right">{row.dung_luong_pin}</TableCell>
+                      <TableCell align="right">{row.mau_sac}</TableCell>
+                      <TableCell align="right">{row.bo_nho}</TableCell>
+                      <TableCell align="right">{row.camera}</TableCell>
+                      <TableCell align="right">{row.he_dieu_hanh}</TableCell>
+                      <TableCell align="right">{row.stock_quantity}</TableCell>
+                      <TableCell align="right">{row.image_urls[0]}</TableCell>
+                      {/* action update phone */}
+                      <TableCell align="right" className={clsx(style.actionUpdate)}>
+                        <Box className={clsx(style.wrapIconUpdate)}>
+                          {
+                            <BorderColorIcon
+                              onClick={() => {
+                                handleClickUpdate(row._id);
+                              }}
+                            />
+                          }
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* panination */}
+          <TablePagination
+            // rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[10]}
+            component="div"
+            count={rows.length} // tổng số trang
+            rowsPerPage={rowsPerPage} // số sản phẩm trên mỗi 1 trang
+            page={page}
+            onPageChange={handleChangePage} // kích hoạt khi trang được thay đổi
+            onRowsPerPageChange={handleChangeRowsPerPage} // gọi lại khi số lượng trang b
+          />
+        </Paper>
+        {/* <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" /> */}
+        <ToastContainer className={style.toastMessage} />
+      </Box>
+
+      {/* modal => khi click => update => phone */}
+      <Modal
+        title="Cập nhật sản phẩm"
+        centered // tập căn giữa modal => theo height
+        footer={null} // ẩn action => foooter
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        width={800}
+        className={clsx(style.wrapModal)}
+      >
+        {/*  lấy các thông tin phone theo id => truyền vào trong AddPhone => và hiển thị vào trong AddPhone */}
+        <AddPhone className={clsx(style.modalUpdate)} phoneBuyId={phoneBuyId} />
+      </Modal>
     </Box>
   );
 }

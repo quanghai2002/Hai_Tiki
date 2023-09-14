@@ -22,7 +22,14 @@ const phoneApi = {
         const url = '/phone/insert';
         // console.log('params', params);
         return axiosClient.post(url, params);
-    }
+    },
+    getPhoneBuyID: (idPhone) => {
+        // console.log({ idPhone });
+        const url = `/phone/${idPhone}`;
+        // console.log('params', params);
+        return axiosClient.get(url);
+    },
+
 };
 
 export default phoneApi;

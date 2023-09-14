@@ -20,6 +20,7 @@ import brandsApi from '~/apis/brands.js';
 import phoneApi from '~/apis/phoneApi.js';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 // upload ảnh
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -29,8 +30,17 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
+// Proptyoe
+AddPhone.propTypes = {
+  phoneBuyId: PropTypes.object,
+};
+
 // Sử dụng forwardRef để truyền ref vào function component
-function AddPhone(props, ref) {
+function AddPhone({ phoneBuyId }) {
+  // thông tin sản phẩm để => chuẩn bị update
+  console.log({ phoneBuyId });
+
+  // token
   const token = getTokenCookie();
   const navigate = useNavigate();
   // yup validation
@@ -63,7 +73,26 @@ function AddPhone(props, ref) {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { namePhone: '', pricePhone: '' }, // Thêm defaultValues ở đây bo_nho: '32GB'
+    // nếu có data => truyền vào => lấy data đó, còn mặc đinh là ''
+    defaultValues: {
+      namePhone: phoneBuyId ? phoneBuyId?.name : '',
+      pricePhone: phoneBuyId ? phoneBuyId?.price : '',
+      description: phoneBuyId ? phoneBuyId?.description : '',
+      dungluong_pin: phoneBuyId ? phoneBuyId?.dung_luong_pin.split(' ')[0] : '',
+      mausac: phoneBuyId ? phoneBuyId?.mau_sac : '',
+      bo_nho: phoneBuyId ? phoneBuyId?.bo_nho : '',
+      kich_thuoc_man_hinh: phoneBuyId ? phoneBuyId?.kich_thuoc_man_hinh : '',
+      camera: phoneBuyId ? phoneBuyId?.camera : '',
+      CPU: phoneBuyId ? phoneBuyId?.CPU : '',
+      RAM: phoneBuyId ? phoneBuyId?.RAM : '',
+      ROM: phoneBuyId ? phoneBuyId?.ROM : '',
+      he_dieu_hanh: phoneBuyId ? phoneBuyId?.he_dieu_hanh : '',
+      stock_quantity: phoneBuyId ? phoneBuyId?.stock_quantity : '',
+      promotion: phoneBuyId ? phoneBuyId?.promotion.slice(0, phoneBuyId?.promotion.length - 1) : '',
+      category: phoneBuyId ? phoneBuyId?.category?.name : '',
+      brand: phoneBuyId ? phoneBuyId?.brand?.name : '',
+      // image_urls: phoneBuyId ? phoneBuyId?.image_urls : '',
+    }, // Thêm defaultValues ở đây bo_nho: '32GB'
   });
 
   // upload => ảnh
@@ -72,7 +101,7 @@ function AddPhone(props, ref) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState([]); // nếu có thông tin url hình ảnh sản phẩm thì lấy
   const [listUrlImage, setListUrlImgae] = useState([]);
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
@@ -135,6 +164,8 @@ function AddPhone(props, ref) {
 
     return setFileList(newFileList);
   };
+
+  console.log({ fileList });
 
   // khi dữ liệu đã đủ => gửi biểu mẫu
 
@@ -325,7 +356,7 @@ function AddPhone(props, ref) {
                         listType="picture-card"
                         enctype="multipart/form-data"
                         name="image_urls"
-                        fileList={fileList} // danh sách các tệp đc tải lên
+                        fileList={fileList} // danh sách các tệp đc tải lên hoặc các ảnh mặc định ban đầu
                         onPreview={handlePreview}
                         onChange={handleChange}
                         maxCount={10} // Số lượng tối đa cho phép
