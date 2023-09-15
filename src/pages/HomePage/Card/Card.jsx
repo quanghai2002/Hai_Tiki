@@ -110,7 +110,7 @@ function CardItem({ phoneItem }) {
             <Typography variant="h4" color={(theme) => theme.palette.primary} className={clsx(style.percents)}>
               <span>-</span>
               <span>{phoneItem?.promotion}</span>
-              <span>%</span>
+              {/* <span>%</span> */}
             </Typography>
           </Box>
         </CardContent>

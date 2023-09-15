@@ -29,6 +29,11 @@ const phoneApi = {
         // console.log('params', params);
         return axiosClient.get(url);
     },
+    updatePhone: (params) => {
+        const url = '/phone/update';
+        // console.log('params', params);
+        return axiosClient.patch(url, params);
+    },
 
 };
 

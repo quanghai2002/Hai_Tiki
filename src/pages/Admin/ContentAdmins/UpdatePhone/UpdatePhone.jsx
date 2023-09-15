@@ -12,15 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import style from './UpdatePhone.module.scss';
 import clsx from 'clsx';
+import { AddPhone } from '..';
 export default function UpdatePhone() {
-  return (
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
-      <AppBar position="static" color="default" elevation={0} sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
-        <Toolbar></Toolbar>
-      </AppBar>
-      <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center" variant="h3">
-        UPDATE sản phẩm
-      </Typography>
-    </Paper>
-  );
+  return <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}></Paper>;
 }

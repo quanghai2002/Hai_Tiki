@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import style from './AddPhone.module.scss';
 import clsx from 'clsx';
 import { PlusOutlined } from '@ant-design/icons';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Form, Input, Upload, Select, Spin } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import Box from '@mui/material/Box';
@@ -21,25 +21,33 @@ import phoneApi from '~/apis/phoneApi.js';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { getAllPhoneProductsNoPagination } from '~/redux/PhoneSlice';
 // upload ảnh
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
+};
 
 // Proptyoe
 AddPhone.propTypes = {
   phoneBuyId: PropTypes.object,
+  idUpdate: PropTypes.string,
 };
 
 // Sử dụng forwardRef để truyền ref vào function component
-function AddPhone({ phoneBuyId }) {
+function AddPhone({ phoneBuyId, idUpdate }) {
   // thông tin sản phẩm để => chuẩn bị update
-  console.log({ phoneBuyId });
 
+  // console.log({ idUpdate });
+  // console.log({ phoneBuyId });
+  const dispatch = useDispatch();
+  dispatch(getAllPhoneProductsNoPagination());
+  // const dispatch = useDispatch();
   // token
   const token = getTokenCookie();
   const navigate = useNavigate();
@@ -78,7 +86,7 @@ function AddPhone({ phoneBuyId }) {
       namePhone: phoneBuyId ? phoneBuyId?.name : '',
       pricePhone: phoneBuyId ? phoneBuyId?.price : '',
       description: phoneBuyId ? phoneBuyId?.description : '',
-      dungluong_pin: phoneBuyId ? phoneBuyId?.dung_luong_pin.split(' ')[0] : '',
+      dungluong_pin: phoneBuyId ? phoneBuyId?.dung_luong_pin?.split(' ')[0] : '',
       mausac: phoneBuyId ? phoneBuyId?.mau_sac : '',
       bo_nho: phoneBuyId ? phoneBuyId?.bo_nho : '',
       kich_thuoc_man_hinh: phoneBuyId ? phoneBuyId?.kich_thuoc_man_hinh : '',
@@ -88,21 +96,54 @@ function AddPhone({ phoneBuyId }) {
       ROM: phoneBuyId ? phoneBuyId?.ROM : '',
       he_dieu_hanh: phoneBuyId ? phoneBuyId?.he_dieu_hanh : '',
       stock_quantity: phoneBuyId ? phoneBuyId?.stock_quantity : '',
-      promotion: phoneBuyId ? phoneBuyId?.promotion.slice(0, phoneBuyId?.promotion.length - 1) : '',
+      promotion: phoneBuyId ? phoneBuyId?.promotion?.slice(0, phoneBuyId?.promotion?.length - 1) : '',
       category: phoneBuyId ? phoneBuyId?.category?.name : '',
       brand: phoneBuyId ? phoneBuyId?.brand?.name : '',
-      // image_urls: phoneBuyId ? phoneBuyId?.image_urls : '',
     }, // Thêm defaultValues ở đây bo_nho: '32GB'
   });
 
+  // danh sách ảnh cũ trước khi update => lấy ngược lại => để hiển thi mặc đinh ra trang cập nhât ...
+  // list ảnh cũ => phù hợp với upload => để render review lần đầu tiên =>> khi click vào update
+  const fileListOldPhone = phoneBuyId?.image_urls?.map((itemImage, index) => {
+    return {
+      uid: index,
+      name: 'image.png',
+      status: 'done',
+      url: itemImage,
+      type: 'image/webp',
+    };
+  });
+
+  // update
+  // const fileListOldPhone = phoneBuyId?.image_urls?.map((itemImage, index) => {
+  //   return {
+  //     uid: index,
+  //     lastModified: Date.now(),
+  //     lastModifiedDate: Date.now(),
+  //     name: 'image.png',
+  //     originFileObj: {
+  //       uid: index,
+  //       name: 'image.png',
+  //       type: 'image/webp',
+  //       webkitRelativePath: '',
+  //     },
+  //     status: 'done',
+  //     thumbUrl: itemImage,
+  //     type: 'image/webp',
+  //   };
+  // });
   // upload => ảnh
-  const [uploadError, setUploadError] = useState(false);
+  const [uploadError, setUploadError] = useState(fileListOldPhone ? true : false);
   const uploadRef = useRef();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([]); // nếu có thông tin url hình ảnh sản phẩm thì lấy
-  const [listUrlImage, setListUrlImgae] = useState([]);
+  // const [fileList, setFileList] = useState([]); // nếu có thông tin url hình ảnh sản phẩm thì lấy
+  const [fileList, setFileList] = useState(phoneBuyId ? fileListOldPhone : []);
+  // khi có sản phẩm phải setState => để components => render lại => thông tin mới nhất
+
+  // const [listUrlImage, setListUrlImgae] = useState([]);
+  const [listUrlImage, setListUrlImgae] = useState(phoneBuyId ? phoneBuyId?.image_urls : []); // nếu có data truyền vào lấy image được truyền để update => còn nếu không để mặc định là không có image nào
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -124,48 +165,98 @@ function AddPhone({ phoneBuyId }) {
   // khi onchange hình ảnh =bắt buộc phải chọn ít nhất 1 ảnh => và requet lên server để lấy lại url hình ảnh
   const handleChange = ({ fileList: newFileList }) => {
     // số lượng ảnh đã chọn
+    // console.log({ newFileList });
     const countImage = newFileList.length;
     // console.log({ newFileList });
     // console.log({ countImage });
     // nếu có > 0 sản phẩm xóa error upload đi
+    console.log({ countImage });
     if (countImage > 0) {
       setUploadError(true);
     } else {
       setUploadError(false);
     }
 
-    // khi vào onchange thay đổi hình ảnh => thì requet lấy lại danh sách url hình ảnh => cho đồng nhất
+    // nếu là update gửi khác 1 tý => XỬ LÝ THAY ĐỔI HÌNH ẢNH => TRONG UPDATED
 
-    // Tạo một đối tượng FormData để gửi tệp tin và token
-    const formData = new FormData();
+    if (phoneBuyId) {
+      // đây là update => thì onChange hình ảnh khác 1 tý
+      // Tạo một đối tượng FormData để gửi tệp tin và token
+      const formData = new FormData();
+      // console.log({ newFileList });
+
+      newFileList.forEach((file, index) => {
+        // formData.append('image_urls', file.originFileObj);
+        formData.append('image_urls', file.originFileObj); // upload nhiều ảnh 1 lúc
+      });
+      // formData.append('image_urls', file); // upload 1 ảnh
+      formData.append('token', token);
+
+      axiosClient
+        .post('/phone/uploadurl/url', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Đặt tiêu đề Content-Type
+          },
+        })
+        .then((response) => {
+          console.log('thay đổi hình ảnh trong UPDATEd');
+          // console.log({ response });
+
+          // tùy chỉnh 1 tẹo => để update sản phẩm cho đúng
+          // link ảnh cũ của điện thoại ban đầu
+
+          const oldUrlPhone = newFileList.map((item) => {
+            return item.url;
+          });
+
+          // hợp nhất lại
+          const urlServer = response?.data;
+          const newUrlPhoneUpdate = [...oldUrlPhone, ...urlServer].filter((item) => {
+            return item !== undefined;
+          });
+
+          // console.log('oldUrlPhone', oldUrlPhone);
+          // console.log('newUrlPhoneUpdate', newUrlPhoneUpdate);
+
+          setListUrlImgae(newUrlPhoneUpdate);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      // khi vào onchange thay đổi hình ảnh => thì requet lấy lại danh sách url hình ảnh => cho đồng nhất
+
+      // Tạo một đối tượng FormData để gửi tệp tin và token
+      const formData = new FormData();
+      newFileList.forEach((file, index) => {
+        formData.append('image_urls', file.originFileObj); // upload nhiều ảnh 1 lúc
+      });
+      // formData.append('image_urls', file); // upload 1 ảnh
+      formData.append('token', token);
+
+      axiosClient
+        .post('/phone/uploadurl/url', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Đặt tiêu đề Content-Type
+          },
+        })
+        .then((response) => {
+          console.log('thay đổi hình ảnh trong Thêm Sản Phẩm');
+          console.log({ response });
+          setListUrlImgae(response?.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
 
     // uploade => nhiều ảnh 1 lúc
     // Duyệt qua từng tệp trong fileList và thêm vào formData
-    newFileList.forEach((file, index) => {
-      formData.append('image_urls', file.originFileObj); // upload nhiều ảnh 1 lúc
-    });
-    // formData.append('image_urls', file); // upload 1 ảnh
-    formData.append('token', token);
-
-    axiosClient
-      .post('/phone/uploadurl/url', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Đặt tiêu đề Content-Type
-        },
-      })
-      .then((response) => {
-        setListUrlImgae(response?.data);
-        // onSuccess();
-      })
-      .catch((err) => {
-        console.log(err);
-        // onError();
-      });
 
     return setFileList(newFileList);
   };
 
-  console.log({ fileList });
+  // console.log({ fileList });
 
   // khi dữ liệu đã đủ => gửi biểu mẫu
 
@@ -173,9 +264,9 @@ function AddPhone({ phoneBuyId }) {
   // console.log({ listUrlImage });
 
   const onSubmit = async (data) => {
-    setLoading(true);
     // nếu đã chọn ít nhất 1 ảnh => mới cho gửi data => nếu không foucs vào input giả gần đó
     if (uploadError) {
+      setLoading(true);
       // console.log({ data });
       // data creat category and brand
       const category = data?.category.trim().toUpperCase();
@@ -194,18 +285,20 @@ function AddPhone({ phoneBuyId }) {
         products: [],
       };
 
-      try {
-        // add danh mục sản phẩm => và lấy id danh mục sản phẩm về
+      // phoneBuyId nếu có phoneBuyId => là update => call api UPDATE phone
+      if (phoneBuyId) {
+        console.log('đây là update sản phẩm');
+        // add danh mục sản phẩm or update => và lấy id danh mục sản phẩm về
         const category = await categoryApi.insertCategory(paramCategory);
         const idCategory = category?.data?._id;
 
-        // add thương hiệu ==> brand => và lấy id thương hiệu sản phẩm => brands
+        // add thương hiệu or update ==> brand => và lấy id thương hiệu sản phẩm => brands
         const brand = await brandsApi.insertBrand(paramBrands);
         const idBrand = brand?.data?._id;
 
-        // sau khi có id caterogy và id của brand => thêm sản phẩm mới thôi => yup !
-        //new data => add phone
-        const newData = {
+        // update sản phẩm
+        const newDataUpdate = {
+          _id: idUpdate,
           name: data?.namePhone,
           description: data?.description,
           price: Number.parseFloat(data?.pricePhone),
@@ -225,50 +318,123 @@ function AddPhone({ phoneBuyId }) {
           brand: idBrand,
           reviews: [],
         };
-        // thêm sản phẩm => lấy id của phone
-        // console.log({ newData });
-        const dataResponsePhone = await phoneApi.insetPhone(newData);
-        // console.log({ dataResponsePhone });
-        const idPhone = dataResponsePhone?.data?._id;
 
-        // sau khi thêm sản phẩm thành công update ngược lại => thêm sản phẩm đó vào danh mục sản phẩm và thương hiệu đó
-        // phải get danh mục sản phẩm trước sau đó mới => update lại => để bản tồn sản phẩm trong đó
-        // let newParamCaterogy = {
-        //   ...paramCategory,
-        //   products: [...paramCategory.products, idPhone],
-        // };
-        // const updataCategory = await categoryApi.insertCategory(newParamCaterogy);
-        // console.log({ updataCategory });
+        // console.log({ newDataUpdate });
+        // call API update phone
+        try {
+          phoneApi.updatePhone(newDataUpdate);
+          setLoading(false);
+          toast.success('UPDATE sản phẩm thành công', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
 
-        setLoading(false);
-        toast.success('Thêm sản phẩm thành công', {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-        });
-        // chuyển đến trang xem các sản phẩm
-        setTimeout(() => {
-          navigate('/homepage');
-        }, 3000);
-        // navigatae => đến trang home
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-        toast.error('Thêm sản phẩm thất bại thử lại !', {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-        });
+          // chuyển đến trang xem các sản phẩm
+          setTimeout(() => {
+            navigate('/homepage');
+          }, 3000);
+        } catch (error) {
+          console.log(error);
+          setLoading(false);
+          toast.error('UPDATE sản phẩm thất bại thử lại !', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+        }
+
+        // console.log('data update', newDataUpdate);
+      }
+      // ngược lại không có phoneApi => sẽ call API => add phone
+      else {
+        console.log('đây là thêm mới sản phấm');
+        try {
+          // add danh mục sản phẩm => và lấy id danh mục sản phẩm về
+          const category = await categoryApi.insertCategory(paramCategory);
+          const idCategory = category?.data?._id;
+
+          // add thương hiệu ==> brand => và lấy id thương hiệu sản phẩm => brands
+          const brand = await brandsApi.insertBrand(paramBrands);
+          const idBrand = brand?.data?._id;
+
+          // sau khi có id caterogy và id của brand => thêm sản phẩm mới thôi => yup !
+          //new data => add phone
+          const newData = {
+            name: data?.namePhone,
+            description: data?.description,
+            price: Number.parseFloat(data?.pricePhone),
+            dung_luong_pin: `${data?.dungluong_pin} mAh`,
+            mau_sac: data?.mausac,
+            bo_nho: data?.bo_nho,
+            kich_thuoc_man_hinh: Number.parseFloat(data?.kich_thuoc_man_hinh),
+            camera: `${data?.camera}MP`,
+            CPU: data?.CPU,
+            RAM: data?.RAM,
+            ROM: data?.ROM,
+            he_dieu_hanh: data?.he_dieu_hanh,
+            stock_quantity: Number.parseInt(data?.stock_quantity),
+            image_urls: listUrlImage,
+            promotion: `${data?.promotion}%`,
+            category: idCategory,
+            brand: idBrand,
+            reviews: [],
+          };
+          // thêm sản phẩm => lấy id của phone
+          // console.log({ newData });
+          const dataResponsePhone = await phoneApi.insetPhone(newData);
+          // console.log({ dataResponsePhone });
+          const idPhone = dataResponsePhone?.data?._id;
+
+          // sau khi thêm sản phẩm thành công update ngược lại => thêm sản phẩm đó vào danh mục sản phẩm và thương hiệu đó
+          // phải get danh mục sản phẩm trước sau đó mới => update lại => để bản tồn sản phẩm trong đó
+          // let newParamCaterogy = {
+          //   ...paramCategory,
+          //   products: [...paramCategory.products, idPhone],
+          // };
+          // const updataCategory = await categoryApi.insertCategory(newParamCaterogy);
+          // console.log({ updataCategory });
+
+          setLoading(false);
+          toast.success('Thêm sản phẩm thành công', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+          // chuyển đến trang xem các sản phẩm
+          setTimeout(() => {
+            navigate('/homepage');
+          }, 3000);
+          // navigatae => đến trang home
+        } catch (error) {
+          console.log(error);
+          setLoading(false);
+          toast.error('Thêm sản phẩm thất bại thử lại !', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+        }
       }
     } else {
       uploadRef.current.focus();
@@ -749,9 +915,16 @@ function AddPhone({ phoneBuyId }) {
               </Form.Item>
               {/* button submit */}
               <Form.Item>
-                <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
-                  Thêm sản phẩm
-                </Button>
+                {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
+                {phoneBuyId ? (
+                  <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                    Update
+                  </Button>
+                ) : (
+                  <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                    Thêm sản phẩm
+                  </Button>
+                )}
               </Form.Item>
             </Form>
           </Paper>
@@ -1170,9 +1343,16 @@ function AddPhone({ phoneBuyId }) {
             </Form.Item>
             {/* button submit */}
             <Form.Item>
-              <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
-                Thêm sản phẩm
-              </Button>
+              {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
+              {phoneBuyId ? (
+                <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                  Update
+                </Button>
+              ) : (
+                <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                  Thêm sản phẩm
+                </Button>
+              )}
             </Form.Item>
           </Form>
         </Paper>
@@ -1182,4 +1362,4 @@ function AddPhone({ phoneBuyId }) {
   );
 }
 
-export default AddPhone;
+export default memo(AddPhone);

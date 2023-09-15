@@ -25,7 +25,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '~/redux/userSlice.js';
 import removeToken from '~/utils/removeToken.js';
 
@@ -67,6 +67,9 @@ function HeaderAdmin({ onDrawerToggle, valueTab, setValueTab }) {
     setValueTab(newValue);
   };
 
+  // thông tin user
+  const user = useSelector((state) => state?.userAuth?.user?.data);
+  console.log({ user });
   return (
     <>
       <AppBar component="div" color="secondary" position="static" elevation={0} sx={{ zIndex: 0 }}>
@@ -89,7 +92,7 @@ function HeaderAdmin({ onDrawerToggle, valueTab, setValueTab }) {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                 >
-                  <Avatar sx={{ width: 32, height: 32 }}></Avatar>
+                  <Avatar src={user?.img_url} ant="anh dai dien" sx={{ width: 32, height: 32 }}></Avatar>
                 </IconButton>
               </Tooltip>
 
