@@ -92,7 +92,11 @@ function HeaderAdmin({ onDrawerToggle, valueTab, setValueTab }) {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                 >
-                  <Avatar src={user?.img_url} ant="anh dai dien" sx={{ width: 32, height: 32 }}></Avatar>
+                  <Avatar
+                    src={user?.img_url || user?.picture}
+                    ant="anh dai dien"
+                    sx={{ width: 32, height: 32 }}
+                  ></Avatar>
                 </IconButton>
               </Tooltip>
 

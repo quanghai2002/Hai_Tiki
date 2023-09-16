@@ -55,11 +55,11 @@ axiosClient.interceptors.request.use(async (config) => {
 
 
     if (expToken < date.getTime() / 1000) {
-      console.log('token đã hết hạn => refresh token => gắn Authorization lại ');
+      console.log('token đã hết hạn => refresh token => gắn Authorization lại  ');
       // nếu token hết hạn => gọi api refresh token
       const refreshTokenID = getrefreshToken();
       const newToken = await refreshToken(refreshTokenID);
-      console.log('new token: ', newToken.data);
+      // console.log('new token: ', newToken.data);
 
       // set lại acsetToken và refresh token => vào cookie
       setTokenCookie(newToken.data?.newAccessToken);

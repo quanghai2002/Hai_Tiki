@@ -61,14 +61,14 @@ function getComparator(order, orderBy) {
 
 function stableSort(array, comparator) {
   const stabilizedThis = array && array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) {
       return order;
     }
     return a[1] - b[1];
   });
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis?.map((el) => el[0]);
 }
 
 // header table => T header
@@ -254,6 +254,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 // EnhancedTableToolbar
 function EnhancedTableToolbar(props) {
+  const [isDelete, setIsdelete] = useState(false);
   const navigate = useNavigate();
   // số lượng sản phẩm đọn chọn
   const { numSelected, selected, setSelected } = props;
@@ -281,7 +282,7 @@ function EnhancedTableToolbar(props) {
   // DELETE PHONE => khi ấn nút đồng ý xóa => thì mới xóa
   const agreeDelete = async () => {
     console.log('danh sách id sản phẩm cần xóa', selected);
-
+    setIsdelete(true);
     // requet delete  => server => cập nhật lại redux => để render lại danh sách
     const params = {
       idsListDelete: selected,
@@ -293,6 +294,7 @@ function EnhancedTableToolbar(props) {
       await dispatch(deletePhone(params));
       await dispatch(getAllPhoneProductsNoPagination());
 
+      setIsdelete(false);
       toast.success('Xóa thành công', {
         position: 'top-right',
         autoClose: 3000,
@@ -315,6 +317,7 @@ function EnhancedTableToolbar(props) {
     } catch (error) {
       console.log(error);
       setOpen(false);
+      setIsdelete(false);
       toast.success('Xóa thất bại', {
         position: 'top-right',
         autoClose: 3000,
@@ -415,7 +418,8 @@ function EnhancedTableToolbar(props) {
 
           {/* popup => hiện lên xem có xóa sản phẩm không */}
 
-          {/*  */}
+          {/* hộp thoại hiện lên đê chắc chắn muốn xóa sản phẩm không */}
+
           <Dialog
             open={open}
             onClose={handleClose}
@@ -426,39 +430,79 @@ function EnhancedTableToolbar(props) {
             // fullScreen
           >
             {/* title => popup */}
-            <DialogTitle id="alert-dialog-title" className={clsx(style.popupTitle)}>
-              Bạn chắc chắc muốn xóa{' '}
-              <Typography className={clsx(style.popupTitleCountDelete)}>{numSelected}</Typography> sản phẩm không ?
-            </DialogTitle>
+            {/* nếu đang call API => để xóa hiện lên loading */}
+            {isDelete ? (
+              <Spin size="large">
+                <DialogTitle id="alert-dialog-title" className={clsx(style.popupTitle)}>
+                  Bạn chắc chắc muốn xóa{' '}
+                  <Typography className={clsx(style.popupTitleCountDelete)}>{numSelected}</Typography> sản phẩm không ?
+                </DialogTitle>
 
-            {/* content => popup */}
-            {/* <DialogContent>
+                {/* content => popup */}
+                {/* <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Let Google help apps determine location. This means sending anonymous location data to Google, even when
                 no apps are running.
               </DialogContentText>
             </DialogContent> */}
 
-            {/* action => popup */}
-            <DialogActions disableSpacing className={clsx(style.wrapActionPopupDelete)}>
-              <Button
-                className={clsx(style.iconActionDelete, style.btnAgree)}
-                onClick={agreeDelete}
-                variant="contained"
-                color="success"
-              >
-                Đồng ý
-              </Button>
-              <Button
-                className={clsx(style.iconActionDelete, style.btnCancel)}
-                onClick={handleClose}
-                autoFocus
-                variant="contained"
-                color="error"
-              >
-                Hủy
-              </Button>
-            </DialogActions>
+                {/* action => popup */}
+                <DialogActions disableSpacing className={clsx(style.wrapActionPopupDelete)}>
+                  <Button
+                    className={clsx(style.iconActionDelete, style.btnAgree)}
+                    onClick={agreeDelete}
+                    variant="contained"
+                    color="success"
+                  >
+                    Đồng ý
+                  </Button>
+                  <Button
+                    className={clsx(style.iconActionDelete, style.btnCancel)}
+                    autoFocus
+                    variant="contained"
+                    color="error"
+                  >
+                    Hủy
+                  </Button>
+                </DialogActions>
+              </Spin>
+            ) : (
+              <>
+                <DialogTitle id="alert-dialog-title" className={clsx(style.popupTitle)}>
+                  Bạn chắc chắc muốn xóa{' '}
+                  <Typography className={clsx(style.popupTitleCountDelete)}>{numSelected}</Typography> sản phẩm không ?
+                </DialogTitle>
+
+                {/* content => popup */}
+                {/* <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Let Google help apps determine location. This means sending anonymous location data to Google, even when
+                no apps are running.
+              </DialogContentText>
+            </DialogContent> */}
+
+                {/* action => popup */}
+                <DialogActions disableSpacing className={clsx(style.wrapActionPopupDelete)}>
+                  <Button
+                    className={clsx(style.iconActionDelete, style.btnAgree)}
+                    onClick={agreeDelete}
+                    variant="contained"
+                    color="success"
+                  >
+                    Đồng ý
+                  </Button>
+                  <Button
+                    className={clsx(style.iconActionDelete, style.btnCancel)}
+                    onClick={handleClose}
+                    autoFocus
+                    variant="contained"
+                    color="error"
+                  >
+                    Hủy
+                  </Button>
+                </DialogActions>
+              </>
+            )}
           </Dialog>
         </>
       ) : (

@@ -1355,9 +1355,9 @@ function AddPhone({ phoneBuyId, idUpdate }) {
               )}
             </Form.Item>
           </Form>
+          <ToastContainer className={style.toastMessage} />;
         </Paper>
       )}
-      <ToastContainer className={style.toastMessage} />;
     </Box>
   );
 }

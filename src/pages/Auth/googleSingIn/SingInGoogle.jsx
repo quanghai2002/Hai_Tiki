@@ -9,6 +9,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+// set tokenCookie
+import setTokenCookie from '~/utils/setTokenCookie.js';
+import setRefreshToken from '~/utils/setRefreshToken';
 
 // action login => redux
 import { login } from '~/redux/userSlice.js';
@@ -26,17 +29,27 @@ function SingInGoogle() {
     onSuccess: async (response) => {
       const { code } = response;
       // POST REQUEST => SERVER => get -> info user => or save userGoogle => database
+      // console.log({ code });
       const param = {
         code,
       };
       setShowSpin(true);
       try {
+        // data login google thành công
         const responseLoginGoogle = await userApi.loginGoogle(param);
         // console.log(responseLoginGoogle);
         setShowSpin(false);
         if (responseLoginGoogle) {
-          console.log('Đăng Nhập Thành Công');
-          toast.success('Đăng nhập thành công', {
+          // lưu Access token => vào cookies => assetsToken
+          const token = responseLoginGoogle?.token;
+          setTokenCookie(token);
+
+          // refreshToken => lưu cookies => refresh token
+          const refreshToken = responseLoginGoogle?.refreshToken;
+          setRefreshToken(refreshToken);
+          //
+          console.log('Đăng Nhập GOOGLE Thành Công');
+          toast.success('Đăng nhập Google thành công', {
             position: 'top-right',
             autoClose: 4000,
             hideProgressBar: false,
@@ -50,14 +63,15 @@ function SingInGoogle() {
           // dispatch => lưu thông tin User => redux
           dispatch(login(responseLoginGoogle));
           // sau 4s chuyển sang trang chủ
+
           setTimeout(() => {
             navigate('/homepage');
-          }, 4000);
+          }, 3000);
         }
       } catch (error) {
         setShowSpin(false);
         console.log(error);
-        toast.error('Đăng nhập thất bại', {
+        toast.error('Đăng nhập google thất bại', {
           position: 'top-right',
           autoClose: 4000,
           hideProgressBar: false,

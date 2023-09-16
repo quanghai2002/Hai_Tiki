@@ -14,6 +14,9 @@ import userApi from '~/apis/userApi';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+// set tokenCookie
+import setTokenCookie from '~/utils/setTokenCookie.js';
+import setRefreshToken from '~/utils/setRefreshToken';
 
 // action login
 import { login } from '~/redux/userSlice.js';
@@ -22,7 +25,7 @@ function LoginPhoneNumber() {
   const dispatch = useDispatch();
 
   // fix thời gian đếm ngược => luôn là 60s
-  const [startTime, setStartTime] = useState(Date.now());
+  // const [startTime, setStartTime] = useState(Date.now());
   const navigate = useNavigate();
   // value OTP
   const [otp, setOtp] = useState('');
@@ -54,20 +57,20 @@ function LoginPhoneNumber() {
 
   // xác thực capchath=> => send code phone Number
   function onCaptchaVerify() {
-    if (!window.recaptchaverifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-        callback: () => {
-          console.log('xác thực capchat thành công');
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-          // ...
-        },
-        'expired-callback': () => {
-          console.log('Xác thực capcha thất bại !');
-        },
-      });
-    }
-    window.recaptchaVerifier.render();
+    // if (!window.recaptchaverifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+      callback: () => {
+        console.log('xác thực capchat thành công');
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        // ...
+      },
+      'expired-callback': () => {
+        console.log('Xác thực capcha thất bại !');
+      },
+    });
+    // }
+    // window.recaptchaVerifier.render();
   }
 
   // send OTP => phone Number => gửi mã đến điện thoại
@@ -87,7 +90,7 @@ function LoginPhoneNumber() {
         window.confirmationResult = confirmationResult;
         setLoading(false);
         // setTimeoutSendOtp(true);
-        setTimeoutSendOtp(true);
+        // setTimeoutSendOtp(true);
         setShowOTP(true);
         // setStartTime(Date.now());
         toast.success('Gửi mã OTP thành công', {
@@ -119,7 +122,7 @@ function LoginPhoneNumber() {
   }
 
   // verify OTP => xác thực OTP => phone Number
-  function onOTPverify() {
+  async function onOTPverify() {
     setLoading(true);
     setShowSpin(true);
     window.confirmationResult
@@ -137,6 +140,17 @@ function LoginPhoneNumber() {
             phone: dataPhoneNumber,
           });
 
+          // lưu token vào trong cookie
+
+          // lưu Access token => vào cookies => assetsToken
+          const token = dataUserLoginPhone?.token;
+          setTokenCookie(token);
+
+          // refreshToken => lưu cookies => refresh token
+          const refreshToken = dataUserLoginPhone?.refreshToken;
+          setRefreshToken(refreshToken);
+
+          // hiện toast message
           toast.success('Đăng nhập thành công', {
             position: 'top-right',
             autoClose: 3000,

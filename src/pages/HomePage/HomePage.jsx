@@ -46,8 +46,10 @@ function HomePage(props) {
   const isUser = useSelector((state) => state.userAuth?.user?.data);
   const isAdmin = useSelector((state) => state.userAuth?.user?.data?.admin);
 
-  const avartarUser = isUser?.img_url;
-  const firstNameUser = isUser?.username.slice(0, 2);
+  const avartarUser = isUser?.img_url || isUser?.picture;
+  // console.log({ avartarUser });
+
+  const firstNameUser = isUser?.username?.slice(0, 2) || isUser; // nếu là đăng nhập với gmail,googke => có userName. Còn lại đăng nhập phone number => tên sẽ là số điện thoại
 
   // data render phone
   const [phone, setPhone] = useState({});
