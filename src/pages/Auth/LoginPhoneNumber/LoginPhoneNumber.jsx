@@ -57,27 +57,24 @@ function LoginPhoneNumber() {
 
   // xác thực capchath=> => send code phone Number
   function onCaptchaVerify() {
-    // if (!window.recaptchaverifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'invisible',
-      callback: () => {
-        console.log('xác thực capchat thành công');
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-        // ...
-      },
-      'expired-callback': () => {
-        console.log('Xác thực capcha thất bại !');
-      },
-    });
-    // }
-    // window.recaptchaVerifier.render();
+    if (!window.recaptchaverifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible',
+        callback: () => {
+          console.log('xác thực capchat thành công');
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          // ...
+        },
+        'expired-callback': () => {
+          console.log('Xác thực capcha thất bại !');
+        },
+      });
+    }
   }
 
   // send OTP => phone Number => gửi mã đến điện thoại
   function onSignup() {
     setLoading(true);
-
-    // auth.appVerificationDisabledForTesting = true;
 
     onCaptchaVerify();
     let appVerifier = window.recaptchaVerifier;
@@ -87,12 +84,14 @@ function LoginPhoneNumber() {
     signInWithPhoneNumber(auth, formatPhone, appVerifier)
       // gửi mã thành công
       .then((confirmationResult) => {
+        console.log('đã lợt vào đây để gửi mã');
         window.confirmationResult = confirmationResult;
         setLoading(false);
         // setTimeoutSendOtp(true);
         // setTimeoutSendOtp(true);
         setShowOTP(true);
         // setStartTime(Date.now());
+
         toast.success('Gửi mã OTP thành công', {
           position: 'top-right',
           autoClose: 3000,
