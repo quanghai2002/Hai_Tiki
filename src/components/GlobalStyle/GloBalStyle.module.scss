@@ -1,21 +1,45 @@
-:root {
-  // font-family: 'IBM Plex Sans', sans-serif;
-  // font-family: 'Roboto', sans-serif;
-}
-
 html {
   // css => font-size:62.5% => 1rem => 10px
   // font-size: 62.5%;
-  // font-size: 1.6rem;
-  // css override => tô
+  // font-size: 1rem = 10px;
+  font-size: 62.5%;
+  // css override => tooltip
   & :global .MuiTooltip-tooltip {
     font-size: 1.3rem;
     margin-top: 3px !important;
   }
 }
 
+// nhúng fonts
+@font-face {
+  font-family: Inter;
+  src: url('/src/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa2pL7SUc.woff2');
+}
+@font-face {
+  font-family: Inter;
+  src: url('/src/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa25L7SUc.woff2');
+}
+@font-face {
+  font-family: Inter;
+  src: url('/src/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2');
+}
+
+body {
+  font-family: 'Inter', 'sans-serif';
+  font-size: 1.6rem;
+}
+
+:root {
+  // font-family: 'IBM Plex Sans', sans-serif;
+  // font-family: 'Roboto', sans-serif;
+  --fontFamily: 'Inter';
+}
+
 * {
-  font-size: 62.5%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+
   // thanh cuộn => scrollbar
   ::-webkit-scrollbar {
     width: 8px;

@@ -1,51 +1,101 @@
 import { cyan, deepOrange, orange, red, teal } from '@mui/material/colors';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
 
+import Inter from '~/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2';
+import Inter2 from '~/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa2pL7SUc.woff2';
+import Inter3 from '~/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa25L7SUc.woff2';
+
+
 // Create a theme instance.
 const theme = extendTheme({
+  // ---------------------------------------chế độ SÁNG => TỐI --------------------------
   colorSchemes: {
-    // light mode
+    // light mode => chế độ SÁNG
     light: {
       palette: {
         primary: {
-          main: '#7e57c2',
-          light: '#f1c40f'
+          main: 'rgb(10, 104, 255)',
+          light: 'rgb(11, 116, 229)'
         },
         secondary: {
-          main: '#00cec9',
-          light: '#2196f3'
+          main: 'rgb(255, 66, 78)',
+        },
+        // màu chữ  => text trong chế độ => SÁNG
+        text: {
+          primary: 'rgb(39, 39, 42)',
+          secondary: 'rgb(128, 128, 137)',
+          primary2: 'rgb(36, 36, 36)',
+          primary3: 'rgb(56, 56, 61)'
+
         }
-
-
-
-        // ....
       },
       // spacing: (factor) => `${0.25 * factor}rem`,
     },
 
-    // dark mode
+    // dark mode => chế độ TỐI
     dark: {
       palette: {
-        primary: cyan,
-        secondary: orange
-        // ...
+        primary: {
+          main: 'rgb(38, 166, 154)',
+        },
+        secondary: {
+          main: 'rgb(244, 81, 30)'
+        },
+        text: {
+          primary: 'rgb(255, 255, 255)',
+          secondary: 'rgb(255, 255, 255)',
+          primary2: 'rgb(255, 255, 255)',
+          primary3: 'rgb(255, 255, 255);'
+        }
+
       },
     },
+
+  },
+  // -------------------------------------------> thay đổi fontFamily --> --------------------------------------------
+  // overwrite fontfamily  => thay đổi font family mặc định
+
+  typography: {
+    fontFamily: [
+      'Inter, Helvetica',
+      'Inter2, Arial',
+      'Inter3, sans-serif',
+    ].join(','),
+    fontSize: 20
   },
 
+  // -----------------------------------------------
   // ...other properties
-
-  // breakpoint
-  // breakpoints: {
-  //   values: {
-  //     mobile: 0,
-  //     tablet: 640,
-  //     laptop: 1024,
-  //     desktop: 1200,
-  //   }
-  // },
-
   components: {
+    // overwrite css baseline
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Inter';
+          font-style: normal;
+          font-display: swap;
+          font-weight: 400;
+          src: local('Raleway'), local('Raleway-Regular'), url(${Inter}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        },
+         @font-face {
+          font-family: 'Inter2';
+          font-style: normal;
+          font-display: swap;
+          font-weight: 400;
+          src: local('Raleway'), local('Raleway-Regular'), url(${Inter2}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        },
+        @font-face {
+          font-family: 'Inter3';
+          font-style: normal;
+          font-display: swap;
+          // font-weight: 400;
+          src: local('Raleway'), local('Raleway-Regular'), url(${Inter3}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        }
+      `,
+    },
     // Name of the component
 
     MuiButton: {
@@ -70,6 +120,7 @@ const theme = extendTheme({
       }
     },
   },
+
 
   // MuiInputLabel: {
   //   styleOverrides: {
