@@ -1,0 +1,14 @@
+.wrapNotFound {
+  height: 100vh;
+  & :global .ant-result-title {
+    color: red;
+    font-size: 2.6rem;
+  }
+
+  & :global .ant-result-subtitle {
+    font-size: 1.8rem;
+  }
+  & :global .ant-result-extra {
+    margin-top: 33px;
+  }
+}

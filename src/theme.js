@@ -27,6 +27,22 @@ const theme = extendTheme({
           primary2: 'rgb(36, 36, 36)',
           primary3: 'rgb(56, 56, 61)'
 
+        },
+
+        // background trang web => chế độ sáng
+        background: {
+          default: '#f5f5fa',
+          header: '#fff'
+        },
+
+        // color các hành động như hover,active ... => chế độ SÁNG
+        action: {
+          // active: '#ccc',
+          // focus: '#ccc'
+          // disabled: '#ccc'
+          hoverActive: 'rgba(0, 96, 255, 0.12)',
+          hover: 'rgba(39, 39, 42, 0.12)'
+
         }
       },
       // spacing: (factor) => `${0.25 * factor}rem`,
@@ -46,8 +62,22 @@ const theme = extendTheme({
           secondary: 'rgb(255, 255, 255)',
           primary2: 'rgb(255, 255, 255)',
           primary3: 'rgb(255, 255, 255);'
-        }
+        },
+        // background trang web => chế độ Tối
+        background: {
+          default: '#000',
+          header: '#2e2727',
+          inputSearch: '#ccc'
+        },
+        // color các hành động như hover,active ... => chế độ SÁNG
+        action: {
+          // active: '#ccc',
+          // focus: '#ccc'
+          // disabled: '#ccc'
+          hoverActive: '#fff',
+          hover: '#6b5e5e'
 
+        }
       },
     },
 
