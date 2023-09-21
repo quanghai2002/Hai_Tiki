@@ -30,7 +30,6 @@ function App() {
         backgroundColor: (theme) => {
           theme?.palette?.background?.default;
         },
-        height: '100vh',
       }}
     >
       {/* react router DOM */}

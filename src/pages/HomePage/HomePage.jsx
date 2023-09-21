@@ -7,10 +7,12 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
+import { Typography } from '@mui/material';
 
 const Header = lazy(() => import('~/components/Header'));
 const Slider = lazy(() => import('~/components/Slider'));
 const Footer = lazy(() => import('~/components/Footer'));
+const AppBar = lazy(() => import('~/components/AppBar'));
 
 // propTypes
 HomePage.propTypes = {};
@@ -36,11 +38,11 @@ function HomePage(props) {
       <Box className={clsx(style.wrapContent)}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
           {/* app bar */}
-          <Grid xs={4} sm={4} md={6} lg={2.2}>
-            <Item>App bar</Item>
+          <Grid xs={4} sm={4} md={3} lg={2.1}>
+            <AppBar />
           </Grid>
 
-          <Grid container xs={4} sm={4} md={6} lg={9.8}>
+          <Grid container xs={4} sm={4} md={9} lg={9.9}>
             {/*slider  */}
             <Grid lg={12}>
               <Slider />
@@ -106,7 +108,6 @@ function HomePage(props) {
             </Grid>
           </Grid>
         </Grid>
-        {/* footer */}
       </Box>
     </Box>
   );

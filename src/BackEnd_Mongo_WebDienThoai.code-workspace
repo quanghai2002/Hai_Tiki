@@ -1,0 +1,19 @@
+{
+  "folders": [
+	{
+		"path": "../../BackEnd_Mongo_WebDienThoai"
+	},
+	{
+		"path": ".."
+	}
+],
+  "settings": {
+    "files.associations": {
+      "iostream": "cpp",
+      "ostream": "cpp",
+      "array": "cpp",
+      "initializer_list": "cpp",
+      "utility": "cpp"
+    }
+  }
+}

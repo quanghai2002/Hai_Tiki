@@ -6,7 +6,7 @@
 
   .contentHeader {
     max-width: 1440px;
-    height: 80px;
+    // height: 80px;
     padding-left: 24px;
     padding-right: 24px;
     margin-right: auto;
@@ -169,9 +169,21 @@
         }
         .cart {
           padding: 8px 8px;
+          position: relative;
           & svg {
             width: 24px;
             height: 24px;
+          }
+          &::before {
+            content: '';
+            display: block;
+            position: absolute;
+            height: 20px;
+            position: absolute;
+            left: -12px;
+            border: 1px solid rgb(235, 235, 240);
+            top: 50%;
+            transform: translateY(-50%);
           }
         }
         & :global .MuiBadge-badge {
@@ -199,6 +211,9 @@
 }
 
 body {
+  & :global .ant-dropdown {
+    animation-duration: 0.1s !important;
+  }
   & :global .ant-dropdown-menu {
     padding: 10px 0px !important;
     box-shadow: rgba(0, 0, 0, 0.18) 0px 6px 12px 0px;

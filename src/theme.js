@@ -8,6 +8,10 @@ import Inter3 from '~/assets/fonts/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa25L7SUc.woff2
 
 // Create a theme instance.
 const theme = extendTheme({
+  // custom height header...
+  haitiki: {
+    heightHeader: '70px'
+  },
   // ---------------------------------------chế độ SÁNG => TỐI --------------------------
   colorSchemes: {
     // light mode => chế độ SÁNG
@@ -25,7 +29,9 @@ const theme = extendTheme({
           primary: 'rgb(39, 39, 42)',
           secondary: 'rgb(128, 128, 137)',
           primary2: 'rgb(36, 36, 36)',
-          primary3: 'rgb(56, 56, 61)'
+          primary3: 'rgb(56, 56, 61)',
+          primary4: 'rgb(39, 39, 42)', // màu chữ cho drop down thanh header 
+          primary5: 'rgb(0 0 0 / 54%)' // màu chữ các icon trong drop down thanh header 
 
         },
 
@@ -61,7 +67,9 @@ const theme = extendTheme({
           primary: 'rgb(255, 255, 255)',
           secondary: 'rgb(255, 255, 255)',
           primary2: 'rgb(255, 255, 255)',
-          primary3: 'rgb(255, 255, 255);'
+          primary3: 'rgb(255, 255, 255);',
+          primary4: 'rgb(38, 166, 154)',// màu chữ cho drop down thanh header => user
+          primary5: 'rgb(38, 166, 154)' // màu chữ các icon trong dropdown thanh header 
         },
         // background trang web => chế độ Tối
         background: {

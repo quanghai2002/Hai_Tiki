@@ -13,12 +13,8 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import Badge from '@mui/material/Badge';
-import Tooltip from '@mui/material/Tooltip';
 import { Dropdown } from 'antd';
-import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 
@@ -41,14 +37,25 @@ function Header(props) {
       {
         key: '1',
         label: (
-          <Box className={clsx(style.wrapMenuDropDownUser)} title="Thông tin tài khoản">
+          <Box
+            className={clsx(style.wrapMenuDropDownUser)}
+            title="Thông tin tài khoản"
+            sx={{
+              '& .MuiListItemIcon-root': {
+                color: (theme) => theme?.palette?.text?.primary5,
+              },
+            }}
+            onClick={() => {
+              console.log('thông tin tài khoản');
+            }}
+          >
             <ListItemIcon className={clsx(style.icon)}>
               <Settings fontSize="small" />
             </ListItemIcon>
             <Typography
               className={clsx(style.text)}
               color={(theme) => {
-                return theme?.palette?.text?.primary;
+                return theme?.palette?.text?.primary4;
               }}
             >
               Thông tin tài khoản
@@ -59,14 +66,25 @@ function Header(props) {
       {
         key: '2',
         label: (
-          <Box className={clsx(style.wrapMenuDropDownUser)} title="Đơn hàng của tôi">
+          <Box
+            className={clsx(style.wrapMenuDropDownUser)}
+            title="Đơn hàng của tôi"
+            sx={{
+              '& .MuiListItemIcon-root': {
+                color: (theme) => theme?.palette?.text?.primary5,
+              },
+            }}
+            onClick={() => {
+              console.log('đơn hàng của tôi');
+            }}
+          >
             <ListItemIcon className={clsx(style.icon)}>
               <AddShoppingCartIcon fontSize="small" />
             </ListItemIcon>
             <Typography
               className={clsx(style.text)}
               color={(theme) => {
-                return theme?.palette?.text?.primary;
+                return theme?.palette?.text?.primary4;
               }}
             >
               Đơn hàng của tôi
@@ -77,14 +95,25 @@ function Header(props) {
       {
         key: '3',
         label: (
-          <Box className={clsx(style.wrapMenuDropDownUser)} title="Đăng xuất">
+          <Box
+            className={clsx(style.wrapMenuDropDownUser)}
+            title="Đăng xuất"
+            sx={{
+              '& .MuiListItemIcon-root': {
+                color: (theme) => theme?.palette?.text?.primary5,
+              },
+            }}
+            onClick={() => {
+              console.log('đăng xuất');
+            }}
+          >
             <ListItemIcon className={clsx(style.icon)}>
               <Logout fontSize="small" />
             </ListItemIcon>
             <Typography
               className={clsx(style.text)}
               color={(theme) => {
-                return theme?.palette?.text?.primary;
+                return theme?.palette?.text?.primary4;
               }}
             >
               Đăng xuất
@@ -97,7 +126,12 @@ function Header(props) {
 
   return (
     <Box className={clsx(style.wrapHeader)} backgroundColor={(theme) => theme?.palette?.background?.header}>
-      <Box className={clsx(style.contentHeader)}>
+      <Box
+        className={clsx(style.contentHeader)}
+        sx={{
+          height: (theme) => theme?.haitiki?.heightHeader,
+        }}
+      >
         {/* Logo web Hải Tiki */}
         <Box className={clsx(style.logo)}>
           <Link to="/" className={clsx(style.logoLink)}>
@@ -131,7 +165,6 @@ function Header(props) {
           {/* các nút action */}
           <Box className={clsx(style.wrapActions)}>
             {/* action về trang chủ */}
-
             <Box
               className={clsx(style.action, style.backHome)}
               sx={{
@@ -166,7 +199,7 @@ function Header(props) {
                 menu={{
                   items,
                 }}
-                open
+                // open
                 // arrow
                 // disabled
                 // placement="bottom"
