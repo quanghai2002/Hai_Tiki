@@ -7,13 +7,5 @@
 		"path": ".."
 	}
 ],
-  "settings": {
-    "files.associations": {
-      "iostream": "cpp",
-      "ostream": "cpp",
-      "array": "cpp",
-      "initializer_list": "cpp",
-      "utility": "cpp"
-    }
-  }
+  "settings": {}
 }

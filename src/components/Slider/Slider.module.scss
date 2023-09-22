@@ -1,0 +1,123 @@
+.wrapSlider {
+  height: 280px !important;
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s linear;
+  &:hover :global .custom-prev-arrow {
+    background-color: rgba(0, 0, 0, 0.65) !important;
+    border: 1px solid rgba(241, 230, 230, 0.3);
+  }
+  &:hover :global .custom-next-arrow {
+    background-color: rgba(0, 0, 0, 0.65) !important;
+    border: 1px solid rgba(241, 230, 230, 0.3);
+  }
+
+  .wrapIamge {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    &:focus-visible {
+      outline: none !important;
+    }
+    .img {
+      width: 100%;
+      height: 280px;
+      object-fit: contain;
+    }
+  }
+
+  & :global .slick-arrow {
+    z-index: 10;
+  }
+
+  & :global .slick-prev {
+    left: 0;
+    &::before {
+      font-size: 32px;
+    }
+  }
+
+  & :global .slick-next {
+    right: 0;
+    &::before {
+      font-size: 32px;
+    }
+  }
+
+  & :global .custom-prev-arrow {
+    position: absolute;
+    z-index: 10;
+    color: rgb(243, 237, 237);
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+    background-color: rgba(138, 138, 138, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    border-radius: 50%;
+    svg {
+      width: 1.8rem;
+      height: 1.8rem;
+      position: relative;
+      left: -1px;
+    }
+  }
+
+  & :global .custom-next-arrow {
+    position: absolute;
+    z-index: 10;
+    color: rgb(243, 237, 237);
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    background-color: rgba(138, 138, 138, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    border-radius: 50%;
+    svg {
+      width: 1.8rem;
+      height: 1.8rem;
+      position: relative;
+    }
+  }
+
+  & :global .slick-dots {
+    position: absolute;
+    bottom: 10px;
+    & li button::before {
+      font-size: 9px;
+    }
+
+    & li button:hover::before {
+      color: rgb(255, 66, 78);
+    }
+
+    & li.slick-active button::before {
+      color: rgb(10, 104, 255);
+    }
+  }
+
+  & :global .slick-slider {
+    height: 100%;
+  }
+}
+// banner
+.wrapBanner {
+  height: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  &:hover .bannerImage {
+    opacity: 0.95;
+  }
+  .bannerImage {
+    width: 100%;
+    height: 100%;
+  }
+}

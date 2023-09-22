@@ -28,11 +28,15 @@ body {
   font-family: 'Inter', 'sans-serif';
   font-size: 1.6rem;
 }
-
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: 'Inter var', sans-serif;
+  }
+}
 :root {
   // font-family: 'IBM Plex Sans', sans-serif;
   // font-family: 'Roboto', sans-serif;
-  --fontFamily: 'Inter';
+  --fontFamily: 'Inter', sans-serif;
   --backgroundApp: '#f5f5fa';
 }
 

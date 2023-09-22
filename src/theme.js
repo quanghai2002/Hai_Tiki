@@ -31,7 +31,9 @@ const theme = extendTheme({
           primary2: 'rgb(36, 36, 36)',
           primary3: 'rgb(56, 56, 61)',
           primary4: 'rgb(39, 39, 42)', // màu chữ cho drop down thanh header 
-          primary5: 'rgb(0 0 0 / 54%)' // màu chữ các icon trong drop down thanh header 
+          primary5: 'rgb(0 0 0 / 54%)', // màu chữ các icon trong drop down thanh header 
+          primary6: 'rgb(128, 128, 137)',
+          primary7: 'rgb(10, 104, 255)',
 
         },
 
@@ -69,7 +71,9 @@ const theme = extendTheme({
           primary2: 'rgb(255, 255, 255)',
           primary3: 'rgb(255, 255, 255);',
           primary4: 'rgb(38, 166, 154)',// màu chữ cho drop down thanh header => user
-          primary5: 'rgb(38, 166, 154)' // màu chữ các icon trong dropdown thanh header 
+          primary5: 'rgb(38, 166, 154)', // màu chữ các icon trong dropdown thanh header 
+          primary6: 'rgb(38, 166, 154)',
+          primary7: 'rgb(38, 166, 154)',
         },
         // background trang web => chế độ Tối
         background: {
@@ -117,18 +121,18 @@ const theme = extendTheme({
           unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
         },
          @font-face {
-          font-family: 'Inter2';
+          font-family: 'Inter';
           font-style: normal;
           font-display: swap;
-          font-weight: 400;
+          font-weight: 500;
           src: local('Raleway'), local('Raleway-Regular'), url(${Inter2}) format('woff2');
           unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
         },
         @font-face {
-          font-family: 'Inter3';
+          font-family: 'Inter';
           font-style: normal;
           font-display: swap;
-          // font-weight: 400;
+          // font-weight: 600;
           src: local('Raleway'), local('Raleway-Regular'), url(${Inter3}) format('woff2');
           unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
         }

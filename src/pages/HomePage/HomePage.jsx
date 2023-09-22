@@ -13,6 +13,7 @@ const Header = lazy(() => import('~/components/Header'));
 const Slider = lazy(() => import('~/components/Slider'));
 const Footer = lazy(() => import('~/components/Footer'));
 const AppBar = lazy(() => import('~/components/AppBar'));
+const Action = lazy(() => import('~/components/Action'));
 
 // propTypes
 HomePage.propTypes = {};
@@ -42,21 +43,15 @@ function HomePage(props) {
             <AppBar />
           </Grid>
 
-          <Grid container xs={4} sm={4} md={9} lg={9.9}>
-            {/*slider  */}
+          <Grid container rowSpacing={2} xs={4} sm={4} md={9} lg={9.9}>
+            {/*slider show and banner  */}
             <Grid lg={12}>
               <Slider />
             </Grid>
 
-            {/* các actions */}
+            {/* các actions => thể hiện độ tin cậy, uy tín khi mua hàng */}
             <Grid lg={12}>
-              <Item
-                sx={{
-                  marginTop: '10px',
-                }}
-              >
-                Đây là các actions
-              </Item>
+              <Action />
             </Grid>
 
             {/* content nội dung điện thoại */}
