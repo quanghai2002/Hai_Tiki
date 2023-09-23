@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import style from './AppBar.module.scss';
 import { clsx } from 'clsx';
@@ -7,9 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ContentCut from '@mui/icons-material/ContentCut';
 
 import appBarIconPhone from '~/assets/images/appBarPhone.png.webp';
 import appBarIconAo from '~/assets/images/appBarAo.png.webp';

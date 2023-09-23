@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Logo from '~/assets/images/haiLoGoTiki2.png';
 import { Link } from 'react-router-dom';
-import { Input, Space } from 'antd';
+import { Input } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';

@@ -8,6 +8,8 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
+import { FloatButton } from 'antd';
+import NavigationIcon from '@mui/icons-material/Navigation';
 
 const Header = lazy(() => import('~/components/Header'));
 const Slider = lazy(() => import('~/components/Slider'));
@@ -36,7 +38,12 @@ function HomePage(props) {
       <Header />
 
       {/* content */}
-      <Box className={clsx(style.wrapContent)}>
+      <Box
+        className={clsx(style.wrapContent)}
+        sx={{
+          paddingTop: '102px',
+        }}
+      >
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
           {/* app bar */}
           <Grid xs={4} sm={4} md={3} lg={2.1}>
@@ -93,17 +100,14 @@ function HomePage(props) {
 
             {/* footer */}
             <Grid lg={12}>
-              <Item
-                sx={{
-                  marginTop: '10px',
-                }}
-              >
-                <Footer />
-              </Item>
+              <Footer />
             </Grid>
           </Grid>
         </Grid>
       </Box>
+
+      {/* back to top */}
+      <FloatButton.BackTop duration={450} visibilityHeight={60} className={clsx(style.backTop)} />
     </Box>
   );
 }

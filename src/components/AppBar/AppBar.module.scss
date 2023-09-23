@@ -2,6 +2,8 @@
 .wrapAppBar {
   padding: 4px 4px 4px 0;
   background-color: #fff;
+  border-radius: 8px;
+  position: fixed;
 }
 .appBar {
   background-color: rgb(255, 255, 255);
@@ -45,5 +47,8 @@
         padding-left: 8px;
       }
     }
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
   }
 }

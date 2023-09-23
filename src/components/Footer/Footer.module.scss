@@ -1,0 +1,93 @@
+.wrapFooter {
+  margin-top: 16px;
+  padding: 1.6rem;
+  background-color: white;
+  .footer {
+    .textHeader {
+      font-size: 1.6rem;
+      line-height: 24px;
+      font-weight: 500;
+      color: rgb(56, 56, 61);
+      margin-bottom: 12px;
+      user-select: none;
+    }
+    .text {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: rgb(128, 128, 137);
+      user-select: none;
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+    .link {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgb(56, 56, 61);
+      text-decoration: none;
+    }
+
+    .verify {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .img {
+        cursor: pointer;
+        height: 32px;
+        object-fit: contain;
+      }
+    }
+    .payMent {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 13px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+    svg {
+      cursor: pointer;
+    }
+    .social {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 6px;
+
+      .link {
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  .downLoad {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .qrCode {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    .downloadStore {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      .img {
+        height: 36px;
+        object-fit: contain;
+        cursor: pointer;
+      }
+    }
+  }
+}
