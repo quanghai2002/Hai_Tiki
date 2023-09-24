@@ -1,0 +1,26 @@
+.wrapContent {
+  max-width: 1440px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 16px;
+  // height: 100vh;
+  padding-top: 102px;
+
+  // React Phone Slick
+
+  .wrapPhoneSlick {
+  }
+
+  // Phone Description
+
+  // Buy Phone
+}
+
+// backTop
+.backTop {
+  & :global .ant-float-btn-icon {
+    color: rgb(10, 104, 255) !important;
+  }
+}

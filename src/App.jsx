@@ -22,6 +22,7 @@ const HomePage = lazy(() => import('~/pages/HomePage'));
 const SearchPhone = lazy(() => import('~/pages/SearchPhone'));
 const NotFound = lazy(() => import('~/pages/404NotFound'));
 const Info = lazy(() => import('~/pages/Info'));
+const PhoneDetails = lazy(() => import('~/pages/PhoneDetails'));
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
     >
       {/* react router DOM */}
       <Routes>
+        {/* home page */}
         <Route
           path="/"
           element={
@@ -42,6 +44,7 @@ function App() {
             </Suspense>
           }
         ></Route>
+        {/* page search */}
         <Route
           path="/search"
           element={
@@ -50,6 +53,7 @@ function App() {
             </Suspense>
           }
         ></Route>
+        {/* page Info */}
         <Route
           path="/info"
           element={
@@ -58,6 +62,17 @@ function App() {
             </Suspense>
           }
         ></Route>
+        {/* page Phone details */}
+        <Route
+          path="/phonedetails/:id"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <PhoneDetails />
+            </Suspense>
+          }
+        ></Route>
+
+        {/* page not found */}
         <Route
           path="*"
           element={
