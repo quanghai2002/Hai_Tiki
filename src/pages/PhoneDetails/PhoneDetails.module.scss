@@ -9,13 +9,419 @@
   padding-top: 102px;
 
   // React Phone Slick
-
+  .listDotsImage {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    img {
+      width: 47px;
+      height: 54px;
+      object-fit: contain;
+    }
+  }
   .wrapPhoneSlick {
+    position: sticky;
+    top: 102px;
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+
+    .slider {
+      & :global .slick-list {
+        border: 1px solid rgb(235, 235, 240);
+        border-radius: 8px;
+        &:hover {
+          cursor: pointer;
+        }
+        &:focus-visible {
+          outline: none;
+        }
+        // overflow: hidden;
+
+        & .slick-slide {
+          width: 357px;
+          height: 357px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &:focus-visible {
+            outline: none !important;
+          }
+          & div {
+            &:focus-visible {
+              outline: none !important;
+            }
+          }
+        }
+      }
+
+      & :global .slick-dots {
+        position: relative;
+        padding-bottom: 22px;
+
+        & li {
+          width: 54px;
+          height: 54px;
+          overflow: hidden;
+          border-radius: 4px;
+          border: 1px solid rgb(235, 235, 240);
+          &:hover {
+            opacity: 0.8;
+          }
+
+          &.slick-active {
+            border: 2px solid rgb(10, 104, 255);
+            overflow: hidden;
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
+      }
+      .img {
+        width: 357px !important;
+        height: 357px;
+        object-fit: contain;
+        &:focus-visible {
+          outline: none;
+        }
+      }
+    }
   }
 
   // Phone Description
+  .container {
+    .wrapPhoneDescription {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+
+      .wrapInfo {
+        .header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          .icon {
+            width: 89px;
+            height: 20px;
+            object-fit: contain;
+          }
+          .wrapText {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            user-select: none;
+            .text {
+              font-size: 1.4rem;
+              font-weight: 400;
+              line-height: 20px;
+            }
+
+            .text2 {
+              flex: 1;
+              max-width: 100%;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 1;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              word-break: break-word;
+            }
+          }
+        }
+
+        .namePhone {
+          margin-top: 6px;
+          font-size: 20px;
+          font-weight: 500;
+          line-height: 150%;
+          word-break: break-word;
+          white-space: break-spaces;
+          user-select: none;
+        }
+
+        .wrapRating {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          .text {
+            font-size: 1.4rem;
+            font-weight: 400;
+            line-height: 20px;
+            user-select: none;
+          }
+          .ratingPhone {
+            font-size: 1.6rem;
+            position: relative;
+            top: -1.3px;
+          }
+        }
+        .wrapPrice {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          padding: 10px 0;
+          user-select: none;
+          gap: 8px;
+          .price {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            position: relative;
+            padding: 3px 0px 3px 0;
+
+            .number {
+              font-size: 2.5rem;
+              font-weight: 600;
+              line-height: 150%;
+              word-break: break-word;
+            }
+            .vnd {
+              font-size: 1.8rem;
+              font-weight: 600;
+              line-height: 150%;
+              position: relative;
+              right: -1px;
+              top: -8px;
+            }
+          }
+          .promotion {
+            font-weight: 410;
+            font-size: 12px;
+            line-height: 150%;
+            padding: 2px 6px;
+            background: rgb(245, 245, 250);
+            border-radius: 20px;
+          }
+        }
+      }
+      .wrapOption {
+        .text {
+          font-size: 1.4rem;
+          font-style: normal;
+          font-weight: 600;
+          margin: 0px;
+          padding-right: 20px;
+          margin-bottom: 1.2rem;
+        }
+
+        .wrapContentOption {
+          display: flex;
+          align-items: center;
+          .content {
+            display: flex;
+            align-items: center;
+            // border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 2px solid rgb(10, 104, 255);
+            border-radius: 8px;
+            padding: 4px 16px 4px 4px;
+            gap: 8px;
+            position: relative;
+            .img {
+              width: 42px;
+              height: 42px;
+              object-fit: contain;
+            }
+            .text {
+              font-size: 1.4rem;
+              font-style: normal;
+              font-weight: 500;
+              line-height: 150%;
+              margin-bottom: 0;
+              padding-right: 10px;
+              word-break: break-word;
+              user-select: none;
+            }
+            .iconCheck {
+              width: 13px;
+              height: 13px;
+              object-fit: contain;
+              position: absolute;
+              top: -1px;
+              right: -1px;
+            }
+          }
+        }
+      }
+    }
+
+    // wrapDetailsPhone
+    .wrapDetailsPhone {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+      margin-top: 16px;
+
+      .header {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 150%;
+        margin-bottom: 8px;
+        user-select: none;
+      }
+
+      .content {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        .text {
+          flex: 1;
+          font-size: 1.4rem;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 150%;
+          user-select: none;
+          word-break: break-word;
+        }
+        .text2 {
+          font-weight: 500;
+        }
+      }
+    }
+  }
 
   // Buy Phone
+  .wrapBuyPhone {
+    position: sticky;
+    top: 102px;
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+
+    .wrapHeader {
+      display: flex;
+      align-items: center;
+      user-select: none;
+      gap: 8px;
+      margin-bottom: 16px;
+      .img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+      .text {
+        flex: 1;
+        font-size: 1.6rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+      }
+    }
+
+    .wrapContents {
+      .label {
+        font-size: 1.5rem;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%;
+        user-select: none;
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+
+      .wrapQuantity {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        user-select: none;
+
+        .text {
+          font-size: 1.6rem;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 150%;
+        }
+
+        .text2 {
+          font-weight: 500;
+          flex: 1;
+          word-break: break-word;
+        }
+      }
+
+      .quantity {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        .btn {
+          min-width: 32px;
+          width: 40px;
+          border-radius: 6px;
+          svg {
+            width: 20px;
+            height: 20px;
+          }
+        }
+        .input {
+          width: 68px;
+          & :global .ant-input-number-handler-wrap {
+            display: none;
+          }
+          & :global .ant-input-number-input {
+            text-align: center;
+          }
+        }
+      }
+      .sumPrice {
+        padding-top: 10px;
+        .label {
+          font-size: 1.6rem;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 150%;
+          user-select: none;
+        }
+
+        .wrapNumber {
+          display: flex;
+          align-items: center;
+          padding-bottom: 16px;
+          .text {
+            user-select: none;
+            font-size: 2.4rem;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 150%;
+            word-break: break-word;
+          }
+          .text2 {
+            font-size: 1.8rem;
+            position: relative;
+            top: -7px;
+            right: -1px;
+          }
+        }
+      }
+
+      .wrapActionBuy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-self: center;
+        gap: 8px;
+        .btn {
+          padding: 8px;
+          font-size: 1.6rem;
+        }
+
+        .btnBuy {
+        }
+        .btnCard {
+        }
+      }
+    }
+  }
 }
 
 // backTop

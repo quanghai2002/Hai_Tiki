@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { FloatButton } from 'antd';
-
 const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
 

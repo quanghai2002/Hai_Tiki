@@ -34,7 +34,8 @@ const theme = extendTheme({
           primary5: 'rgb(0 0 0 / 54%)', // màu chữ các icon trong drop down thanh header 
           primary6: 'rgb(128, 128, 137)',
           primary7: 'rgb(10, 104, 255)',
-
+          primary8: 'rgba(0, 0, 0, 0.26)', // MUI button disabled  color  
+          primary9: 'rgba(0, 0, 0, 0.12)', // border Mui disabled
         },
 
         // background trang web => chế độ sáng
@@ -74,6 +75,8 @@ const theme = extendTheme({
           primary5: 'rgb(38, 166, 154)', // màu chữ các icon trong dropdown thanh header 
           primary6: 'rgb(38, 166, 154)',
           primary7: 'rgb(38, 166, 154)',
+          primary8: 'rgb(204 228 226) !important', // MUI button disabled  color  
+          primary9: 'rgb(204 228 226) !important', // border Mui disabled
         },
         // background trang web => chế độ Tối
         background: {
