@@ -23,6 +23,7 @@ const SearchPhone = lazy(() => import('~/pages/SearchPhone'));
 const NotFound = lazy(() => import('~/pages/404NotFound'));
 const Info = lazy(() => import('~/pages/Info'));
 const PhoneDetails = lazy(() => import('~/pages/PhoneDetails'));
+const CardPhone = lazy(() => import('~/pages/CardPhone'));
 
 function App() {
   return (
@@ -68,6 +69,16 @@ function App() {
           element={
             <Suspense fallback={<LinearProgress />}>
               <PhoneDetails />
+            </Suspense>
+          }
+        ></Route>
+
+        {/* card Phone => page giỏ hàng */}
+        <Route
+          path="/card"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <CardPhone />
             </Suspense>
           }
         ></Route>

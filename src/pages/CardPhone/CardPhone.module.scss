@@ -1,0 +1,259 @@
+.wrapCardPhone {
+  max-width: 1270px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  // height: 100vh;
+  padding-top: 102px;
+
+  // headerCard
+  .headerCard {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0px;
+    line-height: 28px;
+    text-transform: uppercase;
+    margin: 6px 0 10px;
+    user-select: none;
+  }
+
+  //   wrapStepCard
+  .wrapStepCard {
+    background: white;
+    border-radius: 4px;
+    padding: 8px 15px;
+    min-height: 68px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    & :global .ant-steps-icon {
+      position: relative !important;
+      top: 5.5px !important;
+      right: 0;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .icon {
+      color: rgb(201, 222, 255);
+    }
+
+    & :global .ant-steps-item-icon {
+      margin-right: 0;
+    }
+
+    & :global .ant-steps-item-title {
+      &::after {
+        width: 427px;
+        height: 6px;
+        left: 0;
+        border-radius: 100px;
+        background: rgb(219, 238, 255) !important;
+        transition: width 0.5s ease-in 0s;
+      }
+    }
+
+    // keyframes
+
+    & :global .ant-steps-item-finish {
+      & .ant-steps-item-title {
+        &::after {
+          background: rgb(0, 171, 86) !important;
+          width: 427px;
+          transition: width 0.5s ease-in 0s;
+        }
+      }
+      & .ant-steps-icon {
+        svg {
+          color: rgb(0, 171, 86) !important;
+        }
+      }
+
+      & .wrapIcon1Step-Card {
+        &::after {
+          display: none !important;
+        }
+      }
+    }
+
+    & :global .ant-steps-item-active {
+      & .ant-steps-icon {
+        svg {
+          color: rgb(0, 171, 86) !important;
+        }
+      }
+
+      & .wrapIcon2Step-Card {
+        &::after {
+          color: rgb(0, 171, 86);
+        }
+      }
+      //
+      & .wrapIcon1Step-Card {
+        &::after {
+          color: rgb(0, 171, 86);
+        }
+      }
+    }
+
+    & :global .ant-steps-item {
+      padding-inline-start: 0 !important;
+      overflow: unset !important;
+      position: relative;
+    }
+
+    //
+    & :global .ant-steps {
+      position: relative;
+    }
+
+    .label2 {
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 500;
+      background: none;
+      color: rgb(56, 56, 61);
+      user-select: none;
+    }
+    .label0 {
+      position: absolute;
+      top: 48px;
+      left: 16px;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 500;
+      background: none;
+      color: rgb(56, 56, 61);
+      user-select: none;
+    }
+    .label3 {
+      position: absolute;
+      top: 48px;
+      right: 16px;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 500;
+      background: none;
+      color: rgb(56, 56, 61);
+      user-select: none;
+    }
+  }
+  // wrapActionCard
+  .wrapActionCard {
+    background: white;
+    border-radius: 4px;
+    padding: 8px 15px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+    display: grid;
+    grid-template-columns: 398px 190px 130px 130px 30px;
+    -webkit-box-align: center;
+    align-items: center;
+
+    .wrapChecked {
+      flex: 1.7;
+      .checked {
+        font-size: 1.4rem;
+        line-height: 20px;
+        align-items: center;
+        user-select: none;
+
+        & :global .ant-checkbox {
+          position: relative;
+          top: 2px;
+        }
+
+        & :global .ant-checkbox-inner {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+
+    .unitPrice {
+      flex: 0.9;
+      font-weight: 410;
+      font-size: 1.3rem;
+      user-select: none;
+    }
+
+    .quantity {
+      flex: 0.6;
+      font-weight: 410;
+      font-size: 1.3rem;
+      user-select: none;
+    }
+
+    .intoMoney {
+      flex: 0.6;
+      font-weight: 410;
+      font-size: 1.3rem;
+      user-select: none;
+    }
+
+    .removeIcon {
+      flex: 0.1;
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      user-select: none;
+    }
+  }
+
+  // wrapListAllCard
+  .wrapListAllCard {
+    background: white;
+    border-radius: 4px;
+    padding: 8px 15px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+  }
+
+  // wrapAddressCard
+  .wrapAddressCard {
+    background: white;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+  }
+
+  // wrapSumPriceCard
+  .wrapSumPriceCard {
+    background: white;
+    border-radius: 4px;
+    padding: 17px 20px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+  }
+
+  //wrapBtnBuyPhone
+  .wrapBtnBuyPhone {
+    background: white;
+    border-radius: 4px;
+    padding: 17px 20px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+  }
+}
+
+// backTop
+.backTop {
+  & :global .ant-float-btn-icon {
+    color: rgb(10, 104, 255) !important;
+  }
+}
+
+// tooltip antd
+body {
+  & :global .ant-tooltip-arrow {
+    &::before {
+      bottom: -1px !important;
+    }
+  }
+}
