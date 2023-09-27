@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import style from './CardPhone.module.scss';
 import clsx from 'clsx';
-import { memo, lazy, useState } from 'react';
+import { memo, lazy, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -11,10 +11,17 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Button from '@mui/material/Button';
 import { Checkbox } from 'antd';
 import { Tooltip } from 'antd';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { InputNumber } from 'antd';
+import { Affix } from 'antd';
+import Divider from '@mui/material/Divider';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
+import iconNow from '~/assets/images/iconNow.png';
 const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
+const OneCard = lazy(() => import('./OneCard.jsx'));
 
 // prop types
 CardPhone.propTypes = {};
@@ -25,7 +32,7 @@ function CardPhone(props) {
 
   // action checked
   const CheckboxGroup = Checkbox.Group;
-  const plainOptions = ['1', '2', '3'];
+  const plainOptions = ['1'];
   const defaultCheckedList = ['1'];
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const checkAll = plainOptions.length === checkedList.length;
@@ -36,6 +43,57 @@ function CardPhone(props) {
   const onCheckAllChange = (e) => {
     setCheckedList(e.target.checked ? plainOptions : []);
   };
+
+  // text list card => để render => giỏ các sản phẩm trong giỏ hàng
+  const listCardTest = [
+    {
+      id: '1',
+      name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
+      price: 100000,
+      quantity: 8,
+    },
+    {
+      id: '2',
+      name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
+      price: 5000,
+      quantity: 16,
+    },
+    {
+      id: '3',
+      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+      price: 2000,
+      quantity: 3,
+    },
+    {
+      id: '4',
+      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+      price: 2000,
+      quantity: 3,
+    },
+    {
+      id: '5',
+      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+      price: 2000,
+      quantity: 3,
+    },
+    {
+      id: '6',
+      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+      price: 2000,
+      quantity: 3,
+    },
+  ];
+
+  // kiểm tra xem tổng giá trị đơn hàng để check xem có được freeship không
+  const [sumPriceCard, setSumPriceCard] = useState(0);
+
+  // console.log({ sumPriceCard });
   return (
     <Box>
       {/* header and navigation */}
@@ -131,11 +189,17 @@ function CardPhone(props) {
                   </Checkbox>
                 </Box>
                 {/* đơn giá =>unitPrice */}
-                <Typography className={clsx(style.unitPrice)}>Đơn giá</Typography>
+                <Typography className={clsx(style.unitPrice)} color={(theme) => theme?.palette?.text?.primary4}>
+                  Đơn giá
+                </Typography>
                 {/* số lượng */}
-                <Typography className={clsx(style.quantity)}>Số lượng</Typography>
+                <Typography className={clsx(style.quantity)} color={(theme) => theme?.palette?.text?.primary4}>
+                  Số lượng
+                </Typography>
                 {/* thành tiền => into money */}
-                <Typography className={clsx(style.intoMoney)}>Thành tiền</Typography>
+                <Typography className={clsx(style.intoMoney)} color={(theme) => theme?.palette?.text?.primary4}>
+                  Thành tiền
+                </Typography>
                 {/* remove => icon */}
                 <Tooltip title="Xóa mục đã chọn" placement="bottom" mouseEnterDelay={0}>
                   <Box
@@ -154,36 +218,108 @@ function CardPhone(props) {
 
             {/* contents list => card*/}
             <Grid lg={12}>
-              <Box className={clsx(style.wrapListAllCard)}>
-                {/*test các checked */}
-                <CheckboxGroup options={plainOptions} value={checkedList} onChange={onChange} />
-                <Typography>Đây là nội dung của các đơn hàng</Typography>
+              <Box className={clsx(style.wrapContentListCard)}>
+                {listCardTest?.map((phone) => {
+                  return (
+                    <OneCard
+                      key={phone?.id}
+                      detailsPhone={phone}
+                      sumPriceCard={sumPriceCard}
+                      setSumPriceCard={setSumPriceCard}
+                    />
+                  );
+                })}
               </Box>
             </Grid>
           </Grid>
 
           {/* wrap details price phone*/}
           <Grid container lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
-            {/* address địa chỉ => giao hàng */}
-            <Grid lg={12}>
-              <Box className={clsx(style.wrapAddressCard)}>
-                <Typography>đây là địa chỉ giao hàng</Typography>
-              </Box>
-            </Grid>
+            <Box>
+              {/* address địa chỉ => giao hàng */}
+              <Grid lg={12}>
+                <Box className={clsx(style.wrapAddressCard)}>
+                  <Box className={clsx(style.col1)}>
+                    <Typography
+                      className={clsx(style.text, style.text1)}
+                      color={(theme) => theme?.palette?.text?.primary6}
+                    >
+                      Giao tới
+                    </Typography>
+                    <Typography className={clsx(style.text, style.text2)}>Thay đổi</Typography>
+                  </Box>
+                  <Box className={clsx(style.col2)}>
+                    <Typography
+                      className={clsx(style.text, style.text1)}
+                      color={(theme) => theme?.palette?.text?.primary4}
+                    >
+                      quang hai
+                    </Typography>
+                    <i className={clsx(style.i)}></i>
+                    <Typography
+                      className={clsx(style.text, style.text2)}
+                      color={(theme) => theme?.palette?.text?.primary4}
+                    >
+                      0968107500
+                    </Typography>
+                  </Box>
+                  <Box className={clsx(style.col3)}>
+                    <Typography
+                      className={clsx(style.text, style.text2)}
+                      color={(theme) => theme?.palette?.text?.primary6}
+                    >
+                      <span className={clsx(style.text1)}>Nhà</span> số nhà 5, ngõ 122 Phố Đông Thiên, Phường Vĩnh Hưng,
+                      Quận Hoàng Mai, Hà Nội
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
 
-            {/* sum price => tổng giá trị đơn hàng */}
-            <Grid lg={12}>
-              <Box className={clsx(style.wrapSumPriceCard)}>
-                <Typography>đây là nơi tính tổng giá trị đơn hàng</Typography>
-              </Box>
-            </Grid>
+              {/* sum price => tổng giá trị đơn hàng */}
+              <Grid lg={12}>
+                <Box className={clsx(style.wrapSumPriceCard)}>
+                  <Box className={clsx(style.header)}>
+                    <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
+                      Tạm tính
+                    </Typography>
+                    <Box className={clsx(style.price)}>
+                      <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
+                        1.000.000
+                      </Typography>
+                      <Typography className={clsx(style.vnd)} color={(theme) => theme?.palette?.text?.primary4}>
+                        đ
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Divider
+                    sx={{
+                      borderColor: (theme) => theme?.palette?.text?.primary6,
+                    }}
+                  />
+                  <Box className={clsx(style.content)}>
+                    <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
+                      Tổng tiền
+                    </Typography>
+                    <Box className={clsx(style.wrapFooter)}>
+                      <Box className={clsx(style.col1)}>
+                        <Typography className={clsx(style.text1)}>1.000.000</Typography>
+                        <Typography className={clsx(style.text2)}>đ</Typography>
+                      </Box>
+                      <Typography className={clsx(style.vat)} color={(theme) => theme?.palette?.text?.primary6}>
+                        (Đã bao gồm VAT nếu có)
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
 
-            {/* btn buy card => nút mua sản phẩm*/}
-            <Grid lg={12}>
-              <Box className={clsx(style.wrapBtnBuyPhone)}>
-                <Typography>Btn mua sản phẩm</Typography>
-              </Box>
-            </Grid>
+              {/* btn buy card => nút mua sản phẩm*/}
+              <Grid lg={12}>
+                <Button className={clsx(style.btnBuyPhone)} variant="contained" color="secondary">
+                  Mua hàng
+                </Button>
+              </Grid>
+            </Box>
           </Grid>
 
           {/* footer */}

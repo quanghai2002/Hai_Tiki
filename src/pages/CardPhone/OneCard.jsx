@@ -1,26 +1,36 @@
 import PropTypes from 'prop-types';
-import style from '../PhoneDetails.module.scss';
+import style from './CardPhone.module.scss';
 import clsx from 'clsx';
 import { memo, lazy, useState, useEffect } from 'react';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { Checkbox } from 'antd';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { InputNumber } from 'antd';
 
-// propTypes
-BuyPhone.propTypes = {};
+import removeIcon from '~/assets/images/removeIcon.svg';
+import iconNow from '~/assets/images/iconNow.png';
 
-function BuyPhone(props) {
+OneCard.propTypes = {
+  detailsPhone: PropTypes.object.isRequired,
+  sumPriceCard: PropTypes.number,
+  setSumPriceCard: PropTypes.func,
+};
+
+function OneCard({ detailsPhone, sumPriceCard, setSumPriceCard }) {
+  // xử lý khi click tăng hoặc giảm số lượng sản phẩm
+  // khi chọn tăng hoặc giảm số lượn sản phẩm
+
   // số lượng sản phẩm trong kho
-  const [quantityPhone, setQuanityPhone] = useState(13);
+  const [quantityPhone, setQuanityPhone] = useState(detailsPhone?.quantity);
 
   // giá mặc định của 1 sản phẩm =>ban đầu
-  const pricePhone = 19999999;
+  const pricePhone = detailsPhone?.price;
+  const pricePhoneFormatDefault = pricePhone.toLocaleString('vi-VN');
   // pricePhone để render ra màn hình
   const [newPricePhone, setNewPricePhone] = useState(pricePhone);
-  // console.log({ newPricePhone });
   // chuyển từ number => sang string => render
   const formatPricePhone = newPricePhone.toLocaleString('vi-VN');
 
@@ -73,36 +83,37 @@ function BuyPhone(props) {
     setNewPricePhone(newPrice);
   }, [value]);
 
-  //contents
+  //
   return (
-    <Box className={clsx(style.wrapBuyPhone)}>
-      {/* header */}
-      <Box className={clsx(style.wrapHeader)}>
-        <img
-          src="https://salt.tikicdn.com/cache/368x368/ts/product/b1/fd/00/37fe3895ebef076d2f62e59136c6699e.jpg.webp"
-          alt="anh"
-          className={clsx(style.img)}
-        />
-        <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-          Xanh lam
+    <Box className={clsx(style.wrapListAllCard)}>
+      {/* info phone */}
+      <Box className={clsx(style.wrapInfo)}>
+        <Checkbox className={clsx(style.checkBox)} />
+        <img className={clsx(style.img)} src={detailsPhone?.url} alt="anh" />
+        <Box className={clsx(style.contents)}>
+          <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+            {detailsPhone?.name}
+          </Typography>
+          <Box className={clsx(style.wrapIcon)}>
+            <img src={iconNow} alt="iconNow" className={clsx(style.icon)} />
+            <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+              Giao siêu tốc 3h
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+      {/* đơn giá, unit price */}
+      <Box className={clsx(style.wrapUnitPrice)}>
+        <Typography className={clsx(style.number)} color={(theme) => theme?.palette?.text?.primary4}>
+          {pricePhoneFormatDefault}
+        </Typography>
+        <Typography className={clsx(style.vnd)} color={(theme) => theme?.palette?.text?.primary4}>
+          ₫
         </Typography>
       </Box>
 
-      {/* content */}
-      <Box className={clsx(style.wrapContents)}>
-        <Box className={clsx(style.wrapQuantity)}>
-          <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-            Kho:
-          </Typography>
-          <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            {quantityPhone}
-          </Typography>
-        </Box>
-        <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
-          Số lượng
-        </Typography>
-        {/* quantity */}
-
+      {/* chọn số lượng sản phẩm => quantity */}
+      <Box className={clsx(style.wrapQuantityAll)}>
         <Box
           className={clsx(style.quantity)}
           sx={{
@@ -139,32 +150,32 @@ function BuyPhone(props) {
           </Button>
         </Box>
 
-        {/* sum price */}
-        <Box className={clsx(style.sumPrice)}>
-          <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
-            Tạm tính
+        <Box className={clsx(style.wrapQuantity)}>
+          <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+            Kho:
           </Typography>
-          <Box className={clsx(style.wrapNumber)}>
-            <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-              {formatPricePhone}
-            </Typography>
-            <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-              ₫
-            </Typography>
-          </Box>
+          <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
+            {quantityPhone}
+          </Typography>
         </Box>
-        {/* action buy phone */}
-        <Box className={clsx(style.wrapActionBuy)}>
-          <Button variant="contained" className={clsx(style.btn, style.btnBuy)} color="secondary">
-            Mua Ngay
-          </Button>
-          <Button variant="outlined" className={clsx(style.btn, style.btnCard)}>
-            Thêm vào giỏ
-          </Button>
-        </Box>
+      </Box>
+
+      {/* tổng tiền sản phẩm */}
+      <Box className={clsx(style.wrapSumPrice)}>
+        <Typography className={clsx(style.text)} color="secondary">
+          {formatPricePhone}
+        </Typography>
+        <Typography className={clsx(style.vnd)} color="secondary">
+          ₫
+        </Typography>
+      </Box>
+
+      {/* btn remove */}
+      <Box className={clsx(style.wrapRemove)}>
+        <img src={removeIcon} alt="icon remove" className={clsx(style.icon)} />
       </Box>
     </Box>
   );
 }
 
-export default memo(BuyPhone);
+export default memo(OneCard);
