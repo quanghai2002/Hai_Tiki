@@ -17,6 +17,7 @@ import { InputNumber } from 'antd';
 import { Affix } from 'antd';
 import Divider from '@mui/material/Divider';
 import { Table } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
 import iconNow from '~/assets/images/iconNow.png';
@@ -54,22 +55,24 @@ const listCardTest = [
 
 function CardPhone(props) {
   // trạng thái của thanh tiến trình => process => khi chọn mua hàng
-  const [valueProcessStep, setvalueProcessStep] = useState(1);
+  const [valueProcessStep, setvalueProcessStep] = useState(0);
+  // console.log({ valueProcessStep });
 
   // action checked => kiểm tra xem trạng thái của checkaAll tất cả sản phẩm
   const [checkAll, setCheckAll] = useState(false);
   const [listID, setListId] = useState([]);
   const [listChecked, setListChecked] = useState([]);
 
+  // console.log('listID', listID);
+
   const [listCheckedBox, setListCheckedBox] = useState([]);
 
+  // khi click vào nút check all sản phẩm
   const handleCheckAll = () => {
     setCheckAll((prev) => {
-      if (prev === false) {
-        setListCheckedBox([]);
-      }
       return !prev;
     });
+    setListCheckedBox([]);
   };
 
   // nếu như các nút check bên trong => bằng tổng số đơn hàng => setCheckAll => Bằng True
@@ -82,10 +85,26 @@ function CardPhone(props) {
   }, [listChecked]);
 
   // kiểm tra xem tổng giá trị đơn hàng để check xem có được freeship không
-  const [sumPriceCard, setSumPriceCard] = useState(0);
-  // console.log(sumPriceCard);
+  const [sumPriceCard, setSumPriceCard] = useState([]);
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    // console.log('sumPriceCard', sumPriceCard);
+    const newTotal = sumPriceCard?.reduce((total, item) => {
+      return total + item?.newSumPrice;
+    }, 0);
+    // console.log('newTotal', newTotal);
+    setTotal(newTotal);
 
-  // console.log({ sumPriceCard });
+    // set các step bước nhảy
+    if (newTotal >= 149000 && newTotal < 299000) {
+      setvalueProcessStep(1);
+    } else if (newTotal >= 299000) {
+      setvalueProcessStep(2);
+    } else {
+      setvalueProcessStep(0);
+    }
+  }, [sumPriceCard]);
+
   return (
     <Box>
       {/* header and navigation */}
@@ -174,27 +193,24 @@ function CardPhone(props) {
             {/* header => action => list card */}
             <Grid lg={12}>
               <Box className={clsx(style.wrapActionCard)}>
-                {/* check box all */}
                 <Box className={clsx(style.wrapChecked)}>
                   <Checkbox className={clsx(style.checked)} checked={checkAll} onChange={handleCheckAll}>
                     Tất cả ({listCardTest?.length} sản phẩm)
                   </Checkbox>
                 </Box>
-                {/* đơn giá */}
+
                 <Typography className={clsx(style.unitPrice)} color={(theme) => theme?.palette?.text?.primary4}>
                   Đơn giá
                 </Typography>
 
-                {/* số lượng */}
                 <Typography className={clsx(style.quantity)} color={(theme) => theme?.palette?.text?.primary4}>
                   Số lượng
                 </Typography>
 
-                {/* thành tiền */}
                 <Typography className={clsx(style.intoMoney)} color={(theme) => theme?.palette?.text?.primary4}>
                   Thành tiền
                 </Typography>
-                {/* xóa tất cả */}
+
                 <Tooltip title="Xóa mục đã chọn" placement="bottom" mouseEnterDelay={0}>
                   <Box
                     sx={{
@@ -287,7 +303,7 @@ function CardPhone(props) {
                     </Typography>
                     <Box className={clsx(style.price)}>
                       <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
-                        1.000.000
+                        {total.toLocaleString('vi-VN')}
                       </Typography>
                       <Typography className={clsx(style.vnd)} color={(theme) => theme?.palette?.text?.primary4}>
                         đ
@@ -305,7 +321,7 @@ function CardPhone(props) {
                     </Typography>
                     <Box className={clsx(style.wrapFooter)}>
                       <Box className={clsx(style.col1)}>
-                        <Typography className={clsx(style.text1)}>1.000.000</Typography>
+                        <Typography className={clsx(style.text1)}> {total.toLocaleString('vi-VN')}</Typography>
                         <Typography className={clsx(style.text2)}>đ</Typography>
                       </Box>
                       <Typography className={clsx(style.vat)} color={(theme) => theme?.palette?.text?.primary6}>

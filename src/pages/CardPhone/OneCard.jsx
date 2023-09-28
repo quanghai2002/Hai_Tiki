@@ -19,10 +19,13 @@ OneCard.propTypes = {
   setCheckAll: PropTypes.func,
   setListId: PropTypes.func,
   listID: PropTypes.array,
+  listChecked: PropTypes.array,
   setListChecked: PropTypes.func,
   listCardTest: PropTypes.array,
   listCheckedBox: PropTypes.array,
   setListCheckedBox: PropTypes.func,
+  sumPriceCard: PropTypes.array,
+  setSumPriceCard: PropTypes.func,
 };
 
 function OneCard({
@@ -31,10 +34,13 @@ function OneCard({
   setCheckAll,
   setListId,
   listID,
+  listChecked,
   setListChecked,
   listCardTest,
   listCheckedBox,
   setListCheckedBox,
+  sumPriceCard,
+  setSumPriceCard,
 }) {
   // xử lý khi click tăng hoặc giảm số lượng sản phẩm
   // khi chọn tăng hoặc giảm số lượn sản phẩm
@@ -102,12 +108,18 @@ function OneCard({
     setNewPricePhone(newPrice);
   }, [value]);
 
+  /* --------------------------------------------------------------------------------------------------- */
   // XỬ LÝ KHI CLICK VÀO CÁC NÚT CHECK BOX
+  const [checkGetSumPrice, setGetCheckSumPrice] = useState(false);
   //  handleCheckBox
+
+  // lưu giá trị check box hiện tại
 
   const handleCheckBox = (e) => {
     const productId = detailsPhone?.id;
+    setCheckAll(false);
 
+    setGetCheckSumPrice(e?.target?.checked);
     // danh sách các check box đã chọn
     // nếu như check bằng false thì xóa đi 1 phần tử trong list đó
     if (e?.target?.checked === false) {
@@ -135,11 +147,6 @@ function OneCard({
         return [...prev, productId];
       });
     }
-
-    // // Kiểm tra nếu tất cả checkbox con đã được chọn
-    // const allSelected = listCheckedBox?.length === listCardTest?.length;
-    // // // Cập nhật trạng thái của nút "Chọn tất cả"
-    // setCheckAll(allSelected);
   };
 
   // get list id => danh sách sản phẩm
@@ -157,9 +164,58 @@ function OneCard({
     }
   }, [checkAll]);
 
-  //
-  // console.log('checkAll', checkAll);
-  // console.log('listCheckedBox', listCheckedBox);
+  // get sum price
+  // Lấy tổng giá trị của từng đơn hàng
+  useEffect(() => {
+    const newSumPrice = newPricePhone;
+
+    if (checkGetSumPrice) {
+      // if (sumPriceCard?.length < listCardTest?.length) {
+
+      setSumPriceCard((prev) => {
+        //
+        const test = {
+          id: detailsPhone?.id,
+          newSumPrice,
+        };
+        const indexs = prev?.findIndex((item) => {
+          return item.id === detailsPhone?.id;
+        });
+
+        // console.log('index', indexs);
+        if (indexs !== -1) {
+          let new1 = {
+            id: prev[indexs]?.id,
+            newSumPrice,
+          };
+          // const oldPrice = [([...prev][indexs] = new1)];
+          const oldPrice = prev?.splice(indexs, 1, new1);
+          // console.log('old Sum Price:', prev);
+          // return [(prev[indexs] = new1)];
+          return [...prev];
+        } else {
+          setSumPriceCard([...prev, test]);
+          // return [...prev, test];
+        }
+      });
+      // }
+      // setSumPriceCard((prev) => {
+      //   return [...prev, newSumPrice];
+      // });
+      // Cập nhật lại sumPriceCard với updatedSumPriceCard
+      // setSumPriceCard(updatedSumPriceCard);
+    } else {
+      setSumPriceCard((prev) => {
+        // console.log('giá trị false', prev);
+        // console.log('id false:', detailsPhone?.id);
+
+        return prev?.filter((item) => {
+          return item?.id !== detailsPhone?.id;
+        });
+      });
+    }
+    // console.log('sumPriceCard', sumPriceCard);
+  }, [checkGetSumPrice, newPricePhone]);
 
   //
   return (
