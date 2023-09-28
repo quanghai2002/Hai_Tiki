@@ -16,6 +16,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { InputNumber } from 'antd';
 import { Affix } from 'antd';
 import Divider from '@mui/material/Divider';
+import { Table } from 'antd';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
 import iconNow from '~/assets/images/iconNow.png';
@@ -26,72 +27,63 @@ const OneCard = lazy(() => import('./OneCard.jsx'));
 // prop types
 CardPhone.propTypes = {};
 
+// text list card => để render => giỏ các sản phẩm trong giỏ hàng
+const listCardTest = [
+  {
+    id: '1',
+    name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
+    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
+    price: 100000,
+    quantity: 8,
+  },
+  {
+    id: '2',
+    name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
+    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
+    price: 5000,
+    quantity: 16,
+  },
+  {
+    id: '3',
+    name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+    price: 2000,
+    quantity: 3,
+  },
+];
+
 function CardPhone(props) {
   // trạng thái của thanh tiến trình => process => khi chọn mua hàng
   const [valueProcessStep, setvalueProcessStep] = useState(1);
 
-  // action checked
-  const CheckboxGroup = Checkbox.Group;
-  const plainOptions = ['1'];
-  const defaultCheckedList = ['1'];
-  const [checkedList, setCheckedList] = useState(defaultCheckedList);
-  const checkAll = plainOptions.length === checkedList.length;
+  // action checked => kiểm tra xem trạng thái của checkaAll tất cả sản phẩm
+  const [checkAll, setCheckAll] = useState(false);
+  const [listID, setListId] = useState([]);
+  const [listChecked, setListChecked] = useState([]);
 
-  const onChange = (list) => {
-    setCheckedList(list);
-  };
-  const onCheckAllChange = (e) => {
-    setCheckedList(e.target.checked ? plainOptions : []);
+  const [listCheckedBox, setListCheckedBox] = useState([]);
+
+  const handleCheckAll = () => {
+    setCheckAll((prev) => {
+      if (prev === false) {
+        setListCheckedBox([]);
+      }
+      return !prev;
+    });
   };
 
-  // text list card => để render => giỏ các sản phẩm trong giỏ hàng
-  const listCardTest = [
-    {
-      id: '1',
-      name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
-      price: 100000,
-      quantity: 8,
-    },
-    {
-      id: '2',
-      name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
-      price: 5000,
-      quantity: 16,
-    },
-    {
-      id: '3',
-      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-      price: 2000,
-      quantity: 3,
-    },
-    {
-      id: '4',
-      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-      price: 2000,
-      quantity: 3,
-    },
-    {
-      id: '5',
-      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-      price: 2000,
-      quantity: 3,
-    },
-    {
-      id: '6',
-      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-      price: 2000,
-      quantity: 3,
-    },
-  ];
+  // nếu như các nút check bên trong => bằng tổng số đơn hàng => setCheckAll => Bằng True
+  useEffect(() => {
+    if (listCardTest?.length === listChecked?.length) {
+      setCheckAll(true);
+    } else {
+      setCheckAll(false);
+    }
+  }, [listChecked]);
 
   // kiểm tra xem tổng giá trị đơn hàng để check xem có được freeship không
   const [sumPriceCard, setSumPriceCard] = useState(0);
+  // console.log(sumPriceCard);
 
   // console.log({ sumPriceCard });
   return (
@@ -182,25 +174,27 @@ function CardPhone(props) {
             {/* header => action => list card */}
             <Grid lg={12}>
               <Box className={clsx(style.wrapActionCard)}>
-                {/* checked */}
+                {/* check box all */}
                 <Box className={clsx(style.wrapChecked)}>
-                  <Checkbox onChange={onCheckAllChange} checked={checkAll} className={clsx(style.checked)}>
-                    Tất cả (17 sản phẩm)
+                  <Checkbox className={clsx(style.checked)} checked={checkAll} onChange={handleCheckAll}>
+                    Tất cả ({listCardTest?.length} sản phẩm)
                   </Checkbox>
                 </Box>
-                {/* đơn giá =>unitPrice */}
+                {/* đơn giá */}
                 <Typography className={clsx(style.unitPrice)} color={(theme) => theme?.palette?.text?.primary4}>
                   Đơn giá
                 </Typography>
+
                 {/* số lượng */}
                 <Typography className={clsx(style.quantity)} color={(theme) => theme?.palette?.text?.primary4}>
                   Số lượng
                 </Typography>
-                {/* thành tiền => into money */}
+
+                {/* thành tiền */}
                 <Typography className={clsx(style.intoMoney)} color={(theme) => theme?.palette?.text?.primary4}>
                   Thành tiền
                 </Typography>
-                {/* remove => icon */}
+                {/* xóa tất cả */}
                 <Tooltip title="Xóa mục đã chọn" placement="bottom" mouseEnterDelay={0}>
                   <Box
                     sx={{
@@ -226,6 +220,15 @@ function CardPhone(props) {
                       detailsPhone={phone}
                       sumPriceCard={sumPriceCard}
                       setSumPriceCard={setSumPriceCard}
+                      checkAll={checkAll}
+                      setCheckAll={setCheckAll}
+                      setListId={setListId}
+                      listID={listID}
+                      listChecked={listChecked}
+                      setListChecked={setListChecked}
+                      listCardTest={listCardTest}
+                      listCheckedBox={listCheckedBox}
+                      setListCheckedBox={setListCheckedBox}
                     />
                   );
                 })}

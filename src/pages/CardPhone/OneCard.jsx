@@ -15,22 +15,40 @@ import iconNow from '~/assets/images/iconNow.png';
 
 OneCard.propTypes = {
   detailsPhone: PropTypes.object.isRequired,
-  sumPriceCard: PropTypes.number,
-  setSumPriceCard: PropTypes.func,
+  checkAll: PropTypes.bool,
+  setCheckAll: PropTypes.func,
+  setListId: PropTypes.func,
+  listID: PropTypes.array,
+  setListChecked: PropTypes.func,
+  listCardTest: PropTypes.array,
+  listCheckedBox: PropTypes.array,
+  setListCheckedBox: PropTypes.func,
 };
 
-function OneCard({ detailsPhone, sumPriceCard, setSumPriceCard }) {
+function OneCard({
+  detailsPhone,
+  checkAll,
+  setCheckAll,
+  setListId,
+  listID,
+  setListChecked,
+  listCardTest,
+  listCheckedBox,
+  setListCheckedBox,
+}) {
   // xử lý khi click tăng hoặc giảm số lượng sản phẩm
   // khi chọn tăng hoặc giảm số lượn sản phẩm
 
-  // số lượng sản phẩm trong kho
+  // số lượng sản phẩm trong còn trong kho kho
   const [quantityPhone, setQuanityPhone] = useState(detailsPhone?.quantity);
 
   // giá mặc định của 1 sản phẩm =>ban đầu
   const pricePhone = detailsPhone?.price;
   const pricePhoneFormatDefault = pricePhone.toLocaleString('vi-VN');
+
   // pricePhone để render ra màn hình
   const [newPricePhone, setNewPricePhone] = useState(pricePhone);
+
   // chuyển từ number => sang string => render
   const formatPricePhone = newPricePhone.toLocaleString('vi-VN');
 
@@ -80,15 +98,81 @@ function OneCard({ detailsPhone, sumPriceCard, setSumPriceCard }) {
   // thay đổi lại giá điện thoại => sau khi đã chọn số lượng sản phẩm
   useEffect(() => {
     const newPrice = Number.parseFloat(pricePhone) * Number.parseInt(value);
+    //
     setNewPricePhone(newPrice);
   }, [value]);
+
+  // XỬ LÝ KHI CLICK VÀO CÁC NÚT CHECK BOX
+  //  handleCheckBox
+
+  const handleCheckBox = (e) => {
+    const productId = detailsPhone?.id;
+
+    // danh sách các check box đã chọn
+    // nếu như check bằng false thì xóa đi 1 phần tử trong list đó
+    if (e?.target?.checked === false) {
+      setListChecked((prev) => {
+        return prev.slice(0, prev?.length - 1);
+      });
+
+      // Xóa ID khỏi danh sách
+      const index = listCheckedBox.indexOf(productId);
+      if (index !== -1) {
+        listCheckedBox.splice(index, 1);
+        setListCheckedBox(listCheckedBox);
+      }
+    }
+
+    // nếu khi click mà là true => thêm 1 true đó vào danh sách
+    else {
+      setListChecked((prev) => {
+        return [...prev, e?.target?.checked];
+      });
+
+      // Nếu checkbox con đã được chọn
+      // Thêm ID vào danh sách
+      setListCheckedBox((prev) => {
+        return [...prev, productId];
+      });
+    }
+
+    // // Kiểm tra nếu tất cả checkbox con đã được chọn
+    // const allSelected = listCheckedBox?.length === listCardTest?.length;
+    // // // Cập nhật trạng thái của nút "Chọn tất cả"
+    // setCheckAll(allSelected);
+  };
+
+  // get list id => danh sách sản phẩm
+  useEffect(() => {
+    if (checkAll) {
+      setListId((prevIds) => {
+        return [...prevIds, detailsPhone?.id];
+      });
+    } else {
+      setListId((prevIds) => {
+        return prevIds.filter((id) => {
+          return id !== detailsPhone?.id;
+        });
+      });
+    }
+  }, [checkAll]);
+
+  //
+  // console.log('checkAll', checkAll);
+  // console.log('listCheckedBox', listCheckedBox);
 
   //
   return (
     <Box className={clsx(style.wrapListAllCard)}>
       {/* info phone */}
       <Box className={clsx(style.wrapInfo)}>
-        <Checkbox className={clsx(style.checkBox)} />
+        {/* check box */}
+        <Checkbox
+          className={clsx(style.checkBox)}
+          checked={checkAll || listCheckedBox.includes(detailsPhone?.id)}
+          onChange={handleCheckBox}
+        />
+
         <img className={clsx(style.img)} src={detailsPhone?.url} alt="anh" />
         <Box className={clsx(style.contents)}>
           <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
@@ -171,7 +255,12 @@ function OneCard({ detailsPhone, sumPriceCard, setSumPriceCard }) {
       </Box>
 
       {/* btn remove */}
-      <Box className={clsx(style.wrapRemove)}>
+      <Box
+        className={clsx(style.wrapRemove)}
+        onClick={() => {
+          console.log('id sản phẩm:', detailsPhone?.id);
+        }}
+      >
         <img src={removeIcon} alt="icon remove" className={clsx(style.icon)} />
       </Box>
     </Box>
