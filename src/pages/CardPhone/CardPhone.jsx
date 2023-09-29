@@ -11,16 +11,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Button from '@mui/material/Button';
 import { Checkbox } from 'antd';
 import { Tooltip } from 'antd';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import { InputNumber } from 'antd';
-import { Affix } from 'antd';
 import Divider from '@mui/material/Divider';
-import { Table } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
-import iconNow from '~/assets/images/iconNow.png';
 const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
 const OneCard = lazy(() => import('./OneCard.jsx'));
@@ -49,6 +42,13 @@ const listCardTest = [
     name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
     url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
     price: 2000,
+    quantity: 3,
+  },
+  {
+    id: '4',
+    name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+    price: 10000,
     quantity: 3,
   },
 ];
@@ -84,11 +84,17 @@ function CardPhone(props) {
     }
   }, [listChecked]);
 
+  /* -------------------------------- TỔNG GIÁ TRỊ ĐƠN HÀNG------------------   */
+
+  // TỔNG giá trị đơn hàng => khi click chọn tất cả
+  const [listSumPriceCheckAll, setListSumPriceCheckAll] = useState([]);
+  // console.log('listSumPriceCheckAll', listSumPriceCheckAll);
+
   // kiểm tra xem tổng giá trị đơn hàng để check xem có được freeship không
   const [sumPriceCard, setSumPriceCard] = useState([]);
   const [total, setTotal] = useState(0);
   useEffect(() => {
-    // console.log('sumPriceCard', sumPriceCard);
+    console.log('sumPriceCard', sumPriceCard);
     const newTotal = sumPriceCard?.reduce((total, item) => {
       return total + item?.newSumPrice;
     }, 0);
@@ -120,9 +126,17 @@ function CardPhone(props) {
 
           {/* wrap list card => danh sách đơn hàng trong => giỏ hàng */}
           <Grid container lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
-            {/* các bước step=> mua hàng */}
+            {/* contents list => card*/}
             <Grid lg={12}>
-              <Box className={clsx(style.wrapStepCard)}>
+              {/* step các các mức fresship */}
+              <Box
+                className={clsx(style.wrapStepCard)}
+                sx={{
+                  '&::before': {
+                    backgroundColor: (theme) => theme?.palette?.background?.default,
+                  },
+                }}
+              >
                 <Steps
                   current={valueProcessStep}
                   items={[
@@ -188,11 +202,19 @@ function CardPhone(props) {
                 <Typography className={clsx(style.label2)}>149K</Typography>
                 <Typography className={clsx(style.label3)}>299K</Typography>
               </Box>
-            </Grid>
 
-            {/* header => action => list card */}
-            <Grid lg={12}>
-              <Box className={clsx(style.wrapActionCard)}>
+              {/* các hành động khi chọn => tất cả sản phẩm */}
+              <Box
+                className={clsx(style.wrapActionCard)}
+                sx={{
+                  '&::before': {
+                    backgroundColor: (theme) => theme?.palette?.background?.default,
+                  },
+                  '&::after': {
+                    backgroundColor: (theme) => theme?.palette?.background?.default,
+                  },
+                }}
+              >
                 <Box className={clsx(style.wrapChecked)}>
                   <Checkbox className={clsx(style.checked)} checked={checkAll} onChange={handleCheckAll}>
                     Tất cả ({listCardTest?.length} sản phẩm)
@@ -224,10 +246,8 @@ function CardPhone(props) {
                   </Box>
                 </Tooltip>
               </Box>
-            </Grid>
 
-            {/* contents list => card*/}
-            <Grid lg={12}>
+              {/* danh sách các sản phẩm trong giỏ hàng */}
               <Box className={clsx(style.wrapContentListCard)}>
                 {listCardTest?.map((phone) => {
                   return (
@@ -245,6 +265,8 @@ function CardPhone(props) {
                       listCardTest={listCardTest}
                       listCheckedBox={listCheckedBox}
                       setListCheckedBox={setListCheckedBox}
+                      listSumPriceCheckAll={listSumPriceCheckAll}
+                      setListSumPriceCheckAll={setListSumPriceCheckAll}
                     />
                   );
                 })}

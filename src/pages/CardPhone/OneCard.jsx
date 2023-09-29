@@ -26,6 +26,8 @@ OneCard.propTypes = {
   setListCheckedBox: PropTypes.func,
   sumPriceCard: PropTypes.array,
   setSumPriceCard: PropTypes.func,
+  listSumPriceCheckAll: PropTypes.array,
+  setListSumPriceCheckAll: PropTypes.func,
 };
 
 function OneCard({
@@ -41,7 +43,10 @@ function OneCard({
   setListCheckedBox,
   sumPriceCard,
   setSumPriceCard,
+  listSumPriceCheckAll,
+  setListSumPriceCheckAll,
 }) {
+  // ------------------------------------------------------------------------------
   // xử lý khi click tăng hoặc giảm số lượng sản phẩm
   // khi chọn tăng hoặc giảm số lượn sản phẩm
 
@@ -108,17 +113,18 @@ function OneCard({
     setNewPricePhone(newPrice);
   }, [value]);
 
+  // ----------------------------------------------------------------------------------------------------------------
   /* --------------------------------------------------------------------------------------------------- */
   // XỬ LÝ KHI CLICK VÀO CÁC NÚT CHECK BOX
   const [checkGetSumPrice, setGetCheckSumPrice] = useState(false);
   //  handleCheckBox
-
   // lưu giá trị check box hiện tại
 
   const handleCheckBox = (e) => {
     const productId = detailsPhone?.id;
     setCheckAll(false);
 
+    // set xem nó check vào nút check box con hay không => để tính tổng giá tiền cho đơn hàng
     setGetCheckSumPrice(e?.target?.checked);
     // danh sách các check box đã chọn
     // nếu như check bằng false thì xóa đi 1 phần tử trong list đó
@@ -135,21 +141,23 @@ function OneCard({
       }
     }
 
-    // nếu khi click mà là true => thêm 1 true đó vào danh sách
+    // nếu khi click mà là true => thêm 1 TRUE đó vào danh sách
     else {
       setListChecked((prev) => {
         return [...prev, e?.target?.checked];
       });
 
       // Nếu checkbox con đã được chọn
-      // Thêm ID vào danh sách
+      // Thêm ID vào danh sách =>
       setListCheckedBox((prev) => {
         return [...prev, productId];
       });
     }
   };
 
-  // get list id => danh sách sản phẩm
+  // get list id => danh sách sản phẩm =>  để lấy dánh sách id để xóa tất cả
+  // lưu id danh sách sản phẩm đã chọn
+
   useEffect(() => {
     if (checkAll) {
       setListId((prevIds) => {
@@ -164,60 +172,96 @@ function OneCard({
     }
   }, [checkAll]);
 
+  /* ------------------------------XỬ LÝ TÍNH TỔNG TIỀN CHO CẢ ĐƠN HÀNG ---------------------------------  */
   // get sum price
-  // Lấy tổng giá trị của từng đơn hàng
+  // Lấy tổng giá trị của từng đơn hàng khi CLIK Từng SẢN PHẨM
   useEffect(() => {
+    // giá của 1 sản phẩm hiện tại
     const newSumPrice = newPricePhone;
-
+    // nếu như khi click => chọn vào nút check box mới cho tính tổng tiền
     if (checkGetSumPrice) {
-      // if (sumPriceCard?.length < listCardTest?.length) {
-
       setSumPriceCard((prev) => {
-        //
-        const test = {
+        // giá sản phẩm của 1 đơn hàng + id sản phẩm đó
+        const newOrderCard = {
           id: detailsPhone?.id,
           newSumPrice,
         };
+        // tìm xem trong danh sách giá sản phẩm => có ID của đơn hàng đó chưa => tìm index
         const indexs = prev?.findIndex((item) => {
-          return item.id === detailsPhone?.id;
+          return item?.id === detailsPhone?.id;
         });
-
         // console.log('index', indexs);
+        // nếu !== -1 => tìm thấy id => sản phẩm đó đã tồn tại => thì chỉ CẬP NHẬT lại giá sản phẩm đó thôi, không thêm mới vào sumPriceCard
         if (indexs !== -1) {
+          // cập nhật lại giá sản phẩm mới
           let new1 = {
             id: prev[indexs]?.id,
             newSumPrice,
           };
-          // const oldPrice = [([...prev][indexs] = new1)];
-          const oldPrice = prev?.splice(indexs, 1, new1);
-          // console.log('old Sum Price:', prev);
-          // return [(prev[indexs] = new1)];
+          // CẬP NHẬT LẠI => GIÁ SẢN PHẨM VÀO ID ĐÓ
+          prev?.splice(indexs, 1, new1);
           return [...prev];
-        } else {
-          setSumPriceCard([...prev, test]);
-          // return [...prev, test];
+        }
+        // nếu không tìm thấy id sản phẩm đó => CHo Thêm mới vào
+        else {
+          setSumPriceCard([...prev, newOrderCard]);
         }
       });
-      // }
-      // setSumPriceCard((prev) => {
-      //   return [...prev, newSumPrice];
-      // });
-      // Cập nhật lại sumPriceCard với updatedSumPriceCard
-      // setSumPriceCard(updatedSumPriceCard);
-    } else {
+    }
+    // nếu click ngược lại => nút checkbox => FALSE => bỏ đi giá sản phẩm của đơn hàng đó
+    else {
       setSumPriceCard((prev) => {
         // console.log('giá trị false', prev);
         // console.log('id false:', detailsPhone?.id);
-
         return prev?.filter((item) => {
           return item?.id !== detailsPhone?.id;
         });
       });
     }
     // console.log('sumPriceCard', sumPriceCard);
-  }, [checkGetSumPrice, newPricePhone]);
+  }, [checkGetSumPrice, detailsPhone?.id, newPricePhone, setSumPriceCard]);
 
-  //
+  //  -----------------------------------------------------------------------------------------------------
+  /* -------- TÍNH TỔNG ĐƠN HÀNG => KHI CLICK CHỌN TẤT CẢ SẢN PHẨM ---------------------*/
+  useEffect(() => {
+    // nếu click vào nút checkAll => chọn tất cả
+    if (checkAll) {
+      // console.log('listID', listID);
+      const newSumPrice = newPricePhone;
+
+      // giá sản phẩm của 1 đơn hàng + id sản phẩm đó
+      const newOrderCard = {
+        id: detailsPhone?.id,
+        newSumPrice,
+      };
+
+      // lưu danh sách giá đơn hàng => khi click vào check all
+
+      setSumPriceCard((prev) => {
+        //  tìm id sản phẩm
+        const index = prev?.findIndex((item) => {
+          return item?.id === detailsPhone?.id;
+        });
+        //  tìm thấy sản phẩm cũ => cập nhật lại giá sản phẩm
+        if (index !== -1) {
+          prev?.splice(index, 1, {
+            id: detailsPhone?.id,
+            newSumPrice,
+          });
+
+          return [...prev];
+        } else {
+          // nếu không tìm thấy => cho thêm mới vào
+          return [...prev, newOrderCard];
+        }
+      });
+    } else {
+      // khi checkAll bằng false set => lại bằng []
+      setSumPriceCard([]);
+    }
+  }, [checkAll, detailsPhone?.id, newPricePhone, setSumPriceCard]);
+
+  // RENDER JSX
   return (
     <Box className={clsx(style.wrapListAllCard)}>
       {/* info phone */}

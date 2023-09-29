@@ -40,7 +40,7 @@ const theme = extendTheme({
 
         // background trang web => chế độ sáng
         background: {
-          default: '#f5f5fa',
+          default: '#f5f5fa !important',
           header: '#fff'
         },
 
@@ -80,7 +80,7 @@ const theme = extendTheme({
         },
         // background trang web => chế độ Tối
         background: {
-          default: '#000',
+          default: '#000 !important',
           header: '#2e2727',
           inputSearch: '#ccc'
         },
