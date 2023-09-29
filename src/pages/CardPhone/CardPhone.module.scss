@@ -244,6 +244,41 @@
       object-fit: contain;
       user-select: none;
     }
+    // alertDeleteAll
+    .alertDeleteAll {
+      position: fixed;
+      z-index: 99999;
+      width: 280px;
+      opacity: 0.95;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 50px;
+      animation: 0.4s ease-in-out 0s 1 normal none running eYQLHP;
+      min-width: 400px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      color: rgb(255, 255, 255);
+      background-color: rgba(0, 0, 0, 0.8);
+
+      & :global .ant-alert-message {
+        font-size: 1.5rem;
+        text-align: center;
+        user-select: none;
+      }
+    }
+
+    @keyframes eYQLHP {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    // wrapModal
+    .wrapModal {
+    }
   }
 
   // wrapListAllCard
@@ -592,6 +627,12 @@
           .text2 {
             color: rgb(254, 56, 52);
             font-size: 22px;
+            font-weight: 400;
+            text-align: right;
+          }
+          .text3 {
+            color: rgb(254, 56, 52);
+            font-size: 1.6rem;
             font-weight: 400;
             text-align: right;
           }

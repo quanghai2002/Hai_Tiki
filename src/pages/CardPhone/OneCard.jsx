@@ -46,7 +46,7 @@ function OneCard({
   listSumPriceCheckAll,
   setListSumPriceCheckAll,
 }) {
-  // ------------------------------------------------------------------------------
+  // ---------------------- TĂNG GIẢM SỐ LƯỢNG SẢN PHẨM--------------------------------------------------------
   // xử lý khi click tăng hoặc giảm số lượng sản phẩm
   // khi chọn tăng hoặc giảm số lượn sản phẩm
 
@@ -115,8 +115,10 @@ function OneCard({
 
   // ----------------------------------------------------------------------------------------------------------------
   /* --------------------------------------------------------------------------------------------------- */
-  // XỬ LÝ KHI CLICK VÀO CÁC NÚT CHECK BOX
+  //------------ XỬ LÝ KHI CLICK VÀO CÁC NÚT CHECK BOX ----------------------------------
   const [checkGetSumPrice, setGetCheckSumPrice] = useState(false);
+  // console.log('checkGetSumPrice', checkGetSumPrice);
+
   //  handleCheckBox
   // lưu giá trị check box hiện tại
 
@@ -155,6 +157,16 @@ function OneCard({
     }
   };
 
+  // =-----------------------===
+  useEffect(() => {
+    const productId = detailsPhone?.id;
+    if (checkAll) {
+      setListCheckedBox((prev) => {
+        return [...new Set([...prev, productId])];
+      });
+    }
+  }, [checkAll, detailsPhone?.id]);
+
   // get list id => danh sách sản phẩm =>  để lấy dánh sách id để xóa tất cả
   // lưu id danh sách sản phẩm đã chọn
 
@@ -170,41 +182,48 @@ function OneCard({
         });
       });
     }
-  }, [checkAll]);
+  }, [checkAll, detailsPhone?.id, setListId]);
 
   /* ------------------------------XỬ LÝ TÍNH TỔNG TIỀN CHO CẢ ĐƠN HÀNG ---------------------------------  */
   // get sum price
-  // Lấy tổng giá trị của từng đơn hàng khi CLIK Từng SẢN PHẨM
+  //------------------------------ Lấy tổng giá trị của từng đơn hàng khi Click Từng SẢN PHẨM-----------------------------
   useEffect(() => {
     // giá của 1 sản phẩm hiện tại
     const newSumPrice = newPricePhone;
     // nếu như khi click => chọn vào nút check box mới cho tính tổng tiền
+
     if (checkGetSumPrice) {
       setSumPriceCard((prev) => {
+        // console.log('có lọt vào set check box lại');
         // giá sản phẩm của 1 đơn hàng + id sản phẩm đó
         const newOrderCard = {
           id: detailsPhone?.id,
           newSumPrice,
         };
+
         // tìm xem trong danh sách giá sản phẩm => có ID của đơn hàng đó chưa => tìm index
         const indexs = prev?.findIndex((item) => {
           return item?.id === detailsPhone?.id;
         });
         // console.log('index', indexs);
         // nếu !== -1 => tìm thấy id => sản phẩm đó đã tồn tại => thì chỉ CẬP NHẬT lại giá sản phẩm đó thôi, không thêm mới vào sumPriceCard
-        if (indexs !== -1) {
+
+        // console.log('giá trị cũ', prev);
+        // console.log('indexs', indexs);
+        if (indexs !== -1 && prev?.length > 0) {
           // cập nhật lại giá sản phẩm mới
           let new1 = {
             id: prev[indexs]?.id,
             newSumPrice,
           };
+
           // CẬP NHẬT LẠI => GIÁ SẢN PHẨM VÀO ID ĐÓ
           prev?.splice(indexs, 1, new1);
           return [...prev];
         }
         // nếu không tìm thấy id sản phẩm đó => CHo Thêm mới vào
         else {
-          setSumPriceCard([...prev, newOrderCard]);
+          return [...prev, newOrderCard];
         }
       });
     }
@@ -219,10 +238,10 @@ function OneCard({
       });
     }
     // console.log('sumPriceCard', sumPriceCard);
-  }, [checkGetSumPrice, detailsPhone?.id, newPricePhone, setSumPriceCard]);
+  }, [checkAll, checkGetSumPrice, detailsPhone, newPricePhone]);
 
   //  -----------------------------------------------------------------------------------------------------
-  /* -------- TÍNH TỔNG ĐƠN HÀNG => KHI CLICK CHỌN TẤT CẢ SẢN PHẨM ---------------------*/
+  /* ---------------------------- TÍNH TỔNG ĐƠN HÀNG => KHI CLICK CHỌN TẤT CẢ SẢN PHẨM ---------------------*/
   useEffect(() => {
     // nếu click vào nút checkAll => chọn tất cả
     if (checkAll) {
@@ -237,7 +256,7 @@ function OneCard({
 
       // lưu danh sách giá đơn hàng => khi click vào check all
 
-      setSumPriceCard((prev) => {
+      setListSumPriceCheckAll((prev) => {
         //  tìm id sản phẩm
         const index = prev?.findIndex((item) => {
           return item?.id === detailsPhone?.id;
@@ -255,11 +274,77 @@ function OneCard({
           return [...prev, newOrderCard];
         }
       });
-    } else {
-      // khi checkAll bằng false set => lại bằng []
-      setSumPriceCard([]);
     }
-  }, [checkAll, detailsPhone?.id, newPricePhone, setSumPriceCard]);
+    // nếu không click vào nút checkAll => checkALL bằng false
+    else {
+      const newSumPrice = newPricePhone;
+      // thông tin giá => 1 sản phẩm
+      const newOrderCard = {
+        id: detailsPhone?.id,
+        newSumPrice,
+      };
+      // console.log('listCheckedBox', listCheckedBox);
+      // khi checkAll bằng false set => lại bằng []
+
+      setListSumPriceCheckAll((prev) => {
+        // console.log('giá trị cũ 1', prev);
+
+        // console.log('index', listCheckedBox);
+
+        const oldList = [...prev];
+        const index = oldList?.findIndex((item) => {
+          return item?.id === detailsPhone?.id;
+        });
+
+        if (index !== -1) {
+          oldList?.splice(index, 1, {
+            id: detailsPhone?.id,
+            newSumPrice,
+          });
+          // console.log('giá trị cập nhật', oldList);
+          return [...oldList];
+        } else {
+          // console.log('giá trị thêm mới', [...prev, newOrderCard]);
+          return [...prev];
+        }
+      });
+
+      // setSumPriceCard => cái này để hiển thị khi checkAll bằng false
+      setSumPriceCard((prev) => {
+        // console.log('id', listCheckedBox);
+        // console.log('có lọt lần 2');
+
+        // số phân tử được chọn => dựa vào check box
+        if (listCheckedBox?.length === 0) {
+          return [];
+        } else {
+          // tìm ra sản phẩm theo => số phần tử được chọn
+          const test2 = listSumPriceCheckAll?.filter((item) => {
+            return listCheckedBox?.includes(item?.id);
+          });
+
+          // tìm id sản phẩm => nếu sản phẩm đó click vào tăng hoặc giảm giá
+          const index = test2?.findIndex((item) => {
+            return item?.id === detailsPhone?.id;
+          });
+
+          // nếu tìm thấy id đã tồn tại => cập nhật lại giá sản phẩm đó => bằng giá mới nhất => set lại state
+          if (index !== -1) {
+            test2?.splice(index, 1, {
+              id: detailsPhone?.id,
+              newSumPrice,
+            });
+            // console.log('giá trị cập nhật', test2);
+            return [...test2];
+          } else {
+            // nếu không tìm thấy thêm mới bằng giá trị trước đó
+            // console.log('giá trị thêm mới', prev);
+            return [...prev];
+          }
+        }
+      });
+    }
+  }, [checkAll, checkGetSumPrice, newPricePhone, listCheckedBox?.length]);
 
   // RENDER JSX
   return (
@@ -269,7 +354,7 @@ function OneCard({
         {/* check box */}
         <Checkbox
           className={clsx(style.checkBox)}
-          checked={checkAll || listCheckedBox.includes(detailsPhone?.id)}
+          checked={listCheckedBox.includes(detailsPhone?.id)}
           onChange={handleCheckBox}
         />
 

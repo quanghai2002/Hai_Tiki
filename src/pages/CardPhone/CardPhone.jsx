@@ -5,15 +5,13 @@ import { memo, lazy, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-import { FloatButton } from 'antd';
-import { Steps } from 'antd';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Button from '@mui/material/Button';
-import { Checkbox } from 'antd';
-import { Tooltip } from 'antd';
+import { Checkbox, Alert, Tooltip, Modal, Steps, FloatButton } from 'antd';
 import Divider from '@mui/material/Divider';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
+import { WaringIconDelteAll } from '~/assets/iconSVG.jsx';
 const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
 const OneCard = lazy(() => import('./OneCard.jsx'));
@@ -21,39 +19,32 @@ const OneCard = lazy(() => import('./OneCard.jsx'));
 // prop types
 CardPhone.propTypes = {};
 
-// text list card => để render => giỏ các sản phẩm trong giỏ hàng
-const listCardTest = [
-  {
-    id: '1',
-    name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
-    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
-    price: 100000,
-    quantity: 8,
-  },
-  {
-    id: '2',
-    name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
-    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
-    price: 5000,
-    quantity: 16,
-  },
-  {
-    id: '3',
-    name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-    price: 2000,
-    quantity: 3,
-  },
-  {
-    id: '4',
-    name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-    url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-    price: 10000,
-    quantity: 3,
-  },
-];
-
 function CardPhone(props) {
+  // list card test
+  const [listCardTest, setListCardTest] = useState([
+    {
+      id: '1',
+      name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
+      price: 100000,
+      quantity: 8,
+    },
+    {
+      id: '2',
+      name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
+      price: 5000,
+      quantity: 16,
+    },
+    {
+      id: '3',
+      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+      price: 2000,
+      quantity: 3,
+    },
+  ]);
+  // text list card => để render => giỏ các sản phẩm trong giỏ hàng
   // trạng thái của thanh tiến trình => process => khi chọn mua hàng
   const [valueProcessStep, setvalueProcessStep] = useState(0);
   // console.log({ valueProcessStep });
@@ -63,26 +54,37 @@ function CardPhone(props) {
   const [listID, setListId] = useState([]);
   const [listChecked, setListChecked] = useState([]);
 
-  // console.log('listID', listID);
+  // State khi nào hiển thi alert cảnh báo phải chọn sản phẩm trước khi xóa Tất cả
+  const [isAlert, setAlert] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setAlert(false);
+    }, 6000);
 
-  const [listCheckedBox, setListCheckedBox] = useState([]);
+    // clear up function
+    () => {
+      clearTimeout(id);
+    };
+  }, [isAlert]);
 
-  // khi click vào nút check all sản phẩm
-  const handleCheckAll = () => {
-    setCheckAll((prev) => {
-      return !prev;
-    });
-    setListCheckedBox([]);
+  // ------------------MODAL HIỆN THỊ ---------------------
+  // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
+  const [isModal, setIsModal] = useState(false);
+
+  /*--------------DELETE ALL SẢN PHẨM CARD -------------------------------    */
+  //  click DETELE all sản phẩm
+  const handleClickDeleteAll = () => {
+    // nếu số chưa chọn sản phẩm nào => hiển thị thông alert => để biết
+    if (listID?.length === 0) {
+      setAlert(true);
+    } else {
+      setIsModal(true);
+      console.log('listID', listID);
+    }
   };
 
-  // nếu như các nút check bên trong => bằng tổng số đơn hàng => setCheckAll => Bằng True
-  useEffect(() => {
-    if (listCardTest?.length === listChecked?.length) {
-      setCheckAll(true);
-    } else {
-      setCheckAll(false);
-    }
-  }, [listChecked]);
+  const [listCheckedBox, setListCheckedBox] = useState([]);
+  // console.log('listCheckedBox:', listCheckedBox);
 
   /* -------------------------------- TỔNG GIÁ TRỊ ĐƠN HÀNG------------------   */
 
@@ -93,23 +95,66 @@ function CardPhone(props) {
   // kiểm tra xem tổng giá trị đơn hàng để check xem có được freeship không
   const [sumPriceCard, setSumPriceCard] = useState([]);
   const [total, setTotal] = useState(0);
-  useEffect(() => {
-    console.log('sumPriceCard', sumPriceCard);
-    const newTotal = sumPriceCard?.reduce((total, item) => {
-      return total + item?.newSumPrice;
-    }, 0);
-    // console.log('newTotal', newTotal);
-    setTotal(newTotal);
 
-    // set các step bước nhảy
-    if (newTotal >= 149000 && newTotal < 299000) {
-      setvalueProcessStep(1);
-    } else if (newTotal >= 299000) {
-      setvalueProcessStep(2);
+  /* ----------------CLICK CHECK ALL SẢN PHẨM-------------------  */
+  // khi click vào nút check all sản phẩm
+  const handleCheckAll = () => {
+    setCheckAll((prev) => {
+      return !prev;
+    });
+    setListCheckedBox([]);
+  };
+
+  /*  -------------CHECK ALL ---------------------------------- */
+  // nếu như các nút check bên trong => bằng tổng số đơn hàng => setCheckAll => Bằng True
+  useEffect(() => {
+    if (listCardTest?.length === listCheckedBox?.length) {
+      setCheckAll(true);
     } else {
-      setvalueProcessStep(0);
+      setCheckAll(false);
     }
-  }, [sumPriceCard]);
+  }, [listCheckedBox]);
+
+  //
+  useEffect(() => {
+    // nếu là checkAll sẽ lấy danh sách , giá sản phẩm là =>  listSumPriceCheckAll
+    if (checkAll) {
+      // setSumPriceCard();
+      // console.log('list A', listSumPriceCheckAll);
+
+      const newTotal = listSumPriceCheckAll?.reduce((total, item) => {
+        return total + item?.newSumPrice;
+      }, 0);
+      // console.log('newTotal', newTotal);
+      setTotal(newTotal);
+      // set các step bước nhảy
+      if (newTotal >= 149000 && newTotal < 299000) {
+        setvalueProcessStep(1);
+      } else if (newTotal >= 299000) {
+        setvalueProcessStep(2);
+      } else {
+        setvalueProcessStep(0);
+      }
+    }
+    // ngược lại => nếu checkAll bằng false => sẽ lấy danh sách giá sản phẩm khác sumPriceCard
+    else {
+      // console.log('List B', sumPriceCard);
+
+      const newTotal = sumPriceCard?.reduce((total, item) => {
+        return total + item?.newSumPrice;
+      }, 0);
+      // console.log('newTotal', newTotal);
+      setTotal(newTotal);
+      // set các step bước nhảy
+      if (newTotal >= 149000 && newTotal < 299000) {
+        setvalueProcessStep(1);
+      } else if (newTotal >= 299000) {
+        setvalueProcessStep(2);
+      } else {
+        setvalueProcessStep(0);
+      }
+    }
+  }, [sumPriceCard, checkAll, listSumPriceCheckAll]);
 
   return (
     <Box>
@@ -203,7 +248,7 @@ function CardPhone(props) {
                 <Typography className={clsx(style.label3)}>299K</Typography>
               </Box>
 
-              {/* các hành động khi chọn => tất cả sản phẩm */}
+              {/* các------------- ACTION----------- hành động khi chọn => tất cả sản phẩm */}
               <Box
                 className={clsx(style.wrapActionCard)}
                 sx={{
@@ -233,8 +278,20 @@ function CardPhone(props) {
                   Thành tiền
                 </Typography>
 
+                {/* Alert bật hộp thoại khi chưa có sản phẩm nào mà click vào nút xóa tất cả */}
+                {isAlert && (
+                  <Alert
+                    message="Vui lòng chọn sản phẩm để xóa"
+                    type="error"
+                    // showIcon
+                    className={clsx(style.alertDeleteAll)}
+                  />
+                )}
+
+                {/* button xóa */}
                 <Tooltip title="Xóa mục đã chọn" placement="bottom" mouseEnterDelay={0}>
                   <Box
+                    onClick={handleClickDeleteAll}
                     sx={{
                       display: 'flex',
                       justifyContent: 'center',
@@ -245,9 +302,27 @@ function CardPhone(props) {
                     <img src={removeIcon} alt="remove icon" className={clsx(style.removeIcon)} />
                   </Box>
                 </Tooltip>
+
+                {/* modal */}
+                <Modal
+                  title="Vertically centered modal dialog"
+                  centered
+                  open={isModal}
+                  onOk={() => setIsModal(false)}
+                  onCancel={() => setIsModal(false)}
+                  className={clsx(style.wrapModal)}
+                  okText="Xác nhận"
+                  cancelText="Hủy"
+                  icon={<WaringIconDelteAll />}
+                >
+                  <p>some contents...</p>
+                  <p>some contents...</p>
+                  <p>some contents...</p>
+                </Modal>
               </Box>
 
               {/* danh sách các sản phẩm trong giỏ hàng */}
+
               <Box className={clsx(style.wrapContentListCard)}>
                 {listCardTest?.map((phone) => {
                   return (
@@ -343,10 +418,20 @@ function CardPhone(props) {
                     </Typography>
                     <Box className={clsx(style.wrapFooter)}>
                       <Box className={clsx(style.col1)}>
-                        <Typography className={clsx(style.text1)}> {total.toLocaleString('vi-VN')}</Typography>
-                        <Typography className={clsx(style.text2)}>đ</Typography>
+                        {total > 0 ? (
+                          <>
+                            <Typography className={clsx(style.text1)}> {total.toLocaleString('vi-VN')}</Typography>
+                            <Typography className={clsx(style.text2)}>đ</Typography>
+                          </>
+                        ) : (
+                          <Typography className={clsx(style.text3)}> Vui lòng chọn sản phẩm</Typography>
+                        )}
                       </Box>
-                      <Typography className={clsx(style.vat)} color={(theme) => theme?.palette?.text?.primary6}>
+                      <Typography
+                        className={clsx(style.vat)}
+                        color={(theme) => theme?.palette?.text?.primary6}
+                        textAlign="right"
+                      >
                         (Đã bao gồm VAT nếu có)
                       </Typography>
                     </Box>
