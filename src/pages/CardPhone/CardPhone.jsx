@@ -15,6 +15,7 @@ import { WaringIconDelteAll } from '~/assets/iconSVG.jsx';
 const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
 const OneCard = lazy(() => import('./OneCard.jsx'));
+const AddressUser = lazy(() => import('./AddressUser.jsx'));
 
 // prop types
 CardPhone.propTypes = {};
@@ -44,6 +45,7 @@ function CardPhone(props) {
       quantity: 3,
     },
   ]);
+
   // text list card => để render => giỏ các sản phẩm trong giỏ hàng
   // trạng thái của thanh tiến trình => process => khi chọn mua hàng
   const [valueProcessStep, setvalueProcessStep] = useState(0);
@@ -53,6 +55,10 @@ function CardPhone(props) {
   const [checkAll, setCheckAll] = useState(false);
   const [listID, setListId] = useState([]);
   const [listChecked, setListChecked] = useState([]);
+
+  // lấy 1 ID sản phẩm để xóa 1 sản phẩm nếu muốn
+  const [oneIDProducts, setOneIDProducts] = useState([]);
+  // console.log('oneIDProducts', oneIDProducts);
 
   // State khi nào hiển thi alert cảnh báo phải chọn sản phẩm trước khi xóa Tất cả
   const [isAlert, setAlert] = useState(false);
@@ -67,19 +73,34 @@ function CardPhone(props) {
     };
   }, [isAlert]);
 
-  // ------------------MODAL HIỆN THỊ ---------------------
+  // ------------------MODAL HIỆN THỊ XÓA 1 || NHIỀU SẢN PHẨM ---------------------
   // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
   const [isModal, setIsModal] = useState(false);
+  // click nút Hủy modal
+  const handleCancelModal = () => {
+    setIsModal(false);
+  };
+
+  // khi clik nút ----XÁC NHẬN ---- => đồng ý xóa nhiều SẢN PHẨM
+  const handleClickOK = () => {
+    // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
+    const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
+    console.log('danh sách ID cần xóa', isCheckID);
+  };
 
   /*--------------DELETE ALL SẢN PHẨM CARD -------------------------------    */
   //  click DETELE all sản phẩm
   const handleClickDeleteAll = () => {
-    // nếu số chưa chọn sản phẩm nào => hiển thị thông alert => để biết
-    if (listID?.length === 0) {
+    // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
+    const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
+
+    // console.log('isCheckID', isCheckID);
+
+    // nếu chưa chọn sản phẩm nào => hiển thị thông alert => để biết
+    if (isCheckID?.length === 0) {
       setAlert(true);
     } else {
       setIsModal(true);
-      console.log('listID', listID);
     }
   };
 
@@ -156,6 +177,17 @@ function CardPhone(props) {
     }
   }, [sumPriceCard, checkAll, listSumPriceCheckAll]);
 
+  // danh sách chi tiết đơn hàng => các sản phẩm cộng giá...
+  const [listProductCard, setListProductCard] = useState([]);
+  const orderList = {
+    sumOrderList: total,
+    listProductCard,
+  };
+
+  //khi click vào nút mua hàng trong giỏ hàng
+  const handleClickBtnBuyCard = () => {
+    console.log('danh sách đơn hàng', orderList);
+  };
   return (
     <Box>
       {/* header and navigation */}
@@ -305,19 +337,39 @@ function CardPhone(props) {
 
                 {/* modal */}
                 <Modal
-                  title="Vertically centered modal dialog"
                   centered
                   open={isModal}
-                  onOk={() => setIsModal(false)}
                   onCancel={() => setIsModal(false)}
-                  className={clsx(style.wrapModal)}
+                  className={clsx(style.wrapModal1)}
                   okText="Xác nhận"
                   cancelText="Hủy"
                   icon={<WaringIconDelteAll />}
+                  footer={null}
+                  width={311}
                 >
-                  <p>some contents...</p>
-                  <p>some contents...</p>
-                  <p>some contents...</p>
+                  <Box className={clsx(style.header)}>
+                    <WaringIconDelteAll className={clsx(style.icon)} />
+                    <Box className={clsx(style.contentHeader)}>
+                      <Typography className={clsx(style.text1)} color={(theme) => theme?.palette?.text?.primary4}>
+                        Xoá sản phẩm
+                      </Typography>
+                      <Typography className={clsx(style.text2)} color={(theme) => theme?.palette?.text?.primary10}>
+                        Bạn có muốn xóa sản phẩm đang chọn?
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box className={clsx(style.actions)}>
+                    <Button variant="outlined" className={clsx(style.btn, style.btnOK)} onClick={handleClickOK}>
+                      Xác nhận
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className={clsx(style.btn, style.btnCancel)}
+                      onClick={handleCancelModal}
+                    >
+                      Huỷ
+                    </Button>
+                  </Box>
                 </Modal>
               </Box>
 
@@ -342,6 +394,8 @@ function CardPhone(props) {
                       setListCheckedBox={setListCheckedBox}
                       listSumPriceCheckAll={listSumPriceCheckAll}
                       setListSumPriceCheckAll={setListSumPriceCheckAll}
+                      setOneIDProducts={setOneIDProducts}
+                      setListProductCard={setListProductCard}
                     />
                   );
                 })}
@@ -355,6 +409,7 @@ function CardPhone(props) {
               {/* address địa chỉ => giao hàng */}
               <Grid lg={12}>
                 <Box className={clsx(style.wrapAddressCard)}>
+                  <AddressUser />
                   <Box className={clsx(style.col1)}>
                     <Typography
                       className={clsx(style.text, style.text1)}
@@ -441,7 +496,13 @@ function CardPhone(props) {
 
               {/* btn buy card => nút mua sản phẩm*/}
               <Grid lg={12}>
-                <Button className={clsx(style.btnBuyPhone)} variant="contained" color="secondary">
+                <Button
+                  className={clsx(style.btnBuyPhone)}
+                  variant="contained"
+                  color="secondary"
+                  disabled={total === 0 ? true : false}
+                  onClick={handleClickBtnBuyCard}
+                >
                   Mua hàng
                 </Button>
               </Grid>

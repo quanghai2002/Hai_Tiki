@@ -275,10 +275,6 @@
         opacity: 1;
       }
     }
-
-    // wrapModal
-    .wrapModal {
-    }
   }
 
   // wrapListAllCard
@@ -657,7 +653,7 @@
     margin-top: 8px;
   }
 
-  // TEST DATA TABLE => LIST CARD
+  // AddressUser => Địa chỉ giao hàng
 }
 
 // backTop
@@ -672,6 +668,64 @@ body {
   & :global .ant-tooltip-arrow {
     &::before {
       bottom: -1px !important;
+    }
+  }
+  // wrapModal 1 => modal DELETE ALL
+
+  .wrapModal1 {
+    & :global .ant-modal-content {
+      padding: 16px !important;
+
+      & :global .ant-modal-close {
+        top: 8px;
+        inset-inline-end: 8px;
+        &:hover {
+          color: red;
+        }
+      }
+    }
+    .header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      .icon {
+      }
+
+      .contentHeader {
+        .text1 {
+          font-size: 1.6rem;
+          line-height: 24px;
+          font-weight: 500;
+          margin-bottom: 6px;
+          user-select: none;
+        }
+        .text2 {
+          font-size: 1.4rem;
+          line-height: 20px;
+          word-break: break-word;
+          font-weight: 390;
+          user-select: none;
+        }
+      }
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      .btn {
+        font-size: 1.4rem;
+        line-height: 20px;
+        font-weight: 500;
+        height: 36px;
+      }
+
+      .btnOK {
+        padding: 5px 16px;
+      }
+      .btnCancel {
+      }
     }
   }
 }

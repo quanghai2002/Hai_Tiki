@@ -5,13 +5,13 @@ import { memo, lazy, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Checkbox } from 'antd';
+import { Checkbox, Modal, InputNumber } from 'antd';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { InputNumber } from 'antd';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
 import iconNow from '~/assets/images/iconNow.png';
+import { WaringIconDelteAll } from '~/assets/iconSVG.jsx';
 
 OneCard.propTypes = {
   detailsPhone: PropTypes.object.isRequired,
@@ -28,6 +28,8 @@ OneCard.propTypes = {
   setSumPriceCard: PropTypes.func,
   listSumPriceCheckAll: PropTypes.array,
   setListSumPriceCheckAll: PropTypes.func,
+  setOneIDProducts: PropTypes.func,
+  setListProductCard: PropTypes.func,
 };
 
 function OneCard({
@@ -45,6 +47,8 @@ function OneCard({
   setSumPriceCard,
   listSumPriceCheckAll,
   setListSumPriceCheckAll,
+  setOneIDProducts,
+  setListProductCard,
 }) {
   // ---------------------- TĂNG GIẢM SỐ LƯỢNG SẢN PHẨM--------------------------------------------------------
   // xử lý khi click tăng hoặc giảm số lượng sản phẩm
@@ -144,6 +148,7 @@ function OneCard({
     }
 
     // nếu khi click mà là true => thêm 1 TRUE đó vào danh sách
+    // nếu checkked === TRUE => đã click vào nút checkBox con
     else {
       setListChecked((prev) => {
         return [...prev, e?.target?.checked];
@@ -155,6 +160,32 @@ function OneCard({
         return [...prev, productId];
       });
     }
+
+    // set id 1 sản phẩm khi click vào => checkbox
+    // console.log('id 1 sản phẩm:', detailsPhone?.id);
+    // setOneIDProducts(detailsPhone?.id);
+    setOneIDProducts((prev) => {
+      // console.log('giá trị cũ', prev);
+      // console.log('listID', listID);
+      // console.log('giá trị cũ', prev);
+      // tìm kiếm xem id hiện tại => đã tồn tại chưa => nếu có rồi => xóa id đó khỏi list
+      const prevIDTest = prev?.length === 0 ? listID : prev;
+      const index = prevIDTest?.indexOf(detailsPhone?.id);
+      // console.log('index', index);
+
+      // console.log('prevIDTest', prevIDTest);
+      // console.log('prev', prev);
+      if (index !== -1) {
+        const oldId = [...prevIDTest];
+        oldId?.splice(index, 1);
+        // console.log('giá trị cập nhật', oldId);
+        return oldId;
+      } else {
+        const newListId = [...prev, detailsPhone?.id];
+        // console.log('id chưa tồn tại lấy giá trị mới', newListId);
+        return newListId;
+      }
+    });
   };
 
   // =-----------------------===
@@ -164,6 +195,9 @@ function OneCard({
       setListCheckedBox((prev) => {
         return [...new Set([...prev, productId])];
       });
+
+      // xóa reset lại list One ID
+      setOneIDProducts([]);
     }
   }, [checkAll, detailsPhone?.id]);
 
@@ -346,6 +380,135 @@ function OneCard({
     }
   }, [checkAll, checkGetSumPrice, newPricePhone, listCheckedBox?.length]);
 
+  // -----------------------------------------
+  // --------------------------------LẤY DANH SÁCH SẢN PHẨM ĐỂ THÊM VÀO CARD DATABASE ------------
+  // DANH SÁCH ĐƠN HÀNG THEO ĐIỀU KIỆN => CHECKBOX CON
+  useEffect(() => {
+    // lưu sản phẩm đã chọn đó vào danh sách đơn hàng
+    // nếu nút check box con bằng true > thêm mới hoặc update
+    if (checkGetSumPrice) {
+      const phoneProducts = {
+        id: detailsPhone?.id,
+        name: detailsPhone?.name,
+        image: detailsPhone?.url,
+        priceDefaults: detailsPhone?.price,
+        priceAll: newPricePhone,
+        sumQuantity: value,
+      };
+      // console.log({ phoneProducts });
+      setListProductCard((prev) => {
+        // console.log('giá trị cũ', prev);
+
+        const index = prev?.findIndex((item) => {
+          return item?.id === detailsPhone?.id;
+        });
+
+        // update
+        const oldPhone = [...prev];
+        if (index !== -1) {
+          oldPhone?.splice(index, 1, phoneProducts);
+          // console.log('update sản phẩm, UPDATE:', oldPhone);
+
+          return oldPhone;
+        } else {
+          // thêm mới
+          // console.log('sản phẩm chưa tồn tại, THÊM MỚI:', [...prev, phoneProducts]);
+          return [...prev, phoneProducts];
+        }
+      });
+    } else {
+      const phoneProducts = {
+        id: detailsPhone?.id,
+        name: detailsPhone?.name,
+        image: detailsPhone?.url,
+        priceDefaults: detailsPhone?.price,
+        priceAll: newPricePhone,
+        sumQuantity: value,
+      };
+
+      setListProductCard((prev) => {
+        const index = prev?.findIndex((item) => {
+          return item?.id === detailsPhone?.id;
+        });
+        const oldPhone = [...prev];
+        // console.log('GIÁ TRỊ CŨ =>ĐÂY LÀ CỦA CHECK BOX CON:', oldPhone);
+
+        if (index !== -1) {
+          oldPhone?.splice(index, 1, phoneProducts);
+          // console.log('update sản phẩm, UPDATE:', oldPhone);
+
+          return oldPhone;
+        } else {
+          // console.log('sản phẩm chưa tồn tại, THÊM MỚI:', [...prev, phoneProducts]);
+          return [...prev, phoneProducts];
+        }
+      });
+    }
+  }, [detailsPhone, value, newPricePhone, checkGetSumPrice, listCheckedBox?.length, checkAll]);
+
+  // danh sách đơn hàng => theo điều kiện => CHECK ALL
+  useEffect(() => {
+    // thêm mới hoặc update
+    if (checkAll) {
+      setListProductCard((prev) => {
+        const phoneProducts = {
+          id: detailsPhone?.id,
+          name: detailsPhone?.name,
+          image: detailsPhone?.url,
+          priceDefaults: detailsPhone?.price,
+          priceAll: newPricePhone,
+          sumQuantity: value,
+        };
+        // console.log('giá trị cũ CHECK ALL', prev);
+
+        const index = prev?.findIndex((item) => {
+          return item?.id === detailsPhone?.id;
+        });
+
+        // update
+        const oldPhone = [...prev];
+        if (index !== -1) {
+          oldPhone?.splice(index, 1, phoneProducts);
+          // console.log('update sản phẩm CHECKALL, UPDATE:', oldPhone);
+
+          return oldPhone;
+        } else {
+          // thêm mới
+          // console.log('sản phẩm chưa tồn tại, THÊM MỚI CHECK ALL:', [...prev, phoneProducts]);
+          return [...prev, phoneProducts];
+        }
+      });
+    } else {
+      setListProductCard((prev) => {
+        const index = listCheckedBox;
+        // console.log('index', listCheckedBox);
+        const oldPhone = [...prev];
+        // lọc ra các danh sách đơn hàng => theo list checkBox
+        const newListPhone = oldPhone?.filter((item) => {
+          return index?.includes(item?.id);
+        });
+        // console.log('giá trị MỚI  khi CHECK ALL BẰNG FALSE:', newListPhone);
+        return newListPhone;
+      });
+    }
+  }, [checkAll, value, newPricePhone, detailsPhone, checkGetSumPrice, listCheckedBox?.length]);
+
+  // ---------------------------------------MODAL HIỆN THỊ XÓA 1 SẢN PHẨM ---------------------
+  // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
+  const [isModal, setIsModal] = useState(false);
+  //handleClickDeleteOne => khi click vào btn xóa 1 sản phẩm
+  const handleClickDeleteOne = () => {
+    setIsModal(true);
+  };
+  // click nút Hủy modal
+  const handleCancelModal = () => {
+    setIsModal(false);
+  };
+
+  // khi clik nút ----XÁC NHẬN ---- => đồng ý xóa nhiều SẢN PHẨM
+  const handleClickOK = () => {
+    console.log('id 1 sản phẩm cần xóa', detailsPhone?.id);
+  };
   // RENDER JSX
   return (
     <Box className={clsx(style.wrapListAllCard)}>
@@ -440,14 +603,41 @@ function OneCard({
       </Box>
 
       {/* btn remove */}
-      <Box
-        className={clsx(style.wrapRemove)}
-        onClick={() => {
-          console.log('id sản phẩm:', detailsPhone?.id);
-        }}
-      >
+      <Box className={clsx(style.wrapRemove)} onClick={handleClickDeleteOne}>
         <img src={removeIcon} alt="icon remove" className={clsx(style.icon)} />
       </Box>
+      {/* modal xóa 1 sản phẩm */}
+      <Modal
+        centered
+        open={isModal}
+        onCancel={() => setIsModal(false)}
+        className={clsx(style.wrapModal1)}
+        okText="Xác nhận"
+        cancelText="Hủy"
+        icon={<WaringIconDelteAll />}
+        footer={null}
+        width={311}
+      >
+        <Box className={clsx(style.header)}>
+          <WaringIconDelteAll className={clsx(style.icon)} />
+          <Box className={clsx(style.contentHeader)}>
+            <Typography className={clsx(style.text1)} color={(theme) => theme?.palette?.text?.primary4}>
+              Xoá sản phẩm
+            </Typography>
+            <Typography className={clsx(style.text2)} color={(theme) => theme?.palette?.text?.primary10}>
+              Bạn có muốn xóa sản phẩm đang chọn?
+            </Typography>
+          </Box>
+        </Box>
+        <Box className={clsx(style.actions)}>
+          <Button variant="outlined" className={clsx(style.btn, style.btnOK)} onClick={handleClickOK}>
+            Xác nhận
+          </Button>
+          <Button variant="contained" className={clsx(style.btn, style.btnCancel)} onClick={handleCancelModal}>
+            Huỷ
+          </Button>
+        </Box>
+      </Modal>
     </Box>
   );
 }

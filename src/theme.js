@@ -36,6 +36,7 @@ const theme = extendTheme({
           primary7: 'rgb(10, 104, 255)',
           primary8: 'rgba(0, 0, 0, 0.26)', // MUI button disabled  color  
           primary9: 'rgba(0, 0, 0, 0.12)', // border Mui disabled
+          primary10: 'rgb(81, 81, 88)',
         },
 
         // background trang web => chế độ sáng
@@ -77,6 +78,7 @@ const theme = extendTheme({
           primary7: 'rgb(38, 166, 154)',
           primary8: 'rgb(204 228 226) !important', // MUI button disabled  color  
           primary9: 'rgb(204 228 226) !important', // border Mui disabled
+          primary10: 'rgb(38, 166, 154)',
         },
         // background trang web => chế độ Tối
         background: {
