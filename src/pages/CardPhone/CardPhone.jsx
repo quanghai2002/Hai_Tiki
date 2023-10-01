@@ -46,6 +46,11 @@ function CardPhone(props) {
     },
   ]);
 
+  // ---- ----------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
+  const [addressUserShip, setAddressUserShip] = useState('');
+  const isAddressUser = Boolean(addressUserShip);
+  // console.log(isAddressUser);
+  // console.log({ addressUserShip });
   // text list card => để render => giỏ các sản phẩm trong giỏ hàng
   // trạng thái của thanh tiến trình => process => khi chọn mua hàng
   const [valueProcessStep, setvalueProcessStep] = useState(0);
@@ -177,11 +182,15 @@ function CardPhone(props) {
     }
   }, [sumPriceCard, checkAll, listSumPriceCheckAll]);
 
+  // -------------KHI CLICK BTN MUA HÀNG => DANH SÁCH CHI TIẾT ĐƠN HÀNG +Address giao hàng
   // danh sách chi tiết đơn hàng => các sản phẩm cộng giá...
   const [listProductCard, setListProductCard] = useState([]);
+
+  // danh sách đơn hàng sau khi UPDATE
   const orderList = {
     sumOrderList: total,
     listProductCard,
+    addressUserShip,
   };
 
   //khi click vào nút mua hàng trong giỏ hàng
@@ -405,45 +414,61 @@ function CardPhone(props) {
 
           {/* wrap details price phone*/}
           <Grid container lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
-            <Box>
+            <Box
+              sx={{
+                minWidth: '308px',
+              }}
+            >
               {/* address địa chỉ => giao hàng */}
+              {/* nếu có địa chỉ rồi thì hiển thị > nếu không bắt chọn địa chỉ  */}
               <Grid lg={12}>
-                <Box className={clsx(style.wrapAddressCard)}>
-                  <AddressUser />
-                  <Box className={clsx(style.col1)}>
-                    <Typography
-                      className={clsx(style.text, style.text1)}
-                      color={(theme) => theme?.palette?.text?.primary6}
-                    >
-                      Giao tới
-                    </Typography>
-                    <Typography className={clsx(style.text, style.text2)}>Thay đổi</Typography>
+                {isAddressUser ? (
+                  <Box className={clsx(style.wrapAddressCard)}>
+                    <Box className={clsx(style.col1)}>
+                      <Typography
+                        className={clsx(style.text, style.text1)}
+                        color={(theme) => theme?.palette?.text?.primary6}
+                      >
+                        Giao tới
+                      </Typography>
+                      <Typography
+                        className={clsx(style.text, style.text2)}
+                        onClick={() => {
+                          setAddressUserShip('');
+                        }}
+                      >
+                        Thay đổi
+                      </Typography>
+                    </Box>
+                    <Box className={clsx(style.col2)}>
+                      <Typography
+                        className={clsx(style.text, style.text1)}
+                        color={(theme) => theme?.palette?.text?.primary4}
+                      >
+                        {addressUserShip?.nameUser}
+                      </Typography>
+                      <i className={clsx(style.i)}></i>
+                      <Typography
+                        className={clsx(style.text, style.text2)}
+                        color={(theme) => theme?.palette?.text?.primary4}
+                      >
+                        {addressUserShip?.phoneNumber}
+                      </Typography>
+                    </Box>
+                    <Box className={clsx(style.col3)}>
+                      <Typography
+                        className={clsx(style.text, style.text2)}
+                        color={(theme) => theme?.palette?.text?.primary6}
+                      >
+                        <span className={clsx(style.text1)}>Nhà</span>
+                        {addressUserShip?.diachi_cuthe},{addressUserShip?.phuongxa},{addressUserShip?.quanhuyen},
+                        {addressUserShip?.thanhpho}
+                      </Typography>
+                    </Box>
                   </Box>
-                  <Box className={clsx(style.col2)}>
-                    <Typography
-                      className={clsx(style.text, style.text1)}
-                      color={(theme) => theme?.palette?.text?.primary4}
-                    >
-                      quang hai
-                    </Typography>
-                    <i className={clsx(style.i)}></i>
-                    <Typography
-                      className={clsx(style.text, style.text2)}
-                      color={(theme) => theme?.palette?.text?.primary4}
-                    >
-                      0968107500
-                    </Typography>
-                  </Box>
-                  <Box className={clsx(style.col3)}>
-                    <Typography
-                      className={clsx(style.text, style.text2)}
-                      color={(theme) => theme?.palette?.text?.primary6}
-                    >
-                      <span className={clsx(style.text1)}>Nhà</span> số nhà 5, ngõ 122 Phố Đông Thiên, Phường Vĩnh Hưng,
-                      Quận Hoàng Mai, Hà Nội
-                    </Typography>
-                  </Box>
-                </Box>
+                ) : (
+                  <AddressUser setAddressUserShip={setAddressUserShip} />
+                )}
               </Grid>
 
               {/* sum price => tổng giá trị đơn hàng */}
@@ -500,7 +525,7 @@ function CardPhone(props) {
                   className={clsx(style.btnBuyPhone)}
                   variant="contained"
                   color="secondary"
-                  disabled={total === 0 ? true : false}
+                  disabled={total === 0 || isAddressUser === false ? true : false}
                   onClick={handleClickBtnBuyCard}
                 >
                   Mua hàng

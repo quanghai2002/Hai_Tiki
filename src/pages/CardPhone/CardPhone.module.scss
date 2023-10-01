@@ -654,6 +654,29 @@
   }
 
   // AddressUser => Địa chỉ giao hàng
+  .wrapAddressUser {
+    background: white;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+
+    .noAddress {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .text {
+        font-size: 1.6rem;
+        word-break: break-word;
+        margin-bottom: 10px;
+        user-select: none;
+      }
+
+      .btn {
+        font-size: 1.4rem;
+      }
+    }
+  }
 }
 
 // backTop
@@ -725,6 +748,103 @@ body {
         padding: 5px 16px;
       }
       .btnCancel {
+      }
+    }
+  }
+
+  // modalAddressUser
+  .modalAddressUser {
+    & :global .ant-modal-title {
+      text-align: center;
+      font-size: 1.7rem;
+      color: rgb(10, 104, 255);
+      user-select: none;
+    }
+    & :global .ant-modal-header {
+      margin-bottom: 13px;
+    }
+
+    .wrapForm {
+      & :global .ant-form-item-label {
+        width: 26%;
+        text-align: left;
+        & label {
+          font-weight: 600;
+          color: rgb(51, 51, 51);
+          height: 34px;
+          user-select: none;
+          &::after {
+            content: '' !important;
+          }
+        }
+      }
+
+      & :global .ant-input {
+        padding: 5.2px 11px;
+        caret-color: rgb(10, 104, 255);
+      }
+
+      & :global .ant-form-item {
+        margin-bottom: 25px;
+      }
+
+      & :global .ant-input-suffix {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 8px;
+      }
+
+      & :global .ant-input-affix-wrapper {
+        padding: 0px 11px;
+      }
+
+      & :global .ant-select-selector {
+        height: 34px;
+      }
+
+      .wrapBtn {
+        & :global .ant-form-item-label {
+          label {
+            color: transparent;
+          }
+        }
+        .btnAdd {
+          font-size: 1.4rem;
+          padding: 8px 16px !important;
+        }
+      }
+    }
+    & :global .ant-modal-close {
+      top: 12px;
+      inset-inline-end: 12px;
+      &:hover {
+        color: red;
+      }
+    }
+
+    & :global .ant-form-item-explain-error {
+      font-size: 1.3rem;
+      padding-left: 2px;
+    }
+
+    & :global .css-dev-only-do-not-override-nnuwmp {
+      #nameUser {
+        padding: 5.2px 0;
+      }
+    }
+
+    & :global .ant-input-textarea-affix-wrapper {
+      #diachi_cuthe {
+        padding: 5.2px 0px;
+        min-height: 80px;
+        max-height: 210px;
+      }
+
+      .ant-input-suffix {
+        position: absolute;
+        top: 0;
+        right: 1px;
       }
     }
   }
