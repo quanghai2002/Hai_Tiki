@@ -186,15 +186,25 @@ function CardPhone(props) {
   // danh sách chi tiết đơn hàng => các sản phẩm cộng giá...
   const [listProductCard, setListProductCard] = useState([]);
 
-  // danh sách đơn hàng sau khi UPDATE
-  const orderList = {
-    sumOrderList: total,
-    listProductCard,
-    addressUserShip,
-  };
-
   //khi click vào nút mua hàng trong giỏ hàng
   const handleClickBtnBuyCard = () => {
+    // kiểm tra để lấy mã giảm giá
+    let freeShip = 0;
+    if (valueProcessStep === 0) {
+      freeShip = 0;
+    } else if (valueProcessStep === 1) {
+      freeShip = 15000;
+    } else if (valueProcessStep === 2) {
+      freeShip = 30000;
+    }
+
+    // danh sách đơn hàng sau khi UPDATE
+    const orderList = {
+      sumOrderList: total,
+      listProductCard,
+      addressUserShip,
+      freeShip,
+    };
     console.log('danh sách đơn hàng', orderList);
   };
   return (

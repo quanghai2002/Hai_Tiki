@@ -24,6 +24,7 @@ const NotFound = lazy(() => import('~/pages/404NotFound'));
 const Info = lazy(() => import('~/pages/Info'));
 const PhoneDetails = lazy(() => import('~/pages/PhoneDetails'));
 const CardPhone = lazy(() => import('~/pages/CardPhone'));
+const PayOrder = lazy(() => import('~/pages/PayOrder'));
 
 function App() {
   return (
@@ -83,6 +84,15 @@ function App() {
           }
         ></Route>
 
+        {/* pay ments=> page TRANG THANH TOÁN*/}
+        <Route
+          path="/payment"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <PayOrder />
+            </Suspense>
+          }
+        ></Route>
         {/* page not found */}
         <Route
           path="*"

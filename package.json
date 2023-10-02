@@ -32,6 +32,7 @@
     "firebase": "^10.4.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^3.1.2",
+    "momo-sdk": "^0.1.0",
     "multer": "^1.4.5-lts.1",
     "otp-input-react": "^0.3.0",
     "prop-types": "^15.8.1",
