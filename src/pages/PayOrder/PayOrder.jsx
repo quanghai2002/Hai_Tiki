@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import style from './PayOrder.module.scss';
 import clsx from 'clsx';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -12,6 +12,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Divider from '@mui/material/Divider';
 import { Radio, Space } from 'antd';
 import Button from '@mui/material/Button';
+import axiosClient from '~/apis/axiosClient';
+import axios from 'axios';
 
 import DarkMode from '~/components/DarkMode';
 import iconNow from '~/assets/images/iconNow.png';
@@ -36,6 +38,50 @@ function PayOrder(props) {
   // ---- ----------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
   const [addressUserShip, setAddressUserShip] = useState('');
   const isAddressUser = Boolean(addressUserShip);
+
+  // ------------------------KHI CLICK NÚT ĐẶT HÀNG -----------------------
+  const handleSubmitAddOrder = () => {
+    console.log('đặt hàng');
+    // window.location.href = 'http://localhost:8888/order/create_payment_url';
+    // axios
+    //   .post('http://localhost:8080/api/payment/create_payment_url',{})
+    //   .then((response) => {
+    //     console.log('đang thanh toán');
+    //   })
+    //   .catch((err) => {
+    //     console.log('thanh toán thất bại', err);
+    //   });
+
+    axiosClient
+      .post('/payment/create_payment_url', {
+        urlReturnSuccess: 'http://localhost:5173/payment/success',
+        // urlReturnFailed: 'http://localhost:5173/payment/failed',
+      })
+      .then((res) => {
+        console.log('thanh công', res);
+        window.location.href = res?.urlRedirect;
+      })
+      .catch((err) => {
+        console.log('thất bại');
+      });
+  };
+
+  // useEffect(() => {
+  //   const id = setTimeout(() => {
+  //     axiosClient
+  //       .get('/payment/vnpay_return')
+  //       .then((response) => {
+  //         console.log('kết quả giao dịch THANH TOÁN', response);
+  //       })
+  //       .catch((err) => {
+  //         console.log('error', err);
+  //       });
+  //   }, 3000);
+
+  //   () => {
+  //     clearTimeout(id);
+  //   };
+  // });
   return (
     <Box className={clsx(style.wrapPayOrder)}>
       {/* Header */}
@@ -290,7 +336,7 @@ function PayOrder(props) {
                     <Box className={clsx(style.wrapContent)}>
                       <img alt="icon" src={paymentMoMo} className={clsx(style.icon)} />
                       <Typography className={clsx(style.textPayMent)} color={(theme) => theme?.palette?.text?.primary4}>
-                        Thanh toán bằng ví MoMo
+                        Thanh toán qua VNP
                       </Typography>
                     </Box>
                   </Radio>
@@ -419,7 +465,12 @@ function PayOrder(props) {
                 </Typography>
               </Box>
 
-              <Button variant="contained" className={clsx(style.btnBuyOrder)} color="secondary">
+              <Button
+                variant="contained"
+                className={clsx(style.btnBuyOrder)}
+                color="secondary"
+                onClick={handleSubmitAddOrder}
+              >
                 Đặt hàng
               </Button>
             </Box>

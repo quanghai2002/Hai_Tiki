@@ -25,6 +25,8 @@ const Info = lazy(() => import('~/pages/Info'));
 const PhoneDetails = lazy(() => import('~/pages/PhoneDetails'));
 const CardPhone = lazy(() => import('~/pages/CardPhone'));
 const PayOrder = lazy(() => import('~/pages/PayOrder'));
+const PayOrderFailed = lazy(() => import('~/pages/PayOrder/PayOrderFailed.jsx'));
+const PayOrderSuccess = lazy(() => import('~/pages/PayOrder/PayOrderSuccess.jsx'));
 
 function App() {
   return (
@@ -90,6 +92,23 @@ function App() {
           element={
             <Suspense fallback={<LinearProgress />}>
               <PayOrder />
+            </Suspense>
+          }
+        ></Route>
+
+        <Route
+          path="/payment/failed"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <PayOrderFailed />
+            </Suspense>
+          }
+        ></Route>
+        <Route
+          path="/payment/vnpay_return"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <PayOrderSuccess />
             </Suspense>
           }
         ></Route>
