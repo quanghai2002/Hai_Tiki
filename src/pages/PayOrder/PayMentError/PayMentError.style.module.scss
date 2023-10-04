@@ -1,0 +1,100 @@
+.wrapPayError {
+  .content {
+    max-width: 1270px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 132px;
+    padding-bottom: 80px;
+
+    .content2 {
+      background: rgb(255, 255, 255);
+      border-radius: 10px;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      .img {
+        width: 148px;
+        height: 160px;
+        object-fit: contain;
+      }
+
+      .wrapError {
+        .label {
+          font-size: 2.5rem;
+          line-height: 2.8rem;
+          font-weight: 500;
+          margin: 0px 0px 12px;
+          color: red;
+          user-select: none;
+        }
+
+        .errorBlock {
+          display: flex;
+          align-items: center;
+          user-select: none;
+          padding: 13px 16px;
+          background-color: rgb(255, 241, 241);
+          border-radius: 10px;
+          margin-bottom: 12px;
+          .lable1 {
+            font-size: 1.4rem;
+            line-height: 2rem;
+            color: rgb(165, 27, 0);
+          }
+          .lable2 {
+            font-size: 1.4rem;
+            line-height: 2rem;
+          }
+        }
+
+        .infoCard {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 0;
+          .left {
+            font-size: 1.4rem;
+            line-height: 2rem;
+            user-select: none;
+          }
+
+          .right {
+            font-size: 1.4rem;
+            line-height: 2rem;
+            user-select: none;
+          }
+
+          .mothodPay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .icon {
+              border-radius: 4px;
+              width: 32px;
+              margin-right: 4px;
+            }
+          }
+        }
+
+        .divider {
+        }
+
+        .wapBtn {
+          margin-top: 13px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .btnAddError {
+            flex: 1;
+            font-size: 1.5rem;
+            padding: 9px 16px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+.wrapCardEmpty {
+  .cardContentEmpty {
+    width: 1270px;
+    max-width: 1270px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 110px;
+    padding-bottom: 100px;
+
+    .title {
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 2.8rem;
+      text-transform: uppercase;
+      padding-bottom: 20px;
+      user-select: none;
+    }
+
+    .mainCardEmpty {
+      background: rgb(255, 255, 255);
+      padding: 40px 20px;
+      border-radius: 4px;
+      text-align: center;
+      width: 100%;
+      .imageCardEmpty {
+        width: 190px;
+        object-fit: contain;
+      }
+
+      .textEmpty {
+        margin: 15px 0px 30px;
+        font-size: 1.6rem;
+        font-weight: 500;
+        user-select: none;
+      }
+
+      .wrapBtnEmpty {
+        .btn {
+          font-size: 1.6rem;
+          padding: 8px 44px;
+        }
+      }
+    }
+  }
+
+  // backTop
+  .backTop {
+    & :global .ant-float-btn-icon {
+      color: rgb(10, 104, 255) !important;
+    }
+  }
+}

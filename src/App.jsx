@@ -25,8 +25,8 @@ const Info = lazy(() => import('~/pages/Info'));
 const PhoneDetails = lazy(() => import('~/pages/PhoneDetails'));
 const CardPhone = lazy(() => import('~/pages/CardPhone'));
 const PayOrder = lazy(() => import('~/pages/PayOrder'));
-const PayOrderFailed = lazy(() => import('~/pages/PayOrder/PayOrderFailed.jsx'));
-const PayOrderSuccess = lazy(() => import('~/pages/PayOrder/PayOrderSuccess.jsx'));
+const PayOrderReturnVNP = lazy(() => import('~/pages/PayOrder/PayOrderReturnVNP.jsx'));
+const PayMentTienMat = lazy(() => import('~/pages/PayOrder/PayMentTienMat'));
 
 function App() {
   return (
@@ -96,19 +96,22 @@ function App() {
           }
         ></Route>
 
-        <Route
-          path="/payment/failed"
-          element={
-            <Suspense fallback={<LinearProgress />}>
-              <PayOrderFailed />
-            </Suspense>
-          }
-        ></Route>
+        {/* KẾT QUẢ THANH TOÁN VNP => thành công hoặc thất bại */}
         <Route
           path="/payment/vnpay_return"
           element={
             <Suspense fallback={<LinearProgress />}>
-              <PayOrderSuccess />
+              <PayOrderReturnVNP />
+            </Suspense>
+          }
+        ></Route>
+
+        {/* THANH TOÁN KHI NHẬN HÀNG */}
+        <Route
+          path="/payment/tienmat"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <PayMentTienMat />
             </Suspense>
           }
         ></Route>

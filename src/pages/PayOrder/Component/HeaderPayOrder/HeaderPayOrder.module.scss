@@ -1,0 +1,102 @@
+.header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+
+  .contentHeader {
+    width: 1270px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 100px;
+
+    .wrapLogo {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      -webkit-box-align: center;
+      .linkLogo {
+        .img {
+          width: 130px;
+          height: 72px;
+          object-fit: contain;
+        }
+      }
+
+      .divider {
+        width: 1px;
+        height: 32px;
+        background-color: rgb(26, 148, 255);
+        margin: 0px 16px 0 12px;
+        display: block;
+      }
+
+      .title {
+        font-weight: 400;
+        font-size: 2.4rem;
+        line-height: 32px;
+        color: rgb(26, 167, 255);
+        user-select: none;
+      }
+    }
+
+    .hotline {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      -webkit-box-align: center;
+      .divider {
+        width: 1px;
+        height: 32px;
+        background-color: rgb(26, 148, 255);
+        margin: 0px 16px 0 -14px;
+        display: block;
+      }
+      .contentHotline {
+        display: flex;
+        align-items: center;
+        background-color: rgb(240, 248, 255);
+        border: 1px solid rgb(194, 225, 255);
+        padding: 6.2px 9px;
+        border-radius: 9999px;
+        gap: 8px;
+        cursor: pointer;
+
+        .wrapIconPhone {
+          display: flex;
+          justify-items: center;
+          align-items: center;
+          padding: 7.3px;
+          // background-color: rgb(26, 148, 255);
+          border-radius: 50%;
+          .iconPhone {
+            font-size: 2.3rem;
+            color: #fff;
+          }
+        }
+
+        .text {
+          user-select: none;
+
+          .number {
+            font-size: 1.5rem;
+            font-weight: bold;
+          }
+
+          .textTime {
+            font-size: 1.3rem;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}

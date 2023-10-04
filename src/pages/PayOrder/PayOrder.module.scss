@@ -1,107 +1,4 @@
 .wrapPayOrder {
-  .header {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 10;
-
-    .contentHeader {
-      width: 1270px;
-      padding-left: 15px;
-      padding-right: 15px;
-      margin-right: auto;
-      margin-left: auto;
-      display: flex;
-      -webkit-box-align: center;
-      align-items: center;
-      height: 100px;
-
-      .wrapLogo {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        -webkit-box-align: center;
-        .linkLogo {
-          .img {
-            width: 130px;
-            height: 72px;
-            object-fit: contain;
-          }
-        }
-
-        .divider {
-          width: 1px;
-          height: 32px;
-          background-color: rgb(26, 148, 255);
-          margin: 0px 16px 0 12px;
-          display: block;
-        }
-
-        .title {
-          font-weight: 400;
-          font-size: 2.4rem;
-          line-height: 32px;
-          color: rgb(26, 167, 255);
-          user-select: none;
-        }
-      }
-
-      .hotline {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        -webkit-box-align: center;
-        .divider {
-          width: 1px;
-          height: 32px;
-          background-color: rgb(26, 148, 255);
-          margin: 0px 16px 0 -14px;
-          display: block;
-        }
-        .contentHotline {
-          display: flex;
-          align-items: center;
-          background-color: rgb(240, 248, 255);
-          border: 1px solid rgb(194, 225, 255);
-          padding: 6.2px 9px;
-          border-radius: 9999px;
-          gap: 8px;
-          cursor: pointer;
-
-          .wrapIconPhone {
-            display: flex;
-            justify-items: center;
-            align-items: center;
-            padding: 7.3px;
-            // background-color: rgb(26, 148, 255);
-            border-radius: 50%;
-            .iconPhone {
-              font-size: 2.3rem;
-              color: #fff;
-            }
-          }
-
-          .text {
-            user-select: none;
-
-            .number {
-              font-size: 1.5rem;
-              font-weight: bold;
-            }
-
-            .textTime {
-              font-size: 1.3rem;
-              font-weight: 500;
-            }
-          }
-        }
-      }
-    }
-  }
-
   .contents {
     max-width: 1270px;
     padding-left: 15px;
@@ -109,6 +6,7 @@
     margin-right: auto;
     margin-left: auto;
     padding-top: 132px;
+    padding-bottom: 80px;
 
     .wrapContent_PayMent_Info {
       background-color: #fff;
@@ -154,6 +52,8 @@
           }
         }
         .box1 {
+          max-width: 516px;
+          flex: 1;
           .packageShipping {
             .leftContent {
               .headerLeft1 {
@@ -291,6 +191,7 @@
             }
 
             .infoContent {
+              flex: 1;
               .firstLine {
                 font-size: 1.4rem;
                 line-height: 2rem;
@@ -327,6 +228,9 @@
           background: rgb(245, 245, 250);
           border-radius: 8px;
           padding: 8px 16px;
+          max-width: 278px;
+          width: 278px;
+
           & :global svg {
             width: 4rem;
           }
@@ -483,102 +387,101 @@
         padding: 8px 16px;
       }
     }
-  }
-}
+    .actionAddress {
+      // AddressUser => Địa chỉ giao hàng
+      .wrapAddressUser {
+        background: white;
+        border-radius: 4px;
+        padding: 16px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
 
-.actionAddress {
-  // AddressUser => Địa chỉ giao hàng
-  .wrapAddressUser {
-    background: white;
-    border-radius: 4px;
-    padding: 16px;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+        .noAddress {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          .text {
+            font-size: 1.6rem;
+            word-break: break-word;
+            margin-bottom: 10px;
+            user-select: none;
+          }
 
-    .noAddress {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      .text {
-        font-size: 1.6rem;
-        word-break: break-word;
-        margin-bottom: 10px;
-        user-select: none;
+          .btn {
+            font-size: 1.4rem;
+          }
+        }
       }
 
-      .btn {
-        font-size: 1.4rem;
-      }
-    }
-  }
-
-  // wrapAddressCard
-  .wrapAddressCard {
-    background: white;
-    border-radius: 4px;
-    padding: 16px;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
-    .col1 {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      .text {
-        user-select: none;
-      }
-      .text1 {
-        font-size: 1.6rem;
-        font-weight: 410;
-      }
-      .text2 {
-        font-size: 1.4rem;
-        font-weight: 410;
-        color: rgb(11, 116, 229);
-        cursor: pointer;
-      }
-    }
-    .col2 {
-      display: flex;
-      align-items: center;
-      .text {
-        font-weight: 600;
-        font-size: 1.4rem;
-        user-select: none;
-        word-break: break-word;
-      }
-      .text1 {
-      }
-      .i {
-        display: block;
-        width: 1px;
-        height: 20px;
-        background-color: rgb(235, 235, 240);
-        margin: 0px 8px;
-      }
-      .text2 {
-      }
-    }
-    .col3 {
-      .text {
-        user-select: none;
-      }
-      .text1 {
-        color: rgb(0, 171, 86);
-        background-color: rgb(239, 255, 244);
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 16px;
-        padding: 0px 6px;
-        border-radius: 100px;
-        height: 18px;
-        display: inline-flex;
-        -webkit-box-align: center;
-        align-items: center;
-      }
-      .text2 {
-        font-size: 14px;
-        line-height: 20px;
-        word-break: break-word;
+      // wrapAddressCard
+      .wrapAddressCard {
+        background: white;
+        border-radius: 4px;
+        padding: 16px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
+        .col1 {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 12px;
+          .text {
+            user-select: none;
+          }
+          .text1 {
+            font-size: 1.6rem;
+            font-weight: 410;
+          }
+          .text2 {
+            font-size: 1.4rem;
+            font-weight: 410;
+            color: rgb(11, 116, 229);
+            cursor: pointer;
+          }
+        }
+        .col2 {
+          display: flex;
+          align-items: center;
+          .text {
+            font-weight: 600;
+            font-size: 1.4rem;
+            user-select: none;
+            word-break: break-word;
+          }
+          .text1 {
+          }
+          .i {
+            display: block;
+            width: 1px;
+            height: 20px;
+            background-color: rgb(235, 235, 240);
+            margin: 0px 8px;
+          }
+          .text2 {
+          }
+        }
+        .col3 {
+          .text {
+            user-select: none;
+          }
+          .text1 {
+            color: rgb(0, 171, 86);
+            background-color: rgb(239, 255, 244);
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 16px;
+            padding: 0px 6px;
+            border-radius: 100px;
+            height: 18px;
+            display: inline-flex;
+            -webkit-box-align: center;
+            align-items: center;
+          }
+          .text2 {
+            font-size: 14px;
+            line-height: 20px;
+            word-break: break-word;
+          }
+        }
       }
     }
   }

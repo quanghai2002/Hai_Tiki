@@ -1,0 +1,185 @@
+.wrapPaySuccess {
+  .wrapContent {
+    max-width: 1270px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 132px;
+    padding-bottom: 80px;
+    // grid 1
+    .content {
+      background: rgb(255, 255, 255);
+      position: relative;
+      border-radius: 8px;
+
+      .hederBackground {
+        position: absolute;
+        width: 100%;
+        height: 112px;
+        left: 0px;
+        top: 0px;
+        z-index: 0;
+
+        &::before {
+          position: absolute;
+          display: block;
+          content: '';
+          height: 100%;
+          width: 100%;
+          background: linear-gradient(119.64deg, rgb(11, 190, 229) 9.56%, rgb(56, 86, 243) 73.79%);
+          z-index: 1;
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
+        }
+
+        &::after {
+          position: absolute;
+          display: block;
+          content: '';
+          height: 100%;
+          width: 100%;
+          background-image: url('~/assets/images/chucmung.svg');
+          z-index: 2;
+        }
+      }
+
+      .subTitle {
+        padding: 40px;
+        display: flex;
+        position: relative;
+        z-index: 3;
+
+        .img {
+          width: 150px;
+          height: 150px;
+          object-fit: contain;
+          margin-top: 35px;
+          margin-right: 32px;
+        }
+
+        .textContent {
+          flex: 0.85;
+          .text {
+            font-size: 2.5rem;
+            line-height: 3.2rem;
+            margin: 0px 0px 4px;
+            font-weight: 500;
+            user-select: none;
+            color: white;
+          }
+
+          .text2 {
+            font-size: 1.8rem;
+            line-height: 2.4rem;
+            margin: 0px;
+            font-weight: 500;
+            color: white;
+            user-select: none;
+            margin-bottom: 32px;
+            word-break: break-all;
+          }
+
+          .summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            padding: 12px 0;
+            .method1 {
+              font-size: 1.4rem;
+              line-height: 2rem;
+            }
+
+            .paymentVNP {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 6px;
+              .imgVNP {
+                width: 32px;
+                height: 32px;
+                object-fit: contain;
+              }
+              .method2 {
+                font-size: 1.4rem;
+                line-height: 2rem;
+                word-break: break-word;
+              }
+            }
+          }
+
+          .summaryVat {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -9px;
+
+            .vat {
+              font-size: 1.3rem;
+              line-height: 2rem;
+              user-select: none;
+            }
+          }
+
+          .btnBack {
+            font-size: 1.6rem;
+            width: 100%;
+            padding: 7.2px 15px;
+            margin-top: 15px;
+          }
+        }
+      }
+    }
+
+    // gird 2
+    .content2 {
+      background: rgb(255, 255, 255);
+      position: relative;
+      border-radius: 8px;
+
+      .orderPakageHeader {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        user-select: none;
+        justify-content: space-between;
+        .text1 {
+          font-size: 1.5rem;
+          line-height: 2rem;
+          font-weight: 500;
+        }
+        .text2 {
+          font-size: 1.5rem;
+          line-height: 2rem;
+          font-weight: 500;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.95;
+          }
+        }
+      }
+
+      .infoPhone {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px 36px 16px;
+        align-items: center;
+        .image {
+          width: 48px;
+          height: 48px;
+          object-fit: contain;
+        }
+
+        .name {
+          font-size: 1.5rem;
+          user-select: none;
+          display: -webkit-box;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
 const OneCard = lazy(() => import('./OneCard.jsx'));
 const AddressUser = lazy(() => import('./AddressUser.jsx'));
+const CardEmpty = lazy(() => import('./CardEmpty'));
 
 // prop types
 CardPhone.propTypes = {};
@@ -207,11 +208,16 @@ function CardPhone(props) {
     };
     console.log('danh sách đơn hàng', orderList);
   };
-  return (
+
+  // -------------------------KIỂM TRA XEM KHI NÀO GIỎ HÀNG BẰNG === 0 => HIỆN GIỎ HÀNG TRỐNG-------
+  const [lengthOrder, setLengthOrder] = useState(0);
+  return lengthOrder === 0 ? (
+    <CardEmpty />
+  ) : (
     <Box>
+      {/* đây là KHI GIỎ HÀNG CÓ ÍT NHẤT 1 TRỞ LÊN SẢN PHẨM */}
       {/* header and navigation */}
       <Header />
-
       {/* card phone */}
       <Box className={clsx(style.wrapCardPhone)}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>

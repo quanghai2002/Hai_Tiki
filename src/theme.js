@@ -38,12 +38,14 @@ const theme = extendTheme({
           primary9: 'rgba(0, 0, 0, 0.12)', // border Mui disabled
           primary10: 'rgb(81, 81, 88)',
           primary11: 'rgb(26, 148, 255)',
+          primary12: 'rgb(242, 242, 242)', // màu divider
         },
 
         // background trang web => chế độ sáng
         background: {
           default: '#f5f5fa !important',
-          header: '#fff'
+          header: '#fff',
+          footerPayOrder: 'rgb(235, 235, 240)'
         },
 
         // color các hành động như hover,active ... => chế độ SÁNG
@@ -81,12 +83,14 @@ const theme = extendTheme({
           primary9: 'rgb(204 228 226) !important', // border Mui disabled
           primary10: 'rgb(38, 166, 154)',
           primary11: 'rgb(38, 166, 154)',
+          primary12: 'rgb(38, 166, 154)', // màu divider
         },
         // background trang web => chế độ Tối
         background: {
           default: '#000 !important',
           header: '#2e2727',
-          inputSearch: '#ccc'
+          inputSearch: '#ccc',
+          footerPayOrder: '#2e2727'
         },
         // color các hành động như hover,active ... => chế độ SÁNG
         action: {
