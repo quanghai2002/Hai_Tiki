@@ -77,7 +77,7 @@ const theme = extendTheme({
           primary3: 'rgb(255, 255, 255);',
           primary4: 'rgb(38, 166, 154)',// màu chữ cho drop down thanh header => user
           primary5: 'rgb(38, 166, 154)', // màu chữ các icon trong dropdown thanh header 
-          primary6: 'rgb(38, 166, 154)',
+          primary6: 'rgb(38, 166, 154) ',
           primary7: 'rgb(38, 166, 154)',
           primary8: 'rgb(204 228 226) !important', // MUI button disabled  color  
           primary9: 'rgb(204 228 226) !important', // border Mui disabled

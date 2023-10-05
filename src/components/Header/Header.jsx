@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Logo from '~/assets/images/haiLoGoTiki2.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
@@ -27,6 +27,7 @@ import DarkMode from '~/components/DarkMode';
 Header.propTypes = {};
 
 function Header(props) {
+  const navigate = useNavigate();
   // khi click vào nút search
   const onSearch = (value) => console.log(value);
 
@@ -47,6 +48,7 @@ function Header(props) {
             }}
             onClick={() => {
               console.log('thông tin tài khoản');
+              navigate('/info');
             }}
           >
             <ListItemIcon className={clsx(style.icon)}>
@@ -165,29 +167,31 @@ function Header(props) {
           {/* các nút action */}
           <Box className={clsx(style.wrapActions)}>
             {/* action về trang chủ */}
-            <Box
-              className={clsx(style.action, style.backHome)}
-              sx={{
-                '&:hover': {
-                  cursor: 'pointer',
-                  backgroundColor: (theme) => {
-                    return theme?.palette?.action?.hoverActive;
-                  },
-                },
-              }}
-            >
-              <img className={clsx(style.iconImage)} src={true ? HomeIconActive : HomeIcon} alt="home icon" />
-              <Typography
-                className={clsx(style.text)}
-                variant="h6"
-                color="primary"
+            <Link to="/" className={clsx(style.link)}>
+              <Box
+                className={clsx(style.action, style.backHome)}
                 sx={{
-                  fontWeight: '600 !important',
+                  '&:hover': {
+                    cursor: 'pointer',
+                    backgroundColor: (theme) => {
+                      return theme?.palette?.action?.hoverActive;
+                    },
+                  },
                 }}
               >
-                Trang chủ
-              </Typography>
-            </Box>
+                <img className={clsx(style.iconImage)} src={true ? HomeIconActive : HomeIcon} alt="home icon" />
+                <Typography
+                  className={clsx(style.text)}
+                  variant="h6"
+                  color="primary"
+                  sx={{
+                    fontWeight: '600 !important',
+                  }}
+                >
+                  Trang chủ
+                </Typography>
+              </Box>
+            </Link>
 
             {/* action => xem tài khoản */}
             {/* nếu đã đăng nhập thì hiển thị avartar và cho tùy chỉnh user  */}
