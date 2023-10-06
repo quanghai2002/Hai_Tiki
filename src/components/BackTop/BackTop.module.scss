@@ -1,0 +1,6 @@
+// backTop
+.backTop {
+  & :global .ant-float-btn-icon {
+    color: rgb(10, 104, 255) !important;
+  }
+}

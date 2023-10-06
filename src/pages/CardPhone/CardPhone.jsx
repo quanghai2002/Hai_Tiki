@@ -210,7 +210,7 @@ function CardPhone(props) {
   };
 
   // -------------------------KIỂM TRA XEM KHI NÀO GIỎ HÀNG BẰNG === 0 => HIỆN GIỎ HÀNG TRỐNG-------
-  const [lengthOrder, setLengthOrder] = useState(0);
+  const [lengthOrder, setLengthOrder] = useState(1);
   return lengthOrder === 0 ? (
     <CardEmpty />
   ) : (

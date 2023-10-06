@@ -27,6 +27,7 @@ const CardPhone = lazy(() => import('~/pages/CardPhone'));
 const PayOrder = lazy(() => import('~/pages/PayOrder'));
 const PayOrderReturnVNP = lazy(() => import('~/pages/PayOrder/PayOrderReturnVNP.jsx'));
 const PayMentTienMat = lazy(() => import('~/pages/PayOrder/PayMentTienMat'));
+const OrderHistory = lazy(() => import('~/pages/OrderHistory')); // quản lý đơn hàng
 
 function App() {
   return (
@@ -112,6 +113,15 @@ function App() {
           element={
             <Suspense fallback={<LinearProgress />}>
               <PayMentTienMat />
+            </Suspense>
+          }
+        ></Route>
+        {/*QUẢN LÝ ĐƠN HÀNG*/}
+        <Route
+          path="/order/history"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <OrderHistory />
             </Suspense>
           }
         ></Route>

@@ -12,7 +12,9 @@ import appBarIconPhone from '~/assets/images/appBarPhone.png.webp';
 import appBarIconAo from '~/assets/images/appBarAo.png.webp';
 import appBarIconGau from '~/assets/images/appBarGau.png.webp';
 import appBarIconLaptop from '~/assets/images/appBarLapTop.png.webp';
+import { Link } from 'react-router-dom';
 
+// Proptypes
 AppBar.propTypes = {};
 
 function AppBar(props) {
@@ -24,14 +26,21 @@ function AppBar(props) {
         </Typography>
 
         <MenuList className={clsx(style.wrapListItem)}>
-          <MenuItem className={clsx(style.item)}>
-            <ListItemIcon className={clsx(style.icon)}>
-              <img src={appBarIconPhone} className={clsx(style.iconImage)} alt="app bar phone" />
-            </ListItemIcon>
-            <Typography color={(theme) => theme?.palette?.text?.primary4} className={clsx(style.text)} noWrap>
-              Điện thoại di động
-            </Typography>
-          </MenuItem>
+          <Link
+            to="/"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            <MenuItem className={clsx(style.item)}>
+              <ListItemIcon className={clsx(style.icon)}>
+                <img src={appBarIconPhone} className={clsx(style.iconImage)} alt="app bar phone" />
+              </ListItemIcon>
+              <Typography color={(theme) => theme?.palette?.text?.primary4} className={clsx(style.text)} noWrap>
+                Điện thoại di động
+              </Typography>
+            </MenuItem>
+          </Link>
           <MenuItem className={clsx(style.item)}>
             <ListItemIcon className={clsx(style.icon)}>
               <img src={appBarIconGau} className={clsx(style.iconImage)} alt="app bar phone" />

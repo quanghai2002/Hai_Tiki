@@ -1,0 +1,88 @@
+// wrap One Phone
+.wrapOnePhone {
+  background-color: white;
+  border-radius: 4px;
+  position: relative;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+    z-index: 1;
+  }
+
+  .wrapCard {
+    .cardImage {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+
+    .wrapCardContents {
+      padding: 4px 8px;
+      .info {
+        height: 108.1px;
+      }
+      .authentic_brand {
+        height: 20px;
+        width: 89px;
+        object-fit: contain;
+      }
+      .namePhone {
+        font-size: 1.3rem;
+        margin-top: 4px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        white-space: break-spaces;
+        font-weight: 400;
+        line-height: 150%;
+        word-break: break-word;
+        // min-height: 58.5px;
+      }
+      .ratingPhone {
+        font-size: 1.6rem;
+      }
+
+      .wrapPrice {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        gap: 8px;
+        flex-wrap: wrap;
+        .price {
+          display: flex;
+          align-items: center;
+          position: relative;
+          margin-right: 8px;
+          max-width: 70%;
+
+          .number {
+            font-size: 1.6rem;
+            text-align: left;
+            line-height: 150%;
+            font-weight: 500;
+          }
+
+          .vnd {
+            font-size: 1.3rem;
+            font-weight: 500;
+            position: absolute;
+            right: -8.6px;
+            top: -3px;
+          }
+        }
+
+        .promotion {
+          display: inline-block;
+          height: 18px;
+          padding: 0px 4px;
+          background: rgb(245, 245, 250);
+          border-radius: 1000px;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 150%;
+        }
+      }
+    }
+  }
+}

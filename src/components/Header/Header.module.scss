@@ -205,6 +205,12 @@
       }
     }
   }
+
+  & :global .ant-input-search-button {
+    &:hover {
+      background-color: rgba(10, 104, 255, 0.2) !important;
+    }
+  }
 }
 
 .wrapMenuDropDownUser {

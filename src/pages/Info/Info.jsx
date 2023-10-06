@@ -20,14 +20,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
-import { Modal } from 'antd';
-import categoryApi from '~/apis/category.js';
-import brandsApi from '~/apis/brands.js';
-import phoneApi from '~/apis/phoneApi.js';
-import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { getAllPhoneProductsNoPagination } from '~/redux/PhoneSlice';
+import BackTop from '~/components/BackTop';
 
 const Header = lazy(() => import('~/components/Header'));
 const Footer = lazy(() => import('~/components/Footer'));
@@ -390,7 +383,7 @@ function Info(props) {
 
                   {/* Box select */}
                   <Box className={clsx(style.selectSideBar)}>
-                    <Link className={clsx(style.link)}>
+                    <Link className={clsx(style.link)} to="/info">
                       <Box className={clsx(style.liSidebar, style.active)}>
                         <PersonIcon className={clsx(style.icon)} />
                         <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
@@ -398,7 +391,7 @@ function Info(props) {
                         </Typography>
                       </Box>
                     </Link>
-                    <Link className={clsx(style.link)}>
+                    <Link className={clsx(style.link)} to="/order/history">
                       <Box
                         className={clsx(style.liSidebar)}
                         sx={{
@@ -653,6 +646,9 @@ function Info(props) {
 
       {/* Footer */}
       <Footer />
+
+      {/* Back top */}
+      <BackTop />
     </Box>
   );
 }

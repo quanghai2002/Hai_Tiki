@@ -35,7 +35,12 @@ Footer.propTypes = {};
 
 function Footer(props) {
   return (
-    <Box className={clsx(style.wrapFooter)}>
+    <Box
+      className={clsx(style.wrapFooter)}
+      sx={{
+        backgroundColor: (theme) => theme?.palette?.background?.header,
+      }}
+    >
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 2 }}>
         <Grid lg={2.4}>
           <Box className={clsx(style.footer)}>

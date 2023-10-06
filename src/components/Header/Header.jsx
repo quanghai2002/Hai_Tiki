@@ -17,6 +17,7 @@ import { Dropdown } from 'antd';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import { Mentions } from 'antd';
 
 const { Search } = Input;
 import HomeIcon from '~/assets/images/iconHome.png';
@@ -78,6 +79,7 @@ function Header(props) {
             }}
             onClick={() => {
               console.log('đơn hàng của tôi');
+              navigate('/order/history');
             }}
           >
             <ListItemIcon className={clsx(style.icon)}>

@@ -14,6 +14,7 @@ import { Radio, Space } from 'antd';
 import Button from '@mui/material/Button';
 import axiosClient from '~/apis/axiosClient';
 import axios from 'axios';
+import BackTop from '~/components/BackTop';
 
 import DarkMode from '~/components/DarkMode';
 import iconNow from '~/assets/images/iconNow.png';
@@ -392,6 +393,8 @@ function PayOrder(props) {
 
       {/* Footer PayOrder */}
       <FooterPayOrder />
+      {/* Back top */}
+      <BackTop />
     </Box>
   );
 }
