@@ -63,9 +63,8 @@ function SingInGoogle() {
           // dispatch => lưu thông tin User => redux
           dispatch(login(responseLoginGoogle));
           // sau 4s chuyển sang trang chủ
-
           setTimeout(() => {
-            navigate('/homepage');
+            navigate('/');
           }, 3000);
         }
       } catch (error) {

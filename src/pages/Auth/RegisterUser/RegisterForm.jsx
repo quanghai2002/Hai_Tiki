@@ -2,16 +2,17 @@ import clsx from 'clsx';
 import style from './Form.module.scss';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState, memo } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Spin } from 'antd';
+import { toast, ToastContainer } from 'react-toastify';
 
 import userApi from '~/apis/userApi.js';
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import haiLoGoTiki2 from '~/assets/images/haiLoGoTiki2.png';
 
 function RegisterForm() {
   // set loading => khi gửi form
@@ -38,7 +39,7 @@ function RegisterForm() {
     })
     .required();
 
-  // react-hook-form
+  // ----REACT HOOK FORM--------------
   const {
     register,
     formState: { errors },
@@ -61,6 +62,7 @@ function RegisterForm() {
 
   // navigate
   const navigate = useNavigate();
+  // ------------SUBMIT FORM ĐĂNG KÍ TÀI KHOẢN -------------------
   // datafrom => validation => success => data sau khi đã valiation thành công => register user
   const onSubmit = async (data) => {
     // navigate
@@ -71,6 +73,8 @@ function RegisterForm() {
       email: data.email,
       password: data.password,
     };
+
+    console.log('dataRegister', dataRegister);
     // khi pending bắt đầu ấn đăng kí => setloading => true
     setLoading(true);
     setIsEmail(false);
@@ -144,7 +148,7 @@ function RegisterForm() {
         <Spin size="large" className={clsx(style.wrapSpinAnt)}>
           <div className={clsx(style.container)}>
             {/* header => đăng ký */}
-            <h1 className={clsx(style.heading)}>Nhóm 1 PM25.10 - Đăng ký</h1>
+            <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
             {/* form đăng kí user */}
             <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
               <div className={clsx(style.wrapInput)}>
@@ -258,7 +262,7 @@ function RegisterForm() {
         // KHÔNG ở chế độ loading => hiển thị bình thường
         <div className={clsx(style.container)}>
           {/* header => đăng ký */}
-          <h1 className={clsx(style.heading)}>Nhóm 1 PM25.10 - Đăng ký</h1>
+          <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
           {/* form đăng kí user */}
           <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
             <div className={clsx(style.wrapInput)}>
@@ -359,9 +363,10 @@ function RegisterForm() {
 
             <input className={clsx(style.register)} type="submit" value={'Đăng Ký'} />
           </form>
+
           {/* button chuyển trang => đăng nhập */}
           <div className={clsx(style.switchForm)}>
-            <p>Bạn đã có tài khoản? </p>
+            <p className={clsx(style.text)}>Bạn đã có tài khoản? </p>
             <Link to="/login" className={clsx(style.link)}>
               Đăng nhập
             </Link>
@@ -373,4 +378,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default memo(RegisterForm);

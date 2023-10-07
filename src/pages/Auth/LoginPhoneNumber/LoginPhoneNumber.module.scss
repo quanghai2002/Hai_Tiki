@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url('~/assets/anh1.jpg');
+  background-image: url('~/assets/images/background5.jpg');
   background-size: cover;
   background-repeat: no-repeat;
 
@@ -51,35 +51,66 @@
   }
 
   .wrapTitle {
-    .iconBack {
-      font-size: 2rem;
-      cursor: pointer;
-      &:hover {
-        color: red;
-      }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    gap: 8px;
+    .img {
+      width: 203px;
+      object-fit: contain;
+    }
+
+    .backLoginPhone {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
     .title {
-      font-size: 2.2rem;
+      font-size: 2rem;
       text-align: center;
       user-select: none;
+      color: rgb(10, 104, 255);
+    }
+    .wrapContent {
+      .backLoginPhone {
+        color: #000;
+
+        .iconBack {
+          font-size: 2rem;
+          cursor: pointer;
+          position: absolute;
+          top: 0;
+          left: 0;
+          &:hover {
+            color: red;
+          }
+        }
+      }
+      .title {
+        font-size: 2rem;
+        text-align: center;
+        user-select: none;
+        color: rgb(10, 104, 255);
+      }
     }
   }
 
-  .backLoginPhone {
-    color: #000;
-  }
   .wrapLabel {
-    font-size: 2.3rem;
+    font-size: 1.4rem;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 13px 3px 0 3px;
     .phone {
       cursor: default;
+      user-select: none;
     }
 
     .linkswitchEmail {
-      font-size: 2.3rem;
+      // font-size: 1.6rem;
       text-decoration: none;
       color: #000;
     }
@@ -128,7 +159,7 @@
     }
 
     & :global .country-list {
-      font-size: 4rem;
+      font-size: 1.4rem;
     }
 
     & :global .form-control {
@@ -254,7 +285,7 @@
 
 .toastMessage {
   & :global .Toastify__toast-body {
-    font-size: 2.2rem;
+    font-size: 1.6rem;
   }
 }
 

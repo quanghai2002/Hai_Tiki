@@ -4,9 +4,13 @@
   align-items: center;
   height: 100vh;
   justify-items: center;
-  background-image: url('~/assets/anh1.jpg');
+  background-image: url('~/assets/images/background5.jpg');
   background-size: cover;
   background-repeat: no-repeat;
+
+  & :global .ant-spin-dot-item {
+    background-color: #222831;
+  }
 }
 
 .container {
@@ -15,7 +19,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 400px;
+  width: 450px;
   max-width: calc(100vw - 32px);
   border-radius: 8px;
   padding: 20px 16px;
@@ -25,13 +29,18 @@
   .heading {
     font-size: 1.9rem;
   }
+  .imageLogo {
+    width: 203px;
+    object-fit: contain;
+  }
 }
 .form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   max-width: 100%;
-  width: 380px;
+  width: 400px;
 }
 
 .wrapInput {
@@ -43,11 +52,13 @@
     font-size: 1.4rem;
     font-weight: 600;
     margin: 18px 0 4px 8px;
+    user-select: none;
+    cursor: pointer;
   }
 
   .input {
     width: 100%;
-    height: 35px;
+    height: 40px;
     padding: 12px 20px;
     background: rgba(22, 24, 35, 0.06);
     border: 1px solid rgba(22, 24, 35, 0.06);
@@ -56,7 +67,7 @@
     font-size: 1.4rem;
     outline: none;
     overflow: hidden;
-    caret-color: #f05123;
+    caret-color: rgb(10, 104, 255);
   }
   .errorsInput {
     border-color: #f33a58;
@@ -105,6 +116,8 @@
   margin-top: 30px;
   &:hover {
     background-position: 0 100%;
+    background-image: linear-gradient(-180deg, #2cccff -5%, #22dfbf 106%);
+    background-color: #4de3d4;
   }
 }
 
@@ -116,11 +129,19 @@
   line-height: 1.8;
   margin-bottom: 0;
   padding: 15px 16px 0;
-  font-size: 2.4rem;
+  font-size: 1.6rem;
+  user-select: none;
+
   .link {
     font-weight: 600;
     color: #f05123;
-    margin-left: 3px;
+    // color:rgb(10, 104, 255)
+    margin-left: 6px;
+    text-decoration: none;
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
   }
 }
 
@@ -167,7 +188,7 @@
 .toastMessage {
   font-size: 1.6rem;
   & :global .Toastify__toast-body {
-    font-size: 2.6rem;
+    font-size: 1.7rem;
   }
 }
 

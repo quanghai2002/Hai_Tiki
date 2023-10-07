@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import style from './Form.module.scss';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { Suspense, useEffect, useId, useState } from 'react';
+import { Suspense, useEffect, useId, useState, memo } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,15 +11,17 @@ import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import { Spin } from 'antd';
-// import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
+
+import haiLoGoTiki2 from '~/assets/images/haiLoGoTiki2.png';
 import userApi from '~/apis/userApi';
 import SingInGoogle from '~/pages/Auth/googleSingIn';
-import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import Cookies from 'universal-cookie';
 // action login => Redux
-import { login } from '~/redux/userSlice.js';
-import { useDispatch } from 'react-redux';
+// import { login } from '~/redux/userSlice.js';
+// import { useDispatch } from 'react-redux';
 // set tokenCookie
 import setTokenCookie from '~/utils/setTokenCookie.js';
 import setRefreshToken from '~/utils/setRefreshToken';
@@ -38,7 +40,7 @@ function LogInForm() {
   const navigate = useNavigate();
 
   // dispatch => gửi dispatch => đến redux
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   // validation form yup
   const emailRegex = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+\.)+[cC][oO][mM]$/;
@@ -76,6 +78,7 @@ function LogInForm() {
   // datafrom => validation => success
   // const navigate = useNavigate();
 
+  // -------------ĐĂNG NHẬP --- BẰNG EMAIL ---------
   // sau khi đã validaiton thành công => POST => LOGIN
   const onSubmit = async (data) => {
     // data => LOGIN => Email
@@ -89,18 +92,18 @@ function LogInForm() {
     try {
       // data User trả về khi đăng nhập thành công
       const response = await userApi.loginEmail(dataLoginEmail);
-      // console.log(response);
+      console.log(response);
 
       // lưu token => vào cookies => assetsToken
-      const token = response.token;
+      const token = response?.token;
       setTokenCookie(token);
 
       // refreshToken => lưu cookies => refresh token
-      const refreshToken = response.refreshToken;
+      const refreshToken = response?.refreshToken;
       setRefreshToken(refreshToken);
 
       // lưu data login thành công => vào redux
-      dispatch(login(response));
+      // dispatch(login(response));
 
       // setLoading => false
       setIsLoading(false);
@@ -118,7 +121,7 @@ function LogInForm() {
 
       // sau 3s chuyển sang trang chủ
       setTimeout(() => {
-        navigate('/homepage');
+        navigate('/');
         reset();
       }, 3000);
     } catch (error) {
@@ -165,7 +168,7 @@ function LogInForm() {
       {isLoading ? (
         <Spin size="large" className={clsx(style.wrapSpinAnt)}>
           <div className={clsx(style.container)}>
-            <h1 className={clsx(style.heading)}> Nhóm 1 PM25.10 - Form Login</h1>
+            <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
             <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
               <div className={clsx(style.wrapInput)}>
                 <label className={clsx(style.label)} htmlFor={idInput2}>
@@ -286,7 +289,7 @@ function LogInForm() {
         // nếu không là loading => thì để bình thường
 
         <div className={clsx(style.container)}>
-          <h1 className={clsx(style.heading)}> Nhóm 1 PM25.10 - Form Login</h1>
+          <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
           <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
             <div className={clsx(style.wrapInput)}>
               <label className={clsx(style.label)} htmlFor={idInput2}>
@@ -371,29 +374,27 @@ function LogInForm() {
             </div>
 
             <input className={clsx(style.register)} type="submit" value={'Đăng Nhập'} />
-          </form>
-
-          {/* login google */}
-          <div className={clsx(style.loginGoogle)}>
-            <SingInGoogle />
-          </div>
-
-          {/* Login PHONE Number */}
-          <Link
-            to="/loginPhoneNumber"
-            style={{
-              width: '100%',
-            }}
-          >
-            <Button
-              startIcon={<PermPhoneMsgIcon />}
-              size="large"
-              variant="contained"
-              className={clsx(style.btnLoginPhoneNumber)}
+            {/* login google */}
+            <div className={clsx(style.loginGoogle)}>
+              <SingInGoogle />
+            </div>
+            {/* Login PHONE Number */}
+            <Link
+              to="/loginphonenumber"
+              style={{
+                width: '100%',
+              }}
             >
-              <span>Đăng nhập với số điện thoại</span>
-            </Button>
-          </Link>
+              <Button
+                startIcon={<PermPhoneMsgIcon />}
+                size="large"
+                variant="contained"
+                className={clsx(style.btnLoginPhoneNumber)}
+              >
+                <span>Đăng nhập với số điện thoại</span>
+              </Button>
+            </Link>
+          </form>
 
           {/* action => switch => login || register */}
           <div className={clsx(style.switchForm)}>
@@ -404,9 +405,9 @@ function LogInForm() {
           </div>
         </div>
       )}
-      <ToastContainer className={style.toastMessage} />;
+      <ToastContainer className={style.toastMessage} />
     </div>
   );
 }
 
-export default LogInForm;
+export default memo(LogInForm);

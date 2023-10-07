@@ -28,6 +28,9 @@ const PayOrder = lazy(() => import('~/pages/PayOrder'));
 const PayOrderReturnVNP = lazy(() => import('~/pages/PayOrder/PayOrderReturnVNP.jsx'));
 const PayMentTienMat = lazy(() => import('~/pages/PayOrder/PayMentTienMat'));
 const OrderHistory = lazy(() => import('~/pages/OrderHistory')); // quản lý đơn hàng
+const RegisterForm = lazy(() => import('~/pages/Auth/RegisterUser'));
+const LogInForm = lazy(() => import('~/pages/Auth/LoginUser'));
+const LoginPhoneNumber = lazy(() => import('~/pages/Auth/LoginPhoneNumber'));
 
 function App() {
   return (
@@ -122,6 +125,33 @@ function App() {
           element={
             <Suspense fallback={<LinearProgress />}>
               <OrderHistory />
+            </Suspense>
+          }
+        ></Route>
+        {/*REGISTER Đăng kí tài khoản*/}
+        <Route
+          path="/register"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <RegisterForm />
+            </Suspense>
+          }
+        ></Route>
+        {/*LOGIN Đăng Nhập*/}
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <LogInForm />
+            </Suspense>
+          }
+        ></Route>
+        {/*ĐĂNG NHẬP SỐ ĐIỆN THOẠI*/}
+        <Route
+          path="/loginphonenumber"
+          element={
+            <Suspense fallback={<LinearProgress />}>
+              <LoginPhoneNumber />
             </Suspense>
           }
         ></Route>

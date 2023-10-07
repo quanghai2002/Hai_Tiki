@@ -14,9 +14,12 @@ import userApi from '~/apis/userApi';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import Box from '@mui/material/Box';
+
 // set tokenCookie
 import setTokenCookie from '~/utils/setTokenCookie.js';
 import setRefreshToken from '~/utils/setRefreshToken';
+import haiLoGoTiki2 from '~/assets/images/haiLoGoTiki2.png';
 
 // action login
 import { login } from '~/redux/userSlice.js';
@@ -87,10 +90,8 @@ function LoginPhoneNumber() {
         console.log('đã lợt vào đây để gửi mã');
         window.confirmationResult = confirmationResult;
         setLoading(false);
-        // setTimeoutSendOtp(true);
-        // setTimeoutSendOtp(true);
+
         setShowOTP(true);
-        // setStartTime(Date.now());
 
         toast.success('Gửi mã OTP thành công', {
           position: 'top-right',
@@ -167,7 +168,7 @@ function LoginPhoneNumber() {
           dispatch(login(dataUserLoginPhone));
           // sau 3s chuyển sang trang chủ
           setTimeout(() => {
-            navigate('/homepage');
+            navigate('/');
           }, 3000);
         } catch (error) {
           console.log(error);
@@ -223,53 +224,12 @@ function LoginPhoneNumber() {
           {/*  showOTP hiện thị show OTP => và đăng nhập */}
 
           {showOTP ? (
-            // ẩn hiện nút gửi lại mã và gửi mã
             <>
-              {/* {timeoutSendOtp ? (
-                <>
-                  <div className={clsx(style.wrapTitle)}>
-                    <Link to="/login" className={clsx(style.backLoginPhone)}>
-                      <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
-                    </Link>
-                    <h1 className={clsx(style.title)}>Xác minh OTP</h1>
-                  </div>
-                  <div className={clsx(style.wrapLabel)}>
-                    <Link className={clsx(style.linkswitchEmail)}>
-                      <span
-                        className={clsx(style.phone, style.switchEmail)}
-                        onClick={() => {
-                          nagiagte('/loginPhoneNumber');
-                        }}
-                      >
-                        Lấy lại mã xác minh
-                      </span>
-                    </Link>
-                    <Link to="/login" className={clsx(style.linkswitchEmail)}>
-                      <span className={clsx(style.switchEmail)}>Đăng nhập với email</span>
-                    </Link>
-                  </div>
-                  <div className={clsx(style.wrapOtp)}>
-                    <Button disabled className={clsx(style.btnSendInput, style.btnsendInputHide)}>
-                      <span className={clsx(style.wrapSendCode)}>
-                        <span className={clsx(style.timeout)}> Gửi lại mã </span>
-                        <Countdown
-                          date={startTime + 6000}
-                          renderer={renderer}
-                          onComplete={handleStopCountdown}
-                          intervalDelay={1500}
-                        />
-                      </span>
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )} */}
-
               {showSpin ? (
                 // khi đang gửi requet => server => SHOW Spin ra
                 <Spin size="large" className={clsx(style.wrapSpinAnt)}>
                   <div className={clsx(style.wrapTitle)}>
+                    <img alt="icon" src={haiLoGoTiki2} className={clsx(style.img)} />
                     <Link to="/login" className={clsx(style.backLoginPhone)}>
                       <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
                     </Link>
@@ -310,6 +270,7 @@ function LoginPhoneNumber() {
                 /// khi không hiện thị show SPIN => để như bình thường
                 <>
                   <div className={clsx(style.wrapTitle)}>
+                    <img alt="icon" src={haiLoGoTiki2} className={clsx(style.img)} />
                     <Link to="/login" className={clsx(style.backLoginPhone)}>
                       <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
                     </Link>
@@ -353,10 +314,13 @@ function LoginPhoneNumber() {
           ) : (
             <>
               <div className={clsx(style.wrapTitle)}>
-                <Link to="/login" className={clsx(style.backLoginPhone)}>
-                  <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
-                </Link>
-                <h1 className={clsx(style.title)}>Đăng nhập với số điện thoại</h1>
+                <img alt="logo" src={haiLoGoTiki2} className={clsx(style.img)} />
+                <Box className={clsx(style.wrapContent)}>
+                  <Link to="/login" className={clsx(style.backLoginPhone)}>
+                    <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
+                  </Link>
+                  <h1 className={clsx(style.title)}>Đăng nhập với số điện thoại</h1>
+                </Box>
               </div>
               <div className={clsx(style.wrapLabel)}>
                 <span className={clsx(style.phone)}>Số điện thoại</span>
@@ -365,7 +329,7 @@ function LoginPhoneNumber() {
                 </Link>
               </div>
               <PhoneInput country="vn" value={phone} onChange={setPhone} className={clsx(style.inputPhone)} />
-              {/* khi OTP đang gửi => hiển thị loading Spin */}
+              {/* khi OTP đang gửi => hiển thị loading Spin  ở BUTTON*/}
               {loading ? (
                 <>
                   <div className={clsx(style.wrapOtp)}>
