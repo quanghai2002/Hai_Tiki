@@ -20,7 +20,6 @@ import Box from '@mui/material/Box';
 import setTokenCookie from '~/utils/setTokenCookie.js';
 import setRefreshToken from '~/utils/setRefreshToken';
 import haiLoGoTiki2 from '~/assets/images/haiLoGoTiki2.png';
-
 // action login
 import { login } from '~/redux/userSlice.js';
 
@@ -121,7 +120,7 @@ function LoginPhoneNumber() {
       });
   }
 
-  // verify OTP => xác thực OTP => phone Number
+  // ----------verify OTP => xác thực OTP => phone Number
   async function onOTPverify() {
     setLoading(true);
     setShowSpin(true);
@@ -140,8 +139,9 @@ function LoginPhoneNumber() {
             phone: dataPhoneNumber,
           });
 
-          // lưu token vào trong cookie
+          // console.log('data Login Phone Number:', dataUserLoginPhone);
 
+          // -----------------LƯU TOKEN VÀO COOKIE ------------------
           // lưu Access token => vào cookies => assetsToken
           const token = dataUserLoginPhone?.token;
           setTokenCookie(token);
@@ -162,10 +162,8 @@ function LoginPhoneNumber() {
             theme: 'light',
           });
 
-          // dispatch => lưu user vào redux
-          // console.log({ dataUserLoginPhone });
-          // dispatch login phone number
-          dispatch(login(dataUserLoginPhone));
+          // ---------LƯU THÔNG TIN USER VÀO REDUX-----------
+          dispatch(login(dataUserLoginPhone?.data));
           // sau 3s chuyển sang trang chủ
           setTimeout(() => {
             navigate('/');
@@ -190,29 +188,6 @@ function LoginPhoneNumber() {
         });
       });
   }
-
-  // sau 1 phút mới cho tiếp tục gửi lại mã => tránh firebase => spam => dẫn đến => không gửi được
-  // Random component
-  const handleStartCountdown = () => {
-    // setIsCounting(true);
-  };
-
-  // khi countdown hoàn thành
-  const handleStopCountdown = () => {
-    // setTimeoutSendOtp(false);
-    console.log('countdown đã hoàn thành');
-  };
-
-  // Renderer callback with condition
-  const renderer = ({ minutes, seconds, completed }) => {
-    return (
-      <span>
-        {minutes}:{seconds}
-      </span>
-    );
-
-    // Render a countdown
-  };
 
   return (
     <>

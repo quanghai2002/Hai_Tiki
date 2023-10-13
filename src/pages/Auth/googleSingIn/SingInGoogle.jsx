@@ -12,8 +12,6 @@ import { useDispatch } from 'react-redux';
 // set tokenCookie
 import setTokenCookie from '~/utils/setTokenCookie.js';
 import setRefreshToken from '~/utils/setRefreshToken';
-
-// action login => redux
 import { login } from '~/redux/userSlice.js';
 
 SingInGoogle.propTypes = {};
@@ -37,9 +35,10 @@ function SingInGoogle() {
       try {
         // data login google thành công
         const responseLoginGoogle = await userApi.loginGoogle(param);
-        // console.log(responseLoginGoogle);
+        // console.log({ responseLoginGoogle });
         setShowSpin(false);
         if (responseLoginGoogle) {
+          // ------------------- LƯU TOKEN VÀO COOKIE -------------------
           // lưu Access token => vào cookies => assetsToken
           const token = responseLoginGoogle?.token;
           setTokenCookie(token);
@@ -48,7 +47,7 @@ function SingInGoogle() {
           const refreshToken = responseLoginGoogle?.refreshToken;
           setRefreshToken(refreshToken);
           //
-          console.log('Đăng Nhập GOOGLE Thành Công');
+          // console.log('Đăng Nhập GOOGLE Thành Công');
           toast.success('Đăng nhập Google thành công', {
             position: 'top-right',
             autoClose: 4000,
@@ -60,9 +59,9 @@ function SingInGoogle() {
             theme: 'light',
           });
 
-          // dispatch => lưu thông tin User => redux
-          dispatch(login(responseLoginGoogle));
-          // sau 4s chuyển sang trang chủ
+          // --LƯU THÔNG TIN USER VÀO REDUX--------------
+          dispatch(login(responseLoginGoogle?.data));
+          // sau 3s chuyển sang trang chủ
           setTimeout(() => {
             navigate('/');
           }, 3000);

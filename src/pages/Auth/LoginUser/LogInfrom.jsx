@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import style from './Form.module.scss';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { Suspense, useEffect, useId, useState, memo } from 'react';
+import { Suspense, useEffect, useId, useState, memo, useRef } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,26 +18,24 @@ import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import haiLoGoTiki2 from '~/assets/images/haiLoGoTiki2.png';
 import userApi from '~/apis/userApi';
 import SingInGoogle from '~/pages/Auth/googleSingIn';
-import Cookies from 'universal-cookie';
-// action login => Redux
-// import { login } from '~/redux/userSlice.js';
-// import { useDispatch } from 'react-redux';
-// set tokenCookie
 import setTokenCookie from '~/utils/setTokenCookie.js';
 import setRefreshToken from '~/utils/setRefreshToken';
+import removeToken from '~/utils/removeToken';
+import getTokenCookie from '~/utils/getTokenCookie';
+import getrefreshToken from '~/utils/getRefreshToken';
+import { useDispatch } from 'react-redux';
+import { login } from '~/redux/userSlice.js';
 
 // import { loginPending, loginFulfilled, loginRejected } from '~/redux/userSlice.js';
 
 function LogInForm() {
-  // navigate
-
-  // const navigate = useNavigate();
   // redux
   // const dispatch = useDispatch();
   // loading
   // const isLoading = useSelector((state) => state.user?.isLoading);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // dispatch => gửi dispatch => đến redux
   // const dispatch = useDispatch();
@@ -87,23 +85,20 @@ function LogInForm() {
       password: data.password,
     };
 
+    // console.log({ dataLoginEmail });
     setIsLoading(true);
     // POST => Login
     try {
       // data User trả về khi đăng nhập thành công
       const response = await userApi.loginEmail(dataLoginEmail);
-      console.log(response);
 
-      // lưu token => vào cookies => assetsToken
+      //-------------------ĐĂNG NHẬP THÀNH CÔNG LƯU 2 LOẠI TOKEN: ACCESS TOKEN AND REFRESH TOKEN-----------
+      // --LƯU ACCSESS TOKEN VAO COOKIE------
       const token = response?.token;
       setTokenCookie(token);
-
       // refreshToken => lưu cookies => refresh token
       const refreshToken = response?.refreshToken;
       setRefreshToken(refreshToken);
-
-      // lưu data login thành công => vào redux
-      // dispatch(login(response));
 
       // setLoading => false
       setIsLoading(false);
@@ -119,11 +114,14 @@ function LogInForm() {
         theme: 'light',
       });
 
-      // sau 3s chuyển sang trang chủ
+      // --------------------------ĐĂNG NHẬP THÀNH CÔNG LƯU THÔNG TIN USER VÀO REDUX -----------------
+      // console.log({ response });
+      dispatch(login(response?.data));
+      // ----------------------------- SAU 3S SAU CHUYỂN VỀ TRANG CHỦ --------------------
       setTimeout(() => {
         navigate('/');
-        reset();
       }, 3000);
+      // sau 3s chuyển sang trang chủ
     } catch (error) {
       // console.log(error);
       setIsLoading(false);
@@ -138,6 +136,13 @@ function LogInForm() {
         theme: 'light',
       });
     }
+
+    // -------------NẾU ĐĂNG NHẬP THẤT BẠI -- KIỂM TRA CÓ NÊN XÓA -- TOKEN CŨ NẾU CÓ -----------------
+    // const isAccessToken = getTokenCookie();
+    // console.log('isAccessToken', Boolean(isAccessToken));
+
+    // const isRefreshToken = getrefreshToken();
+    // console.log('isRefreshToken', Boolean(isRefreshToken));
   };
 
   // showPassWord

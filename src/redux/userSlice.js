@@ -16,19 +16,18 @@ import userApi from '~/apis/userApi.js';
 const userSlice = createSlice({
   name: 'User-Auth',
   initialState: {
-    user: {},
+    user: undefined,
     // các thông tin khác nếu cần
   },
   reducers: {
     // action là function nhé => gọi dispatch => phải gọi hàm: dispatch(login(...))
     login(state, action) {
-
       // console.log('dataUsers:', action.payload);
       // thay đổi state mới
       state.user = action.payload;
     },
     logOut(state) {
-      state.user = {};
+      state.user = undefined;
     }
   },
   // extraReducers: (builder) => {

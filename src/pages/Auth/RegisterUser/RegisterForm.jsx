@@ -74,10 +74,11 @@ function RegisterForm() {
       password: data.password,
     };
 
-    console.log('dataRegister', dataRegister);
+    // console.log('dataRegister', dataRegister);
     // khi pending bắt đầu ấn đăng kí => setloading => true
     setLoading(true);
     setIsEmail(false);
+
     // Sau khi có data => POST => server
     try {
       const response = await userApi.postRegister(dataRegister);
@@ -94,11 +95,11 @@ function RegisterForm() {
         theme: 'light',
       });
 
-      // sau 4s chuyển sang trang => đăng nhập
+      // sau 3s chuyển sang trang => đăng nhập
       setTimeout(() => {
         navigate('/login');
         reset();
-      }, 4000);
+      }, 3000);
     } catch (error) {
       // console.log('Đăng kí tài khoản thất bại ! Email đã tồn tại');
       // console.log(error?.response?.data?.message);

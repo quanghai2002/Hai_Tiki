@@ -23,7 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers(
   {
     userAuth: reducerUser,
-    phone: PhoneReducer
+    // phone: PhoneReducer
     // students: reducerStudents
     // ....
   }

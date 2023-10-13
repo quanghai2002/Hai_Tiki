@@ -40,10 +40,12 @@ axiosClient.interceptors.request.use(async (config) => {
 
   // refresh token
   // lấy token từ cookies => nếu không có => đồng nghĩa chưa đăng nhập
-  // const token = getTokenCookie();
+
 
   const token = getTokenCookie();
 
+
+  // --------Nếu có token => Đã đăng nhập rồi thì mới cho check token => Không Đăng Nhập thì để Bình Thường Thôi
   if (token) {
     // giải xem token => còn hạn không => nếu exp => refresh token
     const decodedToken = jwt_decode(token);
@@ -55,7 +57,7 @@ axiosClient.interceptors.request.use(async (config) => {
 
 
     if (expToken < date.getTime() / 1000) {
-      console.log('token đã hết hạn => refresh token => gắn Authorization lại  ');
+      console.log('token đã hết hạn => refresh TOKEN THÀNH CÔNG=> gắn Authorization lại  ');
       // nếu token hết hạn => gọi api refresh token
       const refreshTokenID = getrefreshToken();
       const newToken = await refreshToken(refreshTokenID);

@@ -24,10 +24,40 @@ import HomeIcon from '~/assets/images/iconHome.png';
 import HomeIconActive from '~/assets/images/iconHomeActive.png';
 import IconAcount from '~/assets/images/iconAccount.png';
 import DarkMode from '~/components/DarkMode';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut } from '~/redux/userSlice.js';
+import removeToken from '~/utils/removeToken';
+import getrefreshToken from '~/utils/getRefreshToken';
+import getTokenCookie from '~/utils/getTokenCookie';
 
 Header.propTypes = {};
 
 function Header(props) {
+  const dispatch = useDispatch();
+  // --- LẤY THÔNG TIN USER TRONG REDUX KHI ĐÃ ĐĂNG NHẬP =>
+  // ----------NẾU CÓ THÔNG TIN USER TRONG REDUX LÀ ĐÃ ĐĂNG NHẬP VÀ NGƯỢC LẠI--------------
+  const userLogin = useSelector((state) => state?.userAuth?.user);
+  console.log(userLogin);
+  const isLogin = !!userLogin;
+  console.log({ isLogin });
+
+  // --------------KHI CLICK LOGOUT ---------
+  const handleLogoutUser = () => {
+    // Xóa thông tin User trong redux
+    dispatch(logOut());
+
+    // Xóa Cookie
+    const isAccessToken = getTokenCookie();
+    if (isAccessToken) {
+      removeToken('tokenID');
+    }
+    //
+    const isRefreshToken = getrefreshToken();
+    if (isRefreshToken) {
+      removeToken('refreshToken');
+    }
+  };
+
   const navigate = useNavigate();
   // khi click vào nút search
   const onSearch = (value) => console.log(value);
@@ -107,9 +137,7 @@ function Header(props) {
                 color: (theme) => theme?.palette?.text?.primary5,
               },
             }}
-            onClick={() => {
-              console.log('đăng xuất');
-            }}
+            onClick={handleLogoutUser}
           >
             <ListItemIcon className={clsx(style.icon)}>
               <Logout fontSize="small" />
@@ -198,7 +226,7 @@ function Header(props) {
             {/* action => xem tài khoản */}
             {/* nếu đã đăng nhập thì hiển thị avartar và cho tùy chỉnh user  */}
             {/* nếu không chuyển đến trang đăng nhập  */}
-            {true ? (
+            {isLogin ? (
               // đã đăng nhập => hover => có tùy chỉnh sửa thông tin user hoặc đăng xuất
               <Dropdown
                 // danh sách trong dropdown hover
@@ -226,9 +254,7 @@ function Header(props) {
                 >
                   <Avatar
                     className={clsx(style.iconImage)}
-                    src={
-                      'https://lh3.googleusercontent.com/a/ACg8ocIC29UlJfjhtz_hfjR1RxgsfkEExdSAZ8PdVQ1MUq4Troc=s324-c-no'
-                    }
+                    srcSet={userLogin?.picture || userLogin?.img_url}
                     alt="avartar"
                   />
 
@@ -256,13 +282,15 @@ function Header(props) {
               >
                 <Avatar className={clsx(style.iconImage)} src={IconAcount} alt="avartar" />
 
-                <Typography
-                  className={clsx(style.text)}
-                  variant="h6"
-                  color={(theme) => theme?.palette?.text?.secondary}
-                >
-                  Tài khoản
-                </Typography>
+                <Link to="/login" className={clsx(style.linkBackLogin)}>
+                  <Typography
+                    className={clsx(style.text)}
+                    variant="h6"
+                    color={(theme) => theme?.palette?.text?.secondary}
+                  >
+                    Tài khoản
+                  </Typography>
+                </Link>
               </Box>
             )}
 
