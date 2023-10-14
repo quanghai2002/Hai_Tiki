@@ -12,39 +12,20 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useMemo } from 'react';
 
 // propTypes
-ReactSlickPhone.propTypes = {};
+ReactSlickPhone.propTypes = {
+  phoneDetails: PropTypes.object,
+};
 
-function ReactSlickPhone(props) {
+function ReactSlickPhone({ phoneDetails }) {
+  // ---THÔNG TIN SẢN PHẨM ĐƯỢC TRUYỀN XUỐNG----
+
   // list img
-  const listImgaes = useMemo(() => {
-    return [
-      {
-        id: 1,
-        url: 'https://salt.tikicdn.com/cache/368x368/ts/product/b1/fd/00/37fe3895ebef076d2f62e59136c6699e.jpg.webp',
-      },
-      {
-        id: 2,
-        url: 'https://salt.tikicdn.com/cache/368x368/ts/product/70/01/5d/769de7c8b2037efa67ed7e9c4c225867.jpg.webp',
-      },
-      {
-        id: 3,
-        url: 'https://salt.tikicdn.com/cache/368x368/ts/product/61/ab/dd/cd833d959492fac1eaec7863d9ff81da.jpg.webp',
-      },
-      {
-        id: 4,
-        url: 'https://salt.tikicdn.com/cache/368x368/ts/product/ef/ce/43/a364936c725c483d9fe2c243dc249219.jpg.webp',
-      },
-      {
-        id: 5,
-        url: 'https://salt.tikicdn.com/cache/368x368/ts/product/fe/92/18/31935707424bad8cb26b9992919db8ec.jpg.webp',
-      },
-      {
-        id: 6,
-        url: 'https://salt.tikicdn.com/cache/368x368/ts/product/fe/92/18/31935707424bad8cb26b9992919db8ec.jpg.webp',
-      },
-    ];
-  }, []);
-
+  const listImgaes = phoneDetails?.image_urls?.map((item, index) => {
+    return {
+      id: index,
+      url: item,
+    };
+  });
   // setting phone slick
   const settings = {
     customPaging: function (i) {

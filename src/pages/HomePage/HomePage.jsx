@@ -6,9 +6,6 @@ import { memo, lazy, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { FloatButton } from 'antd';
-import ReactPaginate from 'react-paginate';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Header = lazy(() => import('~/components/Header'));
 const Slider = lazy(() => import('~/components/Slider'));
@@ -22,12 +19,6 @@ HomePage.propTypes = {};
 
 // HomePage
 function HomePage(props) {
-  // ---------------PHÂN TRANG -----------REACT PAGINATION-------
-  const [pageCount, setPageCount] = useState(10);
-  const handlePageClick = (event) => {
-    console.log('event', event.selected + 1);
-  };
-
   // return jsx => giao diện
   return (
     <Box>
@@ -63,38 +54,6 @@ function HomePage(props) {
               <CardPhone />
             </Grid>
 
-            {/* PAGINATION => Phân trang */}
-            <Grid lg={12}>
-              <Box
-                className={clsx(style.wrapPagination)}
-                sx={{
-                  '& .page-link': {
-                    color: (theme) => theme?.palette?.text?.primary4,
-                  },
-                }}
-              >
-                <ReactPaginate
-                  nextLabel={<ArrowForwardIosIcon className={clsx(style.icon)} />}
-                  onPageChange={handlePageClick}
-                  pageRangeDisplayed={3}
-                  marginPagesDisplayed={1}
-                  pageCount={pageCount}
-                  previousLabel={<ArrowBackIosIcon className={clsx(style.icon)} />}
-                  pageClassName="page-item"
-                  pageLinkClassName="page-link"
-                  previousClassName="page-item1"
-                  previousLinkClassName="page-link"
-                  nextClassName="page-item2"
-                  nextLinkClassName="page-link"
-                  breakLabel="..."
-                  breakClassName="page-item"
-                  breakLinkClassName="page-link"
-                  containerClassName="pagination"
-                  activeClassName="active"
-                  renderOnZeroPageCount={null}
-                />
-              </Box>
-            </Grid>
             {/* footer */}
             <Grid lg={12}>
               <Footer />

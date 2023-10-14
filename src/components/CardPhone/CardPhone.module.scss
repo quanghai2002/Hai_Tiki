@@ -131,4 +131,116 @@
       }
     }
   }
+
+  // Pagination  Phân trang
+  .wrapPagination {
+    padding: 13px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // background-color: red;
+    & :global .pagination {
+      list-style-type: none !important;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon {
+      font-size: 2rem;
+      color: rgb(11, 116, 229);
+    }
+
+    & :global .page-link {
+      width: 40px;
+      height: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    & :global .page-item1 {
+      border: 1px solid rgb(10, 104, 255);
+      border-radius: 4px;
+      background-color: #fff;
+      user-select: none;
+      svg {
+        position: relative;
+        left: 4px;
+      }
+      &:hover {
+        cursor: pointer;
+        background-color: rgba(10, 104, 255, 0.12);
+      }
+      &.disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        opacity: 0.6;
+        & svg {
+          color: rgb(128, 128, 137);
+        }
+      }
+    }
+
+    & :global .page-item2 {
+      border: 1px solid rgb(10, 104, 255);
+      border-radius: 4px;
+      background-color: #fff;
+      user-select: none;
+      &:hover {
+        cursor: pointer;
+        background-color: rgba(10, 104, 255, 0.12);
+      }
+      &.disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        opacity: 0.6;
+        & svg {
+          color: rgb(128, 128, 137);
+        }
+      }
+    }
+
+    & :global .page-item {
+      border-radius: 4px;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &.active {
+        background: rgb(10, 104, 255);
+        .page-link {
+          color: rgb(255, 255, 255);
+          font-weight: 500;
+        }
+      }
+      .page-link {
+        font-size: 1.6rem;
+        line-height: 3.6rem;
+        font-weight: 400;
+        border-radius: 4px;
+        user-select: none;
+
+        &:hover {
+          cursor: pointer;
+          background: rgba(39, 39, 42, 0.12);
+        }
+      }
+    }
+  }
+  //progress => Thanh Trạng Thái Khi Call API
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    height: 3px;
+
+    &.hidden {
+      display: none;
+    }
+  }
 }

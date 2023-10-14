@@ -1,0 +1,94 @@
+.wrapPhoneDetailsLazy {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 9999;
+
+  // headerLazy
+
+  .headerLazy {
+    width: 100%;
+
+    & :global .ant-skeleton-input {
+      width: 100%;
+      height: 86px;
+    }
+  }
+
+  // content
+  .content {
+    max-width: 1440px;
+    padding-left: 24px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 16px;
+  }
+
+  // lazyImage
+  .lazyImage {
+    width: 100% !important;
+    height: 532px !important;
+  }
+
+  .wrapContentDetalis {
+    display: flex;
+    flex-direction: column;
+    // content1
+    .content1 {
+      width: 253px;
+      height: 36px;
+      margin-bottom: 10px;
+    }
+
+    // content2
+    .content2 {
+      width: 566px;
+      height: 50px;
+    }
+    // content3
+    .content3 {
+      width: 253px;
+      height: 30px;
+      margin-top: 3px;
+      margin-bottom: 6px;
+    }
+    // content4
+    .content4 {
+      width: 253px;
+      height: 100px;
+      margin-top: 3px;
+    }
+    // content5
+    .content5 {
+      width: 566px;
+      height: 400px;
+      margin-top: 14px;
+    }
+  }
+
+  // contentRight
+  .contentRight {
+    .right1 {
+      height: 60px;
+    }
+    .right2 {
+      height: 30px;
+      margin-top: 4px;
+    }
+    .right3 {
+      height: 80px;
+      margin-top: 4px;
+    }
+    .right4 {
+      height: 66px;
+      margin-top: 4px;
+    }
+    .right5 {
+      width: 100% !important;
+      height: 60px;
+      margin-top: 4px;
+    }
+  }
+}

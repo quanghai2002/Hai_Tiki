@@ -12,15 +12,14 @@ import Divider from '@mui/material/Divider';
 
 import chinhhang from '~/assets/images/iconChinhHang.png';
 // propTypes
-PhoneDescription.propTypes = {};
+PhoneDescription.propTypes = {
+  phoneDetails: PropTypes.object,
+};
 
-function PhoneDescription(props) {
+function PhoneDescription({ phoneDetails }) {
+  // console.log('thông tin sản phẩm:', phoneDetails);
   // value rating
-  const [valueRating, setValueRating] = useState(3);
-
-  // price => convert => string
-  const number = 19999999;
-  const formattedNumber = number.toLocaleString('vi-VN');
+  const [valueRating, setValueRating] = useState(5);
 
   return (
     <Box className={clsx(style.container)}>
@@ -35,14 +34,14 @@ function PhoneDescription(props) {
                 Thương hiệu:
               </Typography>
               <Typography className={clsx(style.text, style.text2)} color="rgb(10, 104, 255)">
-                Xiaomi
+                {phoneDetails?.brand?.name}
               </Typography>
             </Box>
           </Box>
 
           {/* name phone details */}
           <Typography className={clsx(style.namePhone)} color={(theme) => theme?.palette?.text?.primary4}>
-            Điện thoại Xiaomi Redmi 9A (2GB/32GB) - Hàng chính hãng
+            {phoneDetails?.name}
           </Typography>
           {/* rating */}
           <Box className={clsx(style.wrapRating)}>
@@ -55,7 +54,7 @@ function PhoneDescription(props) {
           <Box className={clsx(style.wrapPrice)}>
             <Box className={clsx(style.price)}>
               <Typography className={clsx(style.number)} color={(theme) => theme?.palette?.text?.primary4}>
-                {formattedNumber}
+                {phoneDetails?.price?.toLocaleString('vi-VN')}
               </Typography>
               <Typography className={clsx(style.vnd)} color={(theme) => theme?.palette?.text?.primary4}>
                 ₫
@@ -63,7 +62,7 @@ function PhoneDescription(props) {
             </Box>
 
             <Typography className={clsx(style.promotion)} color={(theme) => theme?.palette?.text?.primary4}>
-              -{'90'}%
+              -{phoneDetails?.promotion}
             </Typography>
           </Box>
         </Box>
@@ -77,12 +76,9 @@ function PhoneDescription(props) {
           {/* content */}
           <Box className={clsx(style.wrapContentOption)}>
             <Box className={clsx(style.content)}>
-              <img
-                className={clsx(style.img)}
-                src="https://salt.tikicdn.com/cache/368x368/ts/product/b1/fd/00/37fe3895ebef076d2f62e59136c6699e.jpg.webp"
-              />
+              <img className={clsx(style.img)} src={phoneDetails?.image_urls[0]} />
               <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-                Xanh lá
+                {phoneDetails?.mau_sac}
               </Typography>
               <img src={iconCheck} alt="icon check" className={clsx(style.iconCheck)} />
             </Box>
@@ -101,7 +97,7 @@ function PhoneDescription(props) {
             Dung lượng pin
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            5000 mAh
+            {phoneDetails?.dung_luong_pin}
           </Typography>
         </Box>
         <Divider />
@@ -111,7 +107,7 @@ function PhoneDescription(props) {
             Thương hiệu
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            Xiaomi
+            {phoneDetails?.brand?.name}
           </Typography>
         </Box>
         <Divider />
@@ -121,7 +117,7 @@ function PhoneDescription(props) {
             Camera
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            13 MP
+            {phoneDetails?.camera}
           </Typography>
         </Box>
         <Divider />
@@ -131,7 +127,7 @@ function PhoneDescription(props) {
             Bộ nhớ khả dụng
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            22 GB
+            {phoneDetails?.bo_nho}
           </Typography>
         </Box>
         <Divider />
@@ -141,7 +137,7 @@ function PhoneDescription(props) {
             Kích thước màn hình
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            6.53 inch
+            {phoneDetails?.kich_thuoc_man_hinh} inch
           </Typography>
         </Box>
         <Divider />
@@ -151,7 +147,7 @@ function PhoneDescription(props) {
             Tốc độ CPU
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            8 nhân 2.0 GHz
+            {phoneDetails?.CPU}
           </Typography>
         </Box>
         <Divider />
@@ -161,7 +157,7 @@ function PhoneDescription(props) {
             RAM
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            2 GB
+            {phoneDetails?.RAM}
           </Typography>
         </Box>
         <Divider />
@@ -171,7 +167,7 @@ function PhoneDescription(props) {
             ROM
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            32 GB
+            {phoneDetails?.ROM}
           </Typography>
         </Box>
         <Divider />
@@ -181,7 +177,7 @@ function PhoneDescription(props) {
             Hệ điều hành
           </Typography>
           <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-            Androi
+            {phoneDetails?.he_dieu_hanh}
           </Typography>
         </Box>
       </Box>
@@ -193,7 +189,7 @@ function PhoneDescription(props) {
         {/* ---- */}
         <Box className={clsx(style.content)}>
           <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
-            đây là điện thoại a13
+            {phoneDetails?.description}
           </Typography>
         </Box>
       </Box>

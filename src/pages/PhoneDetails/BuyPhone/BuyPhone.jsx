@@ -10,14 +10,18 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { InputNumber } from 'antd';
 
 // propTypes
-BuyPhone.propTypes = {};
+BuyPhone.propTypes = {
+  phoneDetails: PropTypes.object,
+};
 
-function BuyPhone(props) {
+function BuyPhone({ phoneDetails }) {
+  // THÔNG TIN SẢN PHẨM
+  console.log('thông tin sp:', phoneDetails);
   // số lượng sản phẩm trong kho
-  const [quantityPhone, setQuanityPhone] = useState(13);
+  const [quantityPhone, setQuanityPhone] = useState(phoneDetails?.stock_quantity);
 
   // giá mặc định của 1 sản phẩm =>ban đầu
-  const pricePhone = 19999999;
+  const pricePhone = phoneDetails?.price;
   // pricePhone để render ra màn hình
   const [newPricePhone, setNewPricePhone] = useState(pricePhone);
   // console.log({ newPricePhone });
@@ -78,13 +82,9 @@ function BuyPhone(props) {
     <Box className={clsx(style.wrapBuyPhone)}>
       {/* header */}
       <Box className={clsx(style.wrapHeader)}>
-        <img
-          src="https://salt.tikicdn.com/cache/368x368/ts/product/b1/fd/00/37fe3895ebef076d2f62e59136c6699e.jpg.webp"
-          alt="anh"
-          className={clsx(style.img)}
-        />
+        <img src={phoneDetails?.image_urls[0]} alt="anh" className={clsx(style.img)} />
         <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-          Xanh lam
+          {phoneDetails?.mau_sac}
         </Typography>
       </Box>
 

@@ -37,7 +37,7 @@ function Header(props) {
   // --- LẤY THÔNG TIN USER TRONG REDUX KHI ĐÃ ĐĂNG NHẬP =>
   // ----------NẾU CÓ THÔNG TIN USER TRONG REDUX LÀ ĐÃ ĐĂNG NHẬP VÀ NGƯỢC LẠI--------------
   const userLogin = useSelector((state) => state?.userAuth?.user);
-  console.log(userLogin);
+  // console.log(userLogin);
   const isLogin = !!userLogin;
   console.log({ isLogin });
 
@@ -268,7 +268,7 @@ function Header(props) {
                 </Box>
               </Dropdown>
             ) : (
-              // chưa đăng nhập
+              //------------ CHƯA ĐĂNG NHẬP ----------------
               <Box
                 className={clsx(style.action)}
                 sx={{
