@@ -23,6 +23,16 @@ const userApi = {
     loginPhoneNumber: (params) => {
         const url = '/users/loginphonenumber';
         return axiosClient.post(url, params);
+    },
+    // lấy thông tin 1 user
+    getOneUser: (idUser) => {
+        const url = `/users/getoneuser/${idUser}`;
+        return axiosClient.get(url);
+    },
+    // cập nhật thông tin USER
+    updateOneUser: (params) => {
+        const url = '/users/updateuser';
+        return axiosClient.patch(url, params);
     }
 };
 

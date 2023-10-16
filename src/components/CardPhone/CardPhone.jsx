@@ -18,11 +18,13 @@ import LinearProgress from '@mui/material/LinearProgress';
 import authentic_brand from '~/assets/images/iconChinhHang.png';
 import phoneApi from '~/apis/phoneApi.js';
 import { useNavigate } from 'react-router-dom';
+import CardPhoneLazy from './CardPhoneLazy/CardPhoneLazy';
 
 // PropTypes
 CardPhone.propTypes = {};
 
 function CardPhone(props) {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   // -------------XỬ LÝ LỰA CHỌN ĐỂ SẮP XẾP SẢN PHẨM THEO GIÁ --------------
   const [numberSort, setNumberSort] = useState(0);
@@ -38,6 +40,7 @@ function CardPhone(props) {
   // khi onchange trong Pagination
   const handlePageClick = (event) => {
     // KHI click thay đổi page => set lại thanh trạng thái === 0
+    setLoading(true);
     setProgress(0);
     setPageCurrent(event.selected + 1);
   };
@@ -54,6 +57,7 @@ function CardPhone(props) {
           // console.log({ respose });
           setListPhone(response?.data);
           setPageCount(response?.totalPages);
+          setLoading(false);
 
           // Thành Công || Thất bại => setprogress === 100
           setProgress(100);
@@ -61,6 +65,7 @@ function CardPhone(props) {
         .catch((err) => {
           console.log({ err });
           setProgress(100);
+          setLoading(false);
         });
     }
     // NẾU ===1 THÌ LÀ SẮP XẾP THEO GIÁ TỪ THẤP ĐẾN CAO
@@ -71,10 +76,12 @@ function CardPhone(props) {
           setListPhone(response?.data);
           setProgress(100);
           setPageCount(response?.pages);
+          setLoading(false);
         })
         .catch((err) => {
           console.log({ err });
           setProgress(100);
+          setLoading(false);
         });
     }
     // NẾU === 2 => THÌ GIÁ SẮP XẾP TỪ CAO XUỐNG THẤP
@@ -85,10 +92,12 @@ function CardPhone(props) {
           setListPhone(response?.data);
           setProgress(100);
           setPageCount(response?.pages);
+          setLoading(false);
         })
         .catch((err) => {
           console.log({ err });
           setProgress(100);
+          setLoading(false);
         });
     }
   }, [pageCurrent, numberSort]);
@@ -114,6 +123,7 @@ function CardPhone(props) {
     setNumberSort(0);
     setProgress(0);
     setPageCurrent(1);
+    setLoading(true);
   };
 
   // -----------KHI CLICK ẤN VÀO THEO GIÁ SẢM PHẨM TỪ THẤP ĐẾN CAO-------
@@ -122,6 +132,7 @@ function CardPhone(props) {
     setNumberSort(1);
     setProgress(0);
     setPageCurrent(1);
+    setLoading(true);
   };
 
   // -----------KHI CLICK ẤN VÀO THEO GIÁ SẢM PHẨM TỪ CAO XUỐNG THẤP-------
@@ -130,6 +141,7 @@ function CardPhone(props) {
     setNumberSort(2);
     setProgress(0);
     setPageCurrent(1);
+    setLoading(true);
   };
 
   // --------------KHI CLICK VÀO SẢN PHẨM ĐỂ XEM CHI TIẾT THÔNG TIN SẢN PHẨM Đó
@@ -198,60 +210,70 @@ function CardPhone(props) {
       </Box>
 
       {/* DANH SÁCH SẢN PHẨM ĐIỆN THOẠI */}
+      {/*----------- NẾU ĐANG LẤY THÔNG TIN ĐIỆN THOAI API => HIỆN LAZY CARD RA -------------*/}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}>
-        {/* MAP QUA DANH SÁCH SẢN PHẨM ĐIỆN THOẠI */}
-        {listPhone?.map((phone) => {
-          return (
-            <Grid lg={2.4} key={phone?._id}>
-              <Box
-                className={clsx(style.cardPhone)}
-                onClick={() => {
-                  handleClickPhone(phone?._id);
-                }}
-              >
-                {/* card Phone */}
-                <Card sx={{ maxWidth: 345 }} className={clsx(style.wrapCard)}>
-                  <CardActionArea>
-                    {/* card image */}
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={phone?.image_urls[0]}
-                      alt="anh dien thoai"
-                      className={clsx(style.cardImage)}
-                    />
-                    {/* card content */}
-                    <CardContent className={clsx(style.wrapCardContents)}>
-                      <Box className={clsx(style.info)}>
-                        {/* chính hãng */}
-                        <img src={authentic_brand} alt="authentic_brand" className={clsx(style.authentic_brand)} />
-                        {/* name phone */}
-                        <Typography className={clsx(style.namePhone)} color={(theme) => theme?.palette?.text?.primary4}>
-                          {phone?.name}
-                        </Typography>
-                        {/* rating */}
-                        <Rate disabled defaultValue={valueRating} className={clsx(style.ratingPhone)} />
-                      </Box>
-                      {/* price */}
-                      <Box className={clsx(style.wrapPrice)}>
-                        <Box className={clsx(style.price)}>
-                          <Typography className={clsx(style.number)} noWrap>
-                            {phone?.price?.toLocaleString('vi-VN')}
+        {loading ? (
+          <CardPhoneLazy />
+        ) : (
+          listPhone?.map((phone) => {
+            return (
+              <Grid lg={2.4} key={phone?._id}>
+                <Box
+                  className={clsx(style.cardPhone)}
+                  onClick={() => {
+                    handleClickPhone(phone?._id);
+                  }}
+                >
+                  {/* card Phone */}
+                  <Card sx={{ maxWidth: 345 }} className={clsx(style.wrapCard)}>
+                    <CardActionArea>
+                      {/* card image */}
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={phone?.image_urls[0]}
+                        alt="anh dien thoai"
+                        className={clsx(style.cardImage)}
+                      />
+                      {/* card content */}
+                      <CardContent className={clsx(style.wrapCardContents)}>
+                        <Box className={clsx(style.info)}>
+                          {/* chính hãng */}
+                          <img src={authentic_brand} alt="authentic_brand" className={clsx(style.authentic_brand)} />
+                          {/* name phone */}
+                          <Typography
+                            className={clsx(style.namePhone)}
+                            color={(theme) => theme?.palette?.text?.primary4}
+                          >
+                            {phone?.name}
                           </Typography>
-                          <Typography className={clsx(style.vnd)}>₫</Typography>
+                          {/* rating */}
+                          <Rate disabled defaultValue={valueRating} className={clsx(style.ratingPhone)} />
                         </Box>
+                        {/* price */}
+                        <Box className={clsx(style.wrapPrice)}>
+                          <Box className={clsx(style.price)}>
+                            <Typography className={clsx(style.number)} noWrap>
+                              {phone?.price?.toLocaleString('vi-VN')}
+                            </Typography>
+                            <Typography className={clsx(style.vnd)}>₫</Typography>
+                          </Box>
 
-                        <Typography className={clsx(style.promotion)} color={(theme) => theme?.palette?.text?.primary4}>
-                          -{phone?.promotion}
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Box>
-            </Grid>
-          );
-        })}
+                          <Typography
+                            className={clsx(style.promotion)}
+                            color={(theme) => theme?.palette?.text?.primary4}
+                          >
+                            -{phone?.promotion}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Box>
+              </Grid>
+            );
+          })
+        )}
       </Grid>
 
       {/* PAGINATION - PHÂN TRANG */}

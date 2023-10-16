@@ -9,9 +9,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Spin } from 'antd';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import userApi from '~/apis/userApi.js';
-import 'react-toastify/dist/ReactToastify.css';
 import haiLoGoTiki2 from '~/assets/images/haiLoGoTiki2.png';
 
 function RegisterForm() {

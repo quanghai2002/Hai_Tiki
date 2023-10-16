@@ -43,19 +43,11 @@ function Header(props) {
 
   // --------------KHI CLICK LOGOUT ---------
   const handleLogoutUser = () => {
+    // Xóa Cookie trong trình duyệt
+    removeToken('tokenID');
+    removeToken('refreshToken');
     // Xóa thông tin User trong redux
     dispatch(logOut());
-
-    // Xóa Cookie
-    const isAccessToken = getTokenCookie();
-    if (isAccessToken) {
-      removeToken('tokenID');
-    }
-    //
-    const isRefreshToken = getrefreshToken();
-    if (isRefreshToken) {
-      removeToken('refreshToken');
-    }
   };
 
   const navigate = useNavigate();

@@ -221,9 +221,12 @@
             padding: 4px 16px 4px 4px;
             gap: 8px;
             position: relative;
+
             .img {
               width: 42px;
+              max-width: 42px;
               height: 42px;
+              max-height: 42px;
               object-fit: contain;
             }
             .text {

@@ -3,43 +3,43 @@ import phoneApi from '~/apis/phoneApi.js';
 
 // thunk API
 //// First, create the AsyncThunk
-const getAllPhoneProductsNoPagination = createAsyncThunk(
-  'get-ALL-PHONE-PRODUCTS-No-Pagination',
-  async (param, thunkAPI) => {
-    try {
-      const dataGellAllPhone = await phoneApi.getAllPhones();
+// const getAllPhoneProductsNoPagination = createAsyncThunk(
+//   'get-ALL-PHONE-PRODUCTS-No-Pagination',
+//   async (param, thunkAPI) => {
+//     try {
+//       const dataGellAllPhone = await phoneApi.getAllPhones();
 
-      // console.log({ dataGellAllPhone });
-      return dataGellAllPhone;
+//       // console.log({ dataGellAllPhone });
+//       return dataGellAllPhone;
 
-    } catch (error) {
-      console.log(error);
-    }
-    // const response = await userApi.checkLogin(param);
-    // return response.data
-  }
-);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//     // const response = await userApi.checkLogin(param);
+//     // return response.data
+//   }
+// );
 
 // delete => Phone
-const deletePhone = createAsyncThunk(
-  'DELETE => phone',
-  async (param, thunkAPI) => {
-    try {
-      const deletePhone = await phoneApi.deletePhones(param);
-      // console.log({ dataGellAllPhone });
-      thunkAPI.dispatch(getAllPhoneProductsNoPagination());
-      console.log({ deletePhone });
+// const deletePhone = createAsyncThunk(
+//   'DELETE => phone',
+//   async (param, thunkAPI) => {
+//     try {
+//       const deletePhone = await phoneApi.deletePhones(param);
+//       // console.log({ dataGellAllPhone });
+//       thunkAPI.dispatch(getAllPhoneProductsNoPagination());
+//       console.log({ deletePhone });
 
-    } catch (error) {
-      console.log(error);
-    }
-    // const response = await userApi.checkLogin(param);
-    // return response.data
-  }
-);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//     // const response = await userApi.checkLogin(param);
+//     // return response.data
+//   }
+// );
 
 
-// tạo phoneSlice
+// ----------SLICE PHONE --------------
 const phoneSlice = createSlice({
   name: 'Phone',
   initialState: {
@@ -54,39 +54,39 @@ const phoneSlice = createSlice({
 
   },
 
-  extraReducers: (builder) => {
+  // extraReducers: (builder) => {
 
-    // get all phone
-    builder.addCase(getAllPhoneProductsNoPagination.pending, (state) => {
-      state.isLoading = true;
+  //   // get all phone
+  //   builder.addCase(getAllPhoneProductsNoPagination.pending, (state) => {
+  //     state.isLoading = true;
 
-    });
+  //   });
 
-    builder.addCase(getAllPhoneProductsNoPagination.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.phone = action.payload;
-    });
-    builder.addCase(getAllPhoneProductsNoPagination.rejected, (state) => {
-      state.isLoading = false;
-      state.phone = [];
-    });
+  //   builder.addCase(getAllPhoneProductsNoPagination.fulfilled, (state, action) => {
+  //     state.isLoading = false;
+  //     state.phone = action.payload;
+  //   });
+  //   builder.addCase(getAllPhoneProductsNoPagination.rejected, (state) => {
+  //     state.isLoading = false;
+  //     state.phone = [];
+  //   });
 
-    // delete phone
-    builder.addCase(deletePhone.pending, (state) => {
-      state.isLoading = true;
+  //   // delete phone
+  //   builder.addCase(deletePhone.pending, (state) => {
+  //     state.isLoading = true;
 
-    });
+  //   });
 
-    builder.addCase(deletePhone.fulfilled, (state, action) => {
-      state.isLoading = false;
+  //   builder.addCase(deletePhone.fulfilled, (state, action) => {
+  //     state.isLoading = false;
 
-    });
-    builder.addCase(deletePhone.rejected, (state) => {
-      state.isLoading = false;
-      state.phone = [];
-    });
+  //   });
+  //   builder.addCase(deletePhone.rejected, (state) => {
+  //     state.isLoading = false;
+  //     state.phone = [];
+  //   });
 
-  }
+  // }
 });
 
 // export action and reduceSlide
@@ -97,4 +97,4 @@ export default reducer;
 // export const { } = actions;
 
 //  action => Action => AsyncThunk => => để call API
-export { getAllPhoneProductsNoPagination, deletePhone }; // action Async thunk
+// export { deletePhone }; // action Async thunk

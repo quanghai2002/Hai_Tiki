@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import { Rate } from 'antd';
 import iconCheck from '~/assets/images/iconCheck.png';
 import Divider from '@mui/material/Divider';
+import Avatar from '@mui/material/Avatar';
 
 import chinhhang from '~/assets/images/iconChinhHang.png';
 // propTypes
@@ -76,7 +77,7 @@ function PhoneDescription({ phoneDetails }) {
           {/* content */}
           <Box className={clsx(style.wrapContentOption)}>
             <Box className={clsx(style.content)}>
-              <img className={clsx(style.img)} src={phoneDetails?.image_urls[0]} />
+              <img className={clsx(style.img)} src={phoneDetails?.image_urls[0]} width="42" height="42" />
               <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
                 {phoneDetails?.mau_sac}
               </Typography>

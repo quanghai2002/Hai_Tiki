@@ -27,6 +27,29 @@ html {
 body {
   font-family: 'Inter', 'sans-serif';
   font-size: 1.6rem;
+
+  // spin antd
+  & :global .ant-spin-dot {
+    font-size: 30px !important;
+  }
+
+  & :global .ant-spin-dot-item {
+    width: 13px !important;
+    height: 13px !important;
+    background-color: #2f3843 !important;
+  }
+
+  & :global .ant-spin-text {
+    font-size: 1.5rem !important;
+    user-select: none;
+  }
+
+  // toast message
+  //  toast messages
+
+  & :global .Toastify__toast-body {
+    font-size: 1.7rem;
+  }
 }
 @supports (font-variation-settings: normal) {
   :root {

@@ -24,6 +24,7 @@ import paymentTienMat from '~/assets/images/paymentTienMat.png';
 import paymentVNP from '~/assets/images/paymentVNP.png';
 import AddressUser from './AddressUser.jsx';
 import imageFreeship from '~/assets/images/imageFreeship.png';
+import { useSelector } from 'react-redux';
 const HeaderPayOrder = lazy(() => import('./Component/HeaderPayOrder'));
 const FooterPayOrder = lazy(() => import('./Component/FooterPayOrder'));
 
@@ -31,40 +32,58 @@ const FooterPayOrder = lazy(() => import('./Component/FooterPayOrder'));
 PayOrder.propTypes = {};
 
 function PayOrder(props) {
-  // -----------------------data TEST ĐỂ RENDER RA MÀ HÌNH THANH TOÁN -------------
+  // -------------------LẤY DỮ LIỆU TẠM THỜI TỪ TRONG REDUX ĐỂ RENDER RA MÀN HÌNH-------------------
+  const dataBuyPhone = useSelector((state) => state?.orderPreview);
+
   const dataOrder = {
     freeShip: 10000,
-    sumOrderList: 699999,
-    listProductCard: [
-      {
-        id: 1,
-        image: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
-        name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
-        priceAll: 10000,
-        priceDefaults: 2000,
-        sumQuantity: 5,
-      },
-      {
-        id: 2,
-        image: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
-        name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
-        priceAll: 300000,
-        priceDefaults: 100000,
-        sumQuantity: 3,
-      },
-      {
-        id: 3,
-        image: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-        name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-        priceAll: 60000,
-        priceDefaults: 10000,
-        sumQuantity: 6,
-      },
-    ],
+    sumOrderList: dataBuyPhone[0]?.sumPrice,
+    listProductCard: dataBuyPhone?.map((item) => {
+      return {
+        id: item?._id,
+        image: item?.img,
+        name: item?.name,
+        priceAll: item?.sumPrice,
+        // priceDefaults: 2000,
+        sumQuantity: item?.quantityBuyPhone,
+      };
+    }),
   };
 
+  // -----------------------data TEST ĐỂ RENDER RA MÀ HÌNH THANH TOÁN -------------
+  // const dataOrder = {
+  //   freeShip: 10000,
+  //   sumOrderList: 699999,
+  //   listProductCard: [
+  //     {
+  //       id: 1,
+  //       image: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
+  //       name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
+  //       priceAll: 10000,
+  //       priceDefaults: 2000,
+  //       sumQuantity: 5,
+  //     },
+  //     {
+  //       id: 2,
+  //       image: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
+  //       name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
+  //       priceAll: 300000,
+  //       priceDefaults: 100000,
+  //       sumQuantity: 3,
+  //     },
+  //     {
+  //       id: 3,
+  //       image: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
+  //       name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
+  //       priceAll: 60000,
+  //       priceDefaults: 10000,
+  //       sumQuantity: 6,
+  //     },
+  //   ],
+  // };
+
   // -----TỔNG TIỀN THỰC TẾ PHẢI THANH TOÁN => SAU KHI TRỪ PHÍ SHIP---------
-  const sumPriceCurrent = Number.parseFloat(dataOrder?.sumOrderList) + 50000 - Number.parseFloat(dataOrder?.freeShip);
+  const sumPriceCurrent = Number.parseFloat(dataOrder?.sumOrderList) + 45000 - Number.parseFloat(dataOrder?.freeShip);
   // -----Radio => CHỌN PHƯƠNG THỨC THANH TOÁN ----------------------------------
   const [value, setValue] = useState(1);
 
@@ -73,11 +92,18 @@ function PayOrder(props) {
     setValue(e.target.value);
   };
 
-  // ---- ----------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
-  const [addressUserShip, setAddressUserShip] = useState('');
-  const isAddressUser = Boolean(addressUserShip);
-  // console.log('isAddressUser', isAddressUser);
+  // ---- ------------------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
+  // ---KIỂM TRA XEM USER ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA---------------------
+  const userLogin = useSelector((state) => state?.userAuth?.user);
+  const [isAddress, setIsAddress] = useState(Boolean(userLogin?.address));
 
+  // ------------khi click THAY ĐỔI ĐỊA CHỈ GIAO HÀNG khi đã tồn tại----------
+  // set lại model bằng true để hiện thị modal ra + set lại address === false để hiển thị update user
+  const [isModalAddresss, setIsModalAddress] = useState(false);
+  const handleChangeThayDoiDiaChiGiaoHang = () => {
+    setIsModalAddress(true);
+    setIsAddress(false);
+  };
   // ------------------------KHI CLICK NÚT ĐẶT HÀNG -----------------------
   const navigate = useNavigate();
   const handleSubmitAddOrder = () => {
@@ -261,7 +287,8 @@ function PayOrder(props) {
           <Grid lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
             {/* Địa chỉ giao hàng */}
             <Box className={clsx(style.actionAddress)}>
-              {isAddressUser ? (
+              {/* nếu đã có địa chỉ giao hàng => hiển thị ĐỊA CHỈ GIAO HÀNG ra màn hình */}
+              {isAddress ? (
                 <Box className={clsx(style.wrapAddressCard)}>
                   <Box className={clsx(style.col1)}>
                     <Typography
@@ -270,12 +297,7 @@ function PayOrder(props) {
                     >
                       Giao tới
                     </Typography>
-                    <Typography
-                      className={clsx(style.text, style.text2)}
-                      onClick={() => {
-                        setAddressUserShip('');
-                      }}
-                    >
+                    <Typography className={clsx(style.text, style.text2)} onClick={handleChangeThayDoiDiaChiGiaoHang}>
                       Thay đổi
                     </Typography>
                   </Box>
@@ -284,14 +306,14 @@ function PayOrder(props) {
                       className={clsx(style.text, style.text1)}
                       color={(theme) => theme?.palette?.text?.primary4}
                     >
-                      {addressUserShip?.nameUser}
+                      {userLogin?.username}
                     </Typography>
                     <i className={clsx(style.i)}></i>
                     <Typography
                       className={clsx(style.text, style.text2)}
                       color={(theme) => theme?.palette?.text?.primary4}
                     >
-                      {addressUserShip?.phoneNumber}
+                      {userLogin?.phoneNumber}
                     </Typography>
                   </Box>
                   <Box className={clsx(style.col3)}>
@@ -300,13 +322,14 @@ function PayOrder(props) {
                       color={(theme) => theme?.palette?.text?.primary6}
                     >
                       <span className={clsx(style.text1)}>Nhà</span>
-                      {addressUserShip?.diachi_cuthe},{addressUserShip?.phuongxa},{addressUserShip?.quanhuyen},
-                      {addressUserShip?.thanhpho}
+                      {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện},
+                      {userLogin?.address?.Tỉnh_Thành_phố}
                     </Typography>
                   </Box>
                 </Box>
               ) : (
-                <AddressUser setAddressUserShip={setAddressUserShip} />
+                // nếu chưa có địa chỉ giao hàng => cho chọn địa chỉ giao hàng => và lưu địa chỉ giao hàng lại trong server
+                <AddressUser isModalAddresss={isModalAddresss} setIsAddress={setIsAddress} />
               )}
             </Box>
 
@@ -334,7 +357,7 @@ function PayOrder(props) {
                   Phí vận chuyển
                 </Typography>
                 <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
-                  50.000₫
+                  45.000₫
                 </Typography>
               </Box>
               <Box className={clsx(style.orderText)}>
@@ -382,7 +405,7 @@ function PayOrder(props) {
                 className={clsx(style.btnBuyOrder)}
                 color="secondary"
                 onClick={handleSubmitAddOrder}
-                disabled={isAddressUser === false ? true : false}
+                disabled={isAddress === false ? true : false}
               >
                 Đặt hàng
               </Button>

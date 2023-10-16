@@ -11,15 +11,27 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Form, Input, Select, Spin } from 'antd';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import userApi from '~/apis/userApi.js';
+import { updateUser } from '~/redux/userSlice.js';
+import { getUserServer } from '~/redux/userSlice.js';
 
 // PropTypes
 AddressUser.propTypes = {
-  setAddressUserShip: PropTypes.func,
-  // setIsModalOpenAddress: PropTypes.func,
-  // isModalOpenAddress: PropTypes.bool,
+  isModalAddresss: PropTypes.bool,
+  setIsAddress: PropTypes.func,
 };
 
-function AddressUser({ setAddressUserShip }) {
+function AddressUser({ isModalAddresss, setIsAddress }) {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  // ------------LẤY THÔNG TIN TÊN USER HIỆN TẠI --------
+  const userLogin = useSelector((state) => state?.userAuth?.user);
+  // console.log({ userLogin });
+
   // validation form yup => schema
   const regexPhoneNumber = /(0[3|5|7|8|9])+([0-9]{8})\b/g;
   // yup validation
@@ -47,12 +59,18 @@ function AddressUser({ setAddressUserShip }) {
     resolver: yupResolver(schema),
     // nếu có data => truyền vào => lấy data đó, còn mặc đinh là ''
     defaultValues: {
-      // thanhpho: 'Thái Nguyên',
-    }, // Thêm defaultValues ở đây
+      nameUser: userLogin?.username ? userLogin?.username : '',
+      phoneNumber: userLogin?.phoneNumber ? userLogin?.phoneNumber : '',
+      // thanhpho: userLogin?.address ? userLogin?.address?.Tỉnh_Thành_phố : '',
+      // quanhuyen: userLogin?.address ? userLogin?.address?.Quận_Huyện : '',
+      // phuongxa: userLogin?.address ? userLogin?.address?.Phường_Xã : '',
+      diachi_cuthe: userLogin?.address ? userLogin?.address?.Địa_chỉ : '',
+    },
   });
 
   //--------------------------------------------------- ----MODAL -----------------------
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(isModalAddresss);
+
   const showModal = () => {
     setIsModalOpen(true);
     // setIsModalOpenAddress(true);
@@ -65,18 +83,66 @@ function AddressUser({ setAddressUserShip }) {
     setIsModalOpen(false);
     // setIsModalOpenAddress(false);
   };
-  // console.log({ errors });
+
   //-----------------------------------ON SUBMIT ------------------------------------------
   // onsubmit => click cập nhật địa chỉ giao hàng
   const onSubmit = async (data) => {
     // console.log('data', data);
-    //  lưu địa chỉ giao hàng
-    setAddressUserShip(data);
+    //  lưu địa chỉ giao hàng => cập nhật lên server
+    setLoading(true);
+    const dataUpdateUser = {
+      _id: userLogin?._id,
+      username: data?.nameUser,
+      phoneNumber: data?.phoneNumber,
+      address: {
+        Tỉnh_Thành_phố: data?.thanhpho,
+        Quận_Huyện: data?.quanhuyen,
+        Phường_Xã: data?.phuongxa,
+        Địa_chỉ: data?.diachi_cuthe,
+      },
+    };
+
+    // -------UPDATE THÔNG TIN USER -------
+    userApi
+      .updateOneUser(dataUpdateUser)
+      .then((response) => {
+        console.log('cập nhật USER thành công', response);
+        //  sau đó cập lấy thông tin cập nhật set lại vào redux
+        toast.success('Cập nhật địa chỉ thành công', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+        // Hiện thông báo chúc mừng
+        dispatch(updateUser(response?.data));
+        setLoading(false);
+        setIsModalOpen(false);
+        setIsAddress(true); // cập nhật thành công => set lại isAddress === true => để hiển thị thông tin user
+      })
+      .catch((err) => {
+        console.log({ err });
+        setLoading(false);
+        setIsModalOpen(false);
+        toast.error('Cập nhật địa chỉ thất bại', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+        setIsAddress(true);
+      });
 
     /* đóng modal*/
     // setIsModalOpenAddress(false);
-
-    setIsModalOpen(false);
   };
 
   // ----------------------------------------LẤY CÁC TỈNH THÀNH PHỐ----------------------
@@ -214,8 +280,6 @@ function AddressUser({ setAddressUserShip }) {
 
   // ---------------------------------
   const { TextArea } = Input;
-  // ---Đã tồn tại address chưa --------
-  const [isAddress, setIsAddress] = useState([]);
 
   return (
     <Box className={clsx(style.wrapAddressUser)}>
@@ -228,6 +292,7 @@ function AddressUser({ setAddressUserShip }) {
           Nhập địa chỉ
         </Button>
         {/* modal hiển thị để cập nhật địa chỉ giao hàng */}
+
         <Modal
           title="Địa chỉ giao hàng"
           open={isModalOpen}
@@ -239,166 +304,330 @@ function AddressUser({ setAddressUserShip }) {
           width={550}
           centered
         >
+          {/* nếu đang cập nhật địa chỉ giao hàng => hiển thị spin */}
           {/* rect hook from */}
-          <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
-            {/* tên người nhận hàng*/}
-            <Form.Item
-              label="Họ tên"
-              name="nameUser"
-              validateStatus={errors.nameUser ? 'error' : ''}
-              help={errors.nameUser && errors.nameUser.message}
-              htmlFor="nameUser"
-            >
-              <Controller
-                name="nameUser"
-                control={control}
-                render={({ field }) => <Input {...field} placeholder="Nhập họ và tên" id="nameUser" allowClear />}
-              />
-            </Form.Item>
-
-            {/*số điện thoại di động */}
-            <Form.Item
-              label="Điện thoại di động"
-              name="phoneNumber"
-              validateStatus={errors.phoneNumber ? 'error' : ''}
-              help={errors.phoneNumber && errors.phoneNumber.message}
-              htmlFor="phoneNumber"
-              step={2}
-            >
-              <Controller
-                name="phoneNumber"
-                control={control}
-                render={({ field }) => (
-                  <Input {...field} placeholder="Nhập số điện thoại" id="phoneNumber" />
-                  // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
-                )}
-              />
-            </Form.Item>
-
-            {/* tỉnh thành phố*/}
-            <Form.Item
-              label="Tỉnh/Thành phố"
-              name="thanhpho"
-              validateStatus={errors.thanhpho ? 'error' : ''}
-              help={errors.thanhpho && errors.thanhpho.message}
-              htmlFor="thanhpho"
-            >
-              <Controller
-                name="thanhpho"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <Select
-                      {...field}
-                      className={clsx(style.inputSelect)}
-                      allowClear // cho phép hiển thị nút xóa
-                      placeholder="Chọn Tỉnh/Thành phố"
-                      id="thanhpho"
-                      options={city}
-                      onChange={(selectedValue, e) => {
-                        field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
-                        handleChangCity(selectedValue, e);
-                      }}
-                    />
-                  );
-                }}
-              />
-            </Form.Item>
-
-            {/* quận huyện*/}
-            <Form.Item
-              label="Quận/Huyện"
-              name="quanhuyen"
-              validateStatus={errors.quanhuyen ? 'error' : ''}
-              help={errors.quanhuyen && errors.quanhuyen.message}
-              htmlFor="quanhuyen"
-            >
-              <Controller
-                name="quanhuyen"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <Select
-                      {...field}
-                      className={clsx(style.inputSelect)}
-                      allowClear // cho phép hiển thị nút xóa
-                      placeholder="Chọn Quận/Huyện"
-                      id="quanhuyen"
-                      disabled={isCity === false ? true : false}
-                      options={district}
-                      onChange={(selectedValue, e) => {
-                        field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
-                        hanldeChangeDistrict(selectedValue, e);
-                      }}
-                    />
-                  );
-                }}
-              />
-            </Form.Item>
-
-            {/* phường xã*/}
-            <Form.Item
-              label="Phường/Xã"
-              name="phuongxa"
-              validateStatus={errors.phuongxa ? 'error' : ''}
-              help={errors.phuongxa && errors.phuongxa.message}
-              htmlFor="phuongxa"
-            >
-              <Controller
-                name="phuongxa"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <Select
-                      {...field}
-                      className={clsx(style.inputSelect)}
-                      allowClear // cho phép hiển thị nút xóa
-                      placeholder="Chọn Phường/Xã"
-                      id="phuongxa"
-                      disabled={isDistrict === false ? true : false}
-                      options={listWards}
-                      onChange={(selectedValue) => {
-                        field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
-                      }}
-                    />
-                  );
-                }}
-              />
-            </Form.Item>
-
-            {/* địa chỉ giao hàng, số nhà cụ thể*/}
-            <Form.Item
-              label="Địa chỉ"
-              name="diachi_cuthe"
-              validateStatus={errors.diachi_cuthe ? 'error' : ''}
-              help={errors.diachi_cuthe && errors.diachi_cuthe.message}
-              htmlFor="diachi_cuthe"
-            >
-              <Controller
-                name="diachi_cuthe"
-                control={control}
-                render={({ field }) => (
-                  <TextArea
-                    {...field}
-                    rows={2}
-                    placeholder="Ví dụ: Bưu điện, Phường Tiên Phong"
-                    id="diachi_cuthe"
-                    allowClear
-                    // autoSize
+          {loading ? (
+            <Spin>
+              <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
+                {/* tên người nhận hàng*/}
+                <Form.Item
+                  label="Họ tên"
+                  name="nameUser"
+                  validateStatus={errors.nameUser ? 'error' : ''}
+                  help={errors.nameUser && errors.nameUser.message}
+                  htmlFor="nameUser"
+                >
+                  <Controller
+                    name="nameUser"
+                    control={control}
+                    render={({ field }) => <Input {...field} placeholder="Nhập họ và tên" id="nameUser" allowClear />}
                   />
-                )}
-              />
-            </Form.Item>
-            {/* button submit */}
-            <Form.Item className={clsx(style.wrapBtn)} label=".">
-              {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
-              <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
-                Cập nhật địa chỉ giao hàng
-              </Button>
-            </Form.Item>
-          </Form>
+                </Form.Item>
+
+                {/*số điện thoại di động */}
+                <Form.Item
+                  label="Điện thoại di động"
+                  name="phoneNumber"
+                  validateStatus={errors.phoneNumber ? 'error' : ''}
+                  help={errors.phoneNumber && errors.phoneNumber.message}
+                  htmlFor="phoneNumber"
+                  step={2}
+                >
+                  <Controller
+                    name="phoneNumber"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Nhập số điện thoại" id="phoneNumber" />
+                      // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
+                    )}
+                  />
+                </Form.Item>
+
+                {/* tỉnh thành phố*/}
+                <Form.Item
+                  label="Tỉnh/Thành phố"
+                  name="thanhpho"
+                  validateStatus={errors.thanhpho ? 'error' : ''}
+                  help={errors.thanhpho && errors.thanhpho.message}
+                  htmlFor="thanhpho"
+                >
+                  <Controller
+                    name="thanhpho"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Select
+                          {...field}
+                          className={clsx(style.inputSelect)}
+                          allowClear // cho phép hiển thị nút xóa
+                          placeholder="Chọn Tỉnh/Thành phố"
+                          id="thanhpho"
+                          options={city}
+                          onChange={(selectedValue, e) => {
+                            field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                            handleChangCity(selectedValue, e);
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </Form.Item>
+
+                {/* quận huyện*/}
+                <Form.Item
+                  label="Quận/Huyện"
+                  name="quanhuyen"
+                  validateStatus={errors.quanhuyen ? 'error' : ''}
+                  help={errors.quanhuyen && errors.quanhuyen.message}
+                  htmlFor="quanhuyen"
+                >
+                  <Controller
+                    name="quanhuyen"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Select
+                          {...field}
+                          className={clsx(style.inputSelect)}
+                          allowClear // cho phép hiển thị nút xóa
+                          placeholder="Chọn Quận/Huyện"
+                          id="quanhuyen"
+                          disabled={isCity === false ? true : false}
+                          options={district}
+                          onChange={(selectedValue, e) => {
+                            field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                            hanldeChangeDistrict(selectedValue, e);
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </Form.Item>
+
+                {/* phường xã*/}
+                <Form.Item
+                  label="Phường/Xã"
+                  name="phuongxa"
+                  validateStatus={errors.phuongxa ? 'error' : ''}
+                  help={errors.phuongxa && errors.phuongxa.message}
+                  htmlFor="phuongxa"
+                >
+                  <Controller
+                    name="phuongxa"
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Select
+                          {...field}
+                          className={clsx(style.inputSelect)}
+                          allowClear // cho phép hiển thị nút xóa
+                          placeholder="Chọn Phường/Xã"
+                          id="phuongxa"
+                          disabled={isDistrict === false ? true : false}
+                          options={listWards}
+                          onChange={(selectedValue) => {
+                            field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </Form.Item>
+
+                {/* địa chỉ giao hàng, số nhà cụ thể*/}
+                <Form.Item
+                  label="Địa chỉ"
+                  name="diachi_cuthe"
+                  validateStatus={errors.diachi_cuthe ? 'error' : ''}
+                  help={errors.diachi_cuthe && errors.diachi_cuthe.message}
+                  htmlFor="diachi_cuthe"
+                >
+                  <Controller
+                    name="diachi_cuthe"
+                    control={control}
+                    render={({ field }) => (
+                      <TextArea
+                        {...field}
+                        rows={2}
+                        placeholder="Ví dụ: Bưu điện, Phường Tiên Phong"
+                        id="diachi_cuthe"
+                        allowClear
+                        // autoSize
+                      />
+                    )}
+                  />
+                </Form.Item>
+                {/* button submit */}
+                <Form.Item className={clsx(style.wrapBtn)} label=".">
+                  {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
+                  <Button type="primary" variant="contained" className={clsx(style.btnAdd)}>
+                    Cập nhật địa chỉ giao hàng
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Spin>
+          ) : (
+            <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
+              {/* tên người nhận hàng*/}
+              <Form.Item
+                label="Họ tên"
+                name="nameUser"
+                validateStatus={errors.nameUser ? 'error' : ''}
+                help={errors.nameUser && errors.nameUser.message}
+                htmlFor="nameUser"
+              >
+                <Controller
+                  name="nameUser"
+                  control={control}
+                  render={({ field }) => <Input {...field} placeholder="Nhập họ và tên" id="nameUser" allowClear />}
+                />
+              </Form.Item>
+
+              {/*số điện thoại di động */}
+              <Form.Item
+                label="Điện thoại di động"
+                name="phoneNumber"
+                validateStatus={errors.phoneNumber ? 'error' : ''}
+                help={errors.phoneNumber && errors.phoneNumber.message}
+                htmlFor="phoneNumber"
+                step={2}
+              >
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Nhập số điện thoại" id="phoneNumber" />
+                    // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
+                  )}
+                />
+              </Form.Item>
+
+              {/* tỉnh thành phố*/}
+              <Form.Item
+                label="Tỉnh/Thành phố"
+                name="thanhpho"
+                validateStatus={errors.thanhpho ? 'error' : ''}
+                help={errors.thanhpho && errors.thanhpho.message}
+                htmlFor="thanhpho"
+              >
+                <Controller
+                  name="thanhpho"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        {...field}
+                        className={clsx(style.inputSelect)}
+                        allowClear // cho phép hiển thị nút xóa
+                        placeholder="Chọn Tỉnh/Thành phố"
+                        id="thanhpho"
+                        options={city}
+                        onChange={(selectedValue, e) => {
+                          field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                          handleChangCity(selectedValue, e);
+                        }}
+                      />
+                    );
+                  }}
+                />
+              </Form.Item>
+
+              {/* quận huyện*/}
+              <Form.Item
+                label="Quận/Huyện"
+                name="quanhuyen"
+                validateStatus={errors.quanhuyen ? 'error' : ''}
+                help={errors.quanhuyen && errors.quanhuyen.message}
+                htmlFor="quanhuyen"
+              >
+                <Controller
+                  name="quanhuyen"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        {...field}
+                        className={clsx(style.inputSelect)}
+                        allowClear // cho phép hiển thị nút xóa
+                        placeholder="Chọn Quận/Huyện"
+                        id="quanhuyen"
+                        disabled={isCity === false ? true : false}
+                        options={district}
+                        onChange={(selectedValue, e) => {
+                          field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                          hanldeChangeDistrict(selectedValue, e);
+                        }}
+                      />
+                    );
+                  }}
+                />
+              </Form.Item>
+
+              {/* phường xã*/}
+              <Form.Item
+                label="Phường/Xã"
+                name="phuongxa"
+                validateStatus={errors.phuongxa ? 'error' : ''}
+                help={errors.phuongxa && errors.phuongxa.message}
+                htmlFor="phuongxa"
+              >
+                <Controller
+                  name="phuongxa"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        {...field}
+                        className={clsx(style.inputSelect)}
+                        allowClear // cho phép hiển thị nút xóa
+                        placeholder="Chọn Phường/Xã"
+                        id="phuongxa"
+                        disabled={isDistrict === false ? true : false}
+                        options={listWards}
+                        onChange={(selectedValue) => {
+                          field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                        }}
+                      />
+                    );
+                  }}
+                />
+              </Form.Item>
+
+              {/* địa chỉ giao hàng, số nhà cụ thể*/}
+              <Form.Item
+                label="Địa chỉ"
+                name="diachi_cuthe"
+                validateStatus={errors.diachi_cuthe ? 'error' : ''}
+                help={errors.diachi_cuthe && errors.diachi_cuthe.message}
+                htmlFor="diachi_cuthe"
+              >
+                <Controller
+                  name="diachi_cuthe"
+                  control={control}
+                  render={({ field }) => (
+                    <TextArea
+                      {...field}
+                      rows={2}
+                      placeholder="Ví dụ: Bưu điện, Phường Tiên Phong"
+                      id="diachi_cuthe"
+                      allowClear
+                      // autoSize
+                    />
+                  )}
+                />
+              </Form.Item>
+              {/* button submit */}
+              <Form.Item className={clsx(style.wrapBtn)} label=".">
+                {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
+                <Button type="primary" htmltype="submit" variant="contained" className={clsx(style.btnAdd)}>
+                  Cập nhật địa chỉ giao hàng
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
         </Modal>
       </Box>
+      <ToastContainer className={style.toastMessage} />
     </Box>
   );
 }

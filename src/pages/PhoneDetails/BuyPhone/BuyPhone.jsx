@@ -8,6 +8,9 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { InputNumber } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { addOrderReview } from '~/redux/OrderPreview.js';
 
 // propTypes
 BuyPhone.propTypes = {
@@ -16,7 +19,7 @@ BuyPhone.propTypes = {
 
 function BuyPhone({ phoneDetails }) {
   // THÔNG TIN SẢN PHẨM
-  console.log('thông tin sp:', phoneDetails);
+  // console.log('thông tin sp:', phoneDetails);
   // số lượng sản phẩm trong kho
   const [quantityPhone, setQuanityPhone] = useState(phoneDetails?.stock_quantity);
 
@@ -77,6 +80,43 @@ function BuyPhone({ phoneDetails }) {
     setNewPricePhone(newPrice);
   }, [value]);
 
+  // --------------KIỂM TRA XEM USER ĐÃ ĐĂNG NHẬP CHƯA ----NẾU CHƯA BẮT ĐĂNG NHẬP MỚI CHO MUA HÀNG ---------
+  const infoUser = useSelector((state) => state?.userAuth?.user);
+  const isUserLogin = Boolean(infoUser);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // -------------KHI USER CLICK VÀO MUA SẢN PHẨM-------
+  const handleClickBuyPhone = () => {
+    // ----NẾU ĐÃ ĐĂNG NHẬP MỚI CHO THỰC HIỆN TIẾP ----
+    if (isUserLogin) {
+      // nếu đã đăng nhập lấy thông tin sản phẩm cần mua
+      const infoPhone = {
+        _id: phoneDetails?._id,
+        name: phoneDetails?.name,
+        img: phoneDetails?.image_urls[0],
+        quantityBuyPhone: value,
+        sumPrice: newPricePhone,
+      };
+      // console.log('mua sản phẩm', infoPhone);
+
+      // lưu sản phẩm tạm thời vào redux
+      dispatch(addOrderReview(infoPhone));
+
+      // ---CHUYỂN ĐẾN TRANG THANH TOÁN ----------
+      navigate('/payment');
+    } else {
+      navigate('/login');
+    }
+  };
+  // -------------KHI USER CLICK THÊM VÀO GIỎ HÀNG-------
+  const handleClickAddCart = () => {
+    // ----NẾU ĐÃ ĐĂNG NHẬP MỚI CHO THỰC HIỆN TIẾP ----
+    if (isUserLogin) {
+      console.log('thêm sản phẩm giỏ hàng');
+    } else {
+      navigate('/login');
+    }
+  };
   //contents
   return (
     <Box className={clsx(style.wrapBuyPhone)}>
@@ -155,10 +195,15 @@ function BuyPhone({ phoneDetails }) {
         </Box>
         {/* action buy phone */}
         <Box className={clsx(style.wrapActionBuy)}>
-          <Button variant="contained" className={clsx(style.btn, style.btnBuy)} color="secondary">
+          <Button
+            variant="contained"
+            className={clsx(style.btn, style.btnBuy)}
+            color="secondary"
+            onClick={handleClickBuyPhone}
+          >
             Mua Ngay
           </Button>
-          <Button variant="outlined" className={clsx(style.btn, style.btnCard)}>
+          <Button variant="outlined" className={clsx(style.btn, style.btnCard)} onClick={handleClickAddCart}>
             Thêm vào giỏ
           </Button>
         </Box>

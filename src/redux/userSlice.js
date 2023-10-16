@@ -3,13 +3,14 @@ import userApi from '~/apis/userApi.js';
 
 // thunk API
 //// First, create the AsyncThunk
-// const checkLoginUser = createAsyncThunk(
-//     'checkLogin-user',
-//     async (param, thunkAPI) => {
-//         const response = await userApi.checkLogin(param);
-//         return response.data
-//     }
-// )
+const getUserServer = createAsyncThunk(
+  'getUserServer',
+  async (param, thunkAPI) => {
+    const response = await userApi.getOneUser(param);
+    console.log('dữ liệu USER sau khi cập nhật:', response?.data);
+    return response.data;
+  }
+);
 
 
 // tạo UserSlice
@@ -28,26 +29,22 @@ const userSlice = createSlice({
     },
     logOut(state) {
       state.user = undefined;
+    },
+    updateUser(state, action) {
+      state.user = action.payload;
     }
   },
-  // extraReducers: (builder) => {
+  extraReducers: (builder) => {
 
-  //     builder.addCase(checkLoginUser.pending, (state) => {
-  //         state.isLoading = true;
-
-  //     });
-
-  //     builder.addCase(checkLoginUser.fulfilled, (state, action) => {
-  //         state.isLoading = false;
-  //         state.user = action.payload;
-  //     });
-  //     builder.addCase(checkLoginUser.rejected, (state) => {
-  //         state.isLoading = false;
-  //         state.user = {};
-  //     });
+    builder.addCase(getUserServer.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+    builder.addCase(getUserServer.rejected, (state) => {
+      state.user = undefined;
+    });
 
 
-  // }
+  }
 });
 
 // export action and reduceSlide
@@ -55,7 +52,7 @@ const { reducer, actions } = userSlice;
 export default reducer;
 
 // các acion nội bộ =>trong redux
-export const { login, logOut } = actions;
+export const { login, logOut, updateUser } = actions;
 
 //  action AsyncThunk => => để call API
-// export { checkLoginUser }; // action Async thunk
+export { getUserServer }; // action Async thunk

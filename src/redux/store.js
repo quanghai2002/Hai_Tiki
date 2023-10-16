@@ -12,6 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import reducerUser from './userSlice.js';
 import PhoneReducer from './PhoneSlice.js';
+import OrderPreview from './OrderPreview.js';
 
 
 const persistConfig = {
@@ -23,6 +24,7 @@ const persistConfig = {
 const rootReducer = combineReducers(
   {
     userAuth: reducerUser,
+    orderPreview: OrderPreview,
     // phone: PhoneReducer
     // students: reducerStudents
     // ....

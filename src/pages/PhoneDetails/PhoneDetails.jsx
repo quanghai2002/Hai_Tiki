@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import style from './PhoneDetails.module.scss';
 import clsx from 'clsx';
-import { memo, lazy, useState, useEffect } from 'react';
+import { memo, lazy, useState, useEffect, Suspense } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -10,11 +10,16 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
 
-const Header = lazy(() => import('~/components/Header'));
-const Footer = lazy(() => import('~/components/Footer'));
-const ReactSlickPhone = lazy(() => import('./ReactSlickPhone/ReactSlickPhone.jsx'));
-const PhoneDescription = lazy(() => import('./PhoneDescription/PhoneDescription.jsx'));
-const BuyPhone = lazy(() => import('./BuyPhone/BuyPhone.jsx'));
+// const Header = lazy(() => import('~/components/Header'));
+// const Footer = lazy(() => import('~/components/Footer'));
+// const ReactSlickPhone = lazy(() => import('./ReactSlickPhone/ReactSlickPhone.jsx'));
+// const PhoneDescription = lazy(() => import('./PhoneDescription/PhoneDescription.jsx'));
+// const BuyPhone = lazy(() => import('./BuyPhone/BuyPhone.jsx'));
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
+import ReactSlickPhone from './ReactSlickPhone/ReactSlickPhone';
+import PhoneDescription from './PhoneDescription/PhoneDescription';
+import BuyPhone from './BuyPhone/BuyPhone';
 import phoneApi from '~/apis/phoneApi.js';
 import PhoneDetailLazy from './PhoneDetailsLazy/PhoneDetailLazy';
 // propTypes
