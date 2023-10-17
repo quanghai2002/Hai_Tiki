@@ -85,9 +85,10 @@ function BuyPhone({ phoneDetails }) {
   const isUserLogin = Boolean(infoUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // -------------KHI USER CLICK VÀO MUA SẢN PHẨM-------
+
+  // -------------KHI USER CLICK VÀO MUA SẢN PHẨM -------------
   const handleClickBuyPhone = () => {
-    // ----NẾU ĐÃ ĐĂNG NHẬP MỚI CHO THỰC HIỆN TIẾP ----
+    // ----NẾU ĐÃ ĐĂNG NHẬP MỚI CHO THỰC HIỆN TIẾP MUA SẢN PHẨM -----
     if (isUserLogin) {
       // nếu đã đăng nhập lấy thông tin sản phẩm cần mua
       const infoPhone = {

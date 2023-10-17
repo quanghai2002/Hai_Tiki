@@ -12,10 +12,11 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Divider from '@mui/material/Divider';
 import { Radio, Space } from 'antd';
 import Button from '@mui/material/Button';
-import axiosClient from '~/apis/axiosClient';
 import axios from 'axios';
-import BackTop from '~/components/BackTop';
+import { Spin } from 'antd';
 
+import axiosClient from '~/apis/axiosClient';
+import BackTop from '~/components/BackTop';
 import DarkMode from '~/components/DarkMode';
 import iconNow from '~/assets/images/iconNow.png';
 import { IconCar } from '~/assets/iconSVG.jsx';
@@ -24,15 +25,22 @@ import paymentTienMat from '~/assets/images/paymentTienMat.png';
 import paymentVNP from '~/assets/images/paymentVNP.png';
 import AddressUser from './AddressUser.jsx';
 import imageFreeship from '~/assets/images/imageFreeship.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 const HeaderPayOrder = lazy(() => import('./Component/HeaderPayOrder'));
 const FooterPayOrder = lazy(() => import('./Component/FooterPayOrder'));
+import orderApi from '~/apis/orderApi.js';
+import userApi from '~/apis/userApi.js';
+import { updateUser } from '~/redux/userSlice.js';
 
 // PropTypes
 PayOrder.propTypes = {};
 
 function PayOrder(props) {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   // -------------------LẤY DỮ LIỆU TẠM THỜI TỪ TRONG REDUX ĐỂ RENDER RA MÀN HÌNH-------------------
+  // --------DỮ LIỆU NÀY CHƯA ĐƯỢC LƯU VÀO TRONG DATABASE NHÉ-----
+  // -----KHI ẤN THANH TOÁN KHI NHẬN HÀNG || VNP => THÀNH CÔNG => MỚI LƯU VÀO DATABASE -----
   const dataBuyPhone = useSelector((state) => state?.orderPreview);
 
   const dataOrder = {
@@ -50,41 +58,9 @@ function PayOrder(props) {
     }),
   };
 
-  // -----------------------data TEST ĐỂ RENDER RA MÀ HÌNH THANH TOÁN -------------
-  // const dataOrder = {
-  //   freeShip: 10000,
-  //   sumOrderList: 699999,
-  //   listProductCard: [
-  //     {
-  //       id: 1,
-  //       image: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
-  //       name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
-  //       priceAll: 10000,
-  //       priceDefaults: 2000,
-  //       sumQuantity: 5,
-  //     },
-  //     {
-  //       id: 2,
-  //       image: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
-  //       name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
-  //       priceAll: 300000,
-  //       priceDefaults: 100000,
-  //       sumQuantity: 3,
-  //     },
-  //     {
-  //       id: 3,
-  //       image: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-  //       name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-  //       priceAll: 60000,
-  //       priceDefaults: 10000,
-  //       sumQuantity: 6,
-  //     },
-  //   ],
-  // };
-
-  // -----TỔNG TIỀN THỰC TẾ PHẢI THANH TOÁN => SAU KHI TRỪ PHÍ SHIP---------
+  // -----TỔNG TIỀN THỰC TẾ PHẢI THANH TOÁN => SAU KHI TRỪ PHÍ SHIP--------- Phí Ship mặc định là 45.000
   const sumPriceCurrent = Number.parseFloat(dataOrder?.sumOrderList) + 45000 - Number.parseFloat(dataOrder?.freeShip);
-  // -----Radio => CHỌN PHƯƠNG THỨC THANH TOÁN ----------------------------------
+  // -----Radio => CHỌN PHƯƠNG THỨC THANH TOÁN KHI ONCHANGE -Mặc Định là 1 Thanh Toán Khi Nhận Hàng----------------
   const [value, setValue] = useState(1);
 
   const onChangeRadio = (e) => {
@@ -94,6 +70,7 @@ function PayOrder(props) {
 
   // ---- ------------------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
   // ---KIỂM TRA XEM USER ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA---------------------
+  // ----LẤY THÔNG TIN USER ĐỂ LẤY ID USER => THÊM VÀO TRONG ĐƠN HÀNG + UPDATE USER CÓ ID ĐƠN HÀNG LUÔN ----
   const userLogin = useSelector((state) => state?.userAuth?.user);
   const [isAddress, setIsAddress] = useState(Boolean(userLogin?.address));
 
@@ -104,15 +81,64 @@ function PayOrder(props) {
     setIsModalAddress(true);
     setIsAddress(false);
   };
-  // ------------------------KHI CLICK NÚT ĐẶT HÀNG -----------------------
+  // --------------------------KHI CLICK NÚT ĐẶT HÀNG TRONG TRANG THANH TOÁN -----------------------
+  // ---LƯU ID ĐƠN HÀNG ----
+  const [dataUserUpdate, setDataUserUpdate] = useState({});
   const navigate = useNavigate();
   const handleSubmitAddOrder = () => {
-    console.log('giá trị lựa chọn phương thức thanh toán', value);
-    // --Nếu chọn phương thức thanh toán là 1 => Mặc Định => Thanh Toán Khi NHận hàng
+    setLoading(true);
+    // --Nếu chọn phương thức thanh toán là --- 1 ---- => Mặc Định => Thanh Toán Khi NHận hàng
     if (value === 1) {
-      navigate('/payment/tienmat');
+      // ----KHI CHỌN THANH TOÁN TIỀN MẶT THÌ LƯU LUÔN ĐƠN HÀNG VÀO DATA BASE ---
+      // thông tin đơn hàng để chuẩn bị thêm vào data base
+      const infoDetailsOrder = {
+        status: {
+          code: 1,
+          state: 'Chờ xác nhận',
+        },
+        shipping_address: userLogin?.address,
+        payment_method: 'Thanh toán khi nhận hàng',
+        user: userLogin?._id,
+        total_price: sumPriceCurrent,
+        products2: dataOrder?.listProductCard,
+      };
+
+      // ---------THÊM ĐƠN HÀNG MỚI VÀO DATA BASE -------
+      orderApi
+        .addOrderDatabase(infoDetailsOrder)
+        .then((response) => {
+          // console.log('id đơn hàng là', response?.data?._id);
+          // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
+          const userUpdate = {
+            ...userLogin,
+            orders: [response?.data?._id],
+          };
+
+          // ---THÊM ID ĐƠN HÀNG VÀO USER ------- ĐỂ POPULATE ---
+          userApi
+            .updateOneUser(userUpdate)
+            .then((res) => {
+              console.log('thêm ID đơn hàng vào user thành công', res);
+              setLoading(false);
+
+              // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
+              dispatch(updateUser(res?.data));
+
+              //-------- CHUYỂN ĐẾN TRANG THÔNG BÁO THANH TOÁN THÀNH CÔNG---------- YUP
+              navigate('/payment/tienmat');
+            })
+            .catch((err) => {
+              console.log('thêm ID đơn hàng vào user thất bại');
+              setLoading(false);
+            });
+          // console.log({ userUpdate });
+        })
+        .catch((err) => {
+          console.log('thêm đơn hàng THẤT BẠI', err);
+          setLoading(false);
+        });
     }
-    // Đây là 2 => Thanh Toán Bằng VNP
+    // Đây là --2--- => Thanh Toán Bằng VNP
     else {
       axiosClient
         .post('/payment/create_payment_url', {
@@ -129,296 +155,621 @@ function PayOrder(props) {
   };
 
   return (
-    <Box className={clsx(style.wrapPayOrder)}>
-      {/* Header */}
-      <HeaderPayOrder />
+    // Khi đang API thêm đơn hàng và cập nhật ID vào trong User thì => hiển thị Loading
+    loading ? (
+      <Spin>
+        <Box className={clsx(style.wrapPayOrder)}>
+          {/* Header */}
+          <HeaderPayOrder />
 
-      {/* Content PayMents */}
-      <Box className={clsx(style.contents)}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
-          <Grid lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
-            {/* danh sách các sản phẩm có => map qua để  */}
-            <Box className={clsx(style.wrapContent_PayMent_Info)}>
-              {dataOrder?.listProductCard?.map((item, index) => {
-                return (
-                  <Box className={clsx(style.wrapContent1)} key={item?.id}>
-                    <Box className={clsx(style.BoxAll)}>
-                      {/* box 1 */}
-                      <Box className={clsx(style.box1)}>
-                        <Box className={clsx(style.packageShipping)}>
-                          <Box className={clsx(style.leftContent)}>
-                            <Box className={clsx(style.headerLeft1)}>
-                              <Box className={clsx(style.header1)}>
-                                <img src={iconNow} alt="icon now" className={clsx(style.img)} />
-                                <Typography
-                                  className={clsx(style.text)}
-                                  color={(theme) => theme?.palette?.text?.primary4}
-                                >
-                                  Giao siêu tốc 3h
-                                </Typography>
+          {/* Content PayMents */}
+          <Box className={clsx(style.contents)}>
+            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
+              <Grid lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+                {/* danh sách các sản phẩm có => map qua để  */}
+                <Box className={clsx(style.wrapContent_PayMent_Info)}>
+                  {dataOrder?.listProductCard?.map((item, index) => {
+                    return (
+                      <Box className={clsx(style.wrapContent1)} key={item?.id}>
+                        <Box className={clsx(style.BoxAll)}>
+                          {/* box 1 */}
+                          <Box className={clsx(style.box1)}>
+                            <Box className={clsx(style.packageShipping)}>
+                              <Box className={clsx(style.leftContent)}>
+                                <Box className={clsx(style.headerLeft1)}>
+                                  <Box className={clsx(style.header1)}>
+                                    <img src={iconNow} alt="icon now" className={clsx(style.img)} />
+                                    <Typography
+                                      className={clsx(style.text)}
+                                      color={(theme) => theme?.palette?.text?.primary4}
+                                    >
+                                      Giao siêu tốc 3h
+                                    </Typography>
+                                  </Box>
+                                  <Box className={clsx(style.header2)}>
+                                    <Typography
+                                      className={clsx(style.text1)}
+                                      color={(theme) => theme?.palette?.text?.primary6}
+                                    >
+                                      45.000 ₫
+                                    </Typography>
+                                    <Typography
+                                      className={clsx(style.text2)}
+                                      color={(theme) => theme?.palette?.text?.primary4}
+                                    >
+                                      {Number.parseFloat(45000 - Number.parseFloat(dataOrder?.freeShip)).toLocaleString(
+                                        'vn-VN',
+                                      )}{' '}
+                                      ₫
+                                    </Typography>
+                                    <Box className={clsx(style.wrapIcon)}>
+                                      <InfoOutlinedIcon
+                                        className={clsx(style.iconInfo)}
+                                        sx={{
+                                          color: (theme) => theme?.palette?.text?.primary6,
+                                        }}
+                                      />
+                                      {/* hover */}
+                                      <Box className={clsx(style.hover)}>
+                                        <Box className={clsx(style.label1)}>
+                                          <Typography className={clsx(style.text1Label)}>Phí ban đầu</Typography>
+                                          <Typography className={clsx(style.text2Label)}>45.000 ₫</Typography>
+                                        </Box>
+                                        <Box className={clsx(style.label1)}>
+                                          <Typography className={clsx(style.text1Label)}>
+                                            Khuyến mãi vận chuyển
+                                          </Typography>
+                                          <Typography className={clsx(style.text2Label)}>
+                                            - {dataOrder?.freeShip?.toLocaleString('vn-VN')} ₫
+                                          </Typography>
+                                        </Box>
+                                        <Divider className={clsx(style.divider)} />
+                                        <Box className={clsx(style.label1)}>
+                                          <Typography className={clsx(style.text1Label, style.textActive)}>
+                                            Phí còn lại
+                                          </Typography>
+                                          <Typography className={clsx(style.text2Label, style.textActive)}>
+                                            {Number.parseFloat(
+                                              45000 - Number.parseFloat(dataOrder?.freeShip),
+                                            ).toLocaleString('vn-VN')}
+                                            ₫
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                    </Box>
+                                  </Box>
+                                </Box>
                               </Box>
-                              <Box className={clsx(style.header2)}>
+                            </Box>
+                            {/* content */}
+                            <Box className={clsx(style.infoPhone)}>
+                              <img src={item?.image} alt="anh" className={clsx(style.img)} />
+                              <Box className={clsx(style.infoContent)}>
                                 <Typography
-                                  className={clsx(style.text1)}
+                                  className={clsx(style.firstLine)}
                                   color={(theme) => theme?.palette?.text?.primary6}
                                 >
-                                  45.000 ₫
+                                  {item?.name}
                                 </Typography>
-                                <Typography
-                                  className={clsx(style.text2)}
-                                  color={(theme) => theme?.palette?.text?.primary4}
-                                >
-                                  {Number.parseFloat(45000 - Number.parseFloat(dataOrder?.freeShip)).toLocaleString(
-                                    'vn-VN',
-                                  )}{' '}
-                                  ₫
-                                </Typography>
-                                <Box className={clsx(style.wrapIcon)}>
-                                  <InfoOutlinedIcon
-                                    className={clsx(style.iconInfo)}
-                                    sx={{
-                                      color: (theme) => theme?.palette?.text?.primary6,
-                                    }}
-                                  />
-                                  {/* hover */}
-                                  <Box className={clsx(style.hover)}>
-                                    <Box className={clsx(style.label1)}>
-                                      <Typography className={clsx(style.text1Label)}>Phí ban đầu</Typography>
-                                      <Typography className={clsx(style.text2Label)}>45.000 ₫</Typography>
-                                    </Box>
-                                    <Box className={clsx(style.label1)}>
-                                      <Typography className={clsx(style.text1Label)}>Khuyến mãi vận chuyển</Typography>
-                                      <Typography className={clsx(style.text2Label)}>
-                                        - {dataOrder?.freeShip?.toLocaleString('vn-VN')} ₫
-                                      </Typography>
-                                    </Box>
-                                    <Divider className={clsx(style.divider)} />
-                                    <Box className={clsx(style.label1)}>
-                                      <Typography className={clsx(style.text1Label, style.textActive)}>
-                                        Phí còn lại
-                                      </Typography>
-                                      <Typography className={clsx(style.text2Label, style.textActive)}>
-                                        {Number.parseFloat(
-                                          45000 - Number.parseFloat(dataOrder?.freeShip),
-                                        ).toLocaleString('vn-VN')}
-                                        ₫
-                                      </Typography>
+                                <Box className={clsx(style.secondLine)}>
+                                  <Typography
+                                    className={clsx(style.secondLine_text1)}
+                                    color={(theme) => theme?.palette?.text?.primary6}
+                                  >
+                                    SL: x{item?.sumQuantity}
+                                  </Typography>
+                                  <Typography
+                                    className={clsx(style.secondLine_text2)}
+                                    color={(theme) => theme?.palette?.text?.primary6}
+                                  >
+                                    {item?.priceAll?.toLocaleString('vn-VN')} ₫
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
+                          </Box>
+
+                          {/* Box 2 */}
+                          <Box>
+                            <Box className={clsx(style.box2)}>
+                              <IconCar className={clsx(style.iconCarOto)} />
+                              <Typography
+                                className={clsx(style.text)}
+                                color={(theme) => theme?.palette?.text?.primary6}
+                              >
+                                Được giao bởi TikiNOW Smart Logistics (giao từ Hà Nội)
+                              </Typography>
+                            </Box>
+                          </Box>
+
+                          {/* Pakage Title */}
+                          <Box className={clsx(style.wrapPakageTitle)}>
+                            <img src={pakageIcon} alt="icon pakage" className={clsx(style.iconImage)} />
+                            <Typography className={clsx(style.text)}>Gói {index + 1}:Giao siêu tốc 3h</Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    );
+                  })}
+                </Box>
+                {/* Chọn Phương thức thanh toán */}
+                <Box className={clsx(style.paymentMethod)}>
+                  <Typography className={clsx(style.labelPayments)} color={(theme) => theme?.palette?.text?.primary4}>
+                    Chọn hình thức thanh toán
+                  </Typography>
+                  <Radio.Group onChange={onChangeRadio} value={value} buttonStyle="outline">
+                    <Space direction="vertical">
+                      <Radio value={1} className={clsx(style.radio)}>
+                        <Box className={clsx(style.wrapContent)}>
+                          <img alt="icon" src={paymentTienMat} className={clsx(style.icon)} />
+                          <Typography
+                            className={clsx(style.textPayMent)}
+                            color={(theme) => theme?.palette?.text?.primary4}
+                          >
+                            Thanh toán tiền mặt khi nhận hàng
+                          </Typography>
+                        </Box>
+                      </Radio>
+                      <Radio value={2}>
+                        <Box className={clsx(style.wrapContent)}>
+                          <img alt="icon" src={paymentVNP} className={clsx(style.icon)} />
+                          <Typography
+                            className={clsx(style.textPayMent)}
+                            color={(theme) => theme?.palette?.text?.primary4}
+                          >
+                            Thanh toán bằng VNPAY
+                          </Typography>
+                        </Box>
+                      </Radio>
+                    </Space>
+                  </Radio.Group>
+                </Box>
+              </Grid>
+
+              {/* grid phần 2 */}
+              <Grid lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+                {/* Địa chỉ giao hàng */}
+                <Box className={clsx(style.actionAddress)}>
+                  {/* nếu đã có địa chỉ giao hàng => hiển thị ĐỊA CHỈ GIAO HÀNG ra màn hình */}
+                  {isAddress ? (
+                    <Box className={clsx(style.wrapAddressCard)}>
+                      <Box className={clsx(style.col1)}>
+                        <Typography
+                          className={clsx(style.text, style.text1)}
+                          color={(theme) => theme?.palette?.text?.primary6}
+                        >
+                          Giao tới
+                        </Typography>
+                        <Typography
+                          className={clsx(style.text, style.text2)}
+                          onClick={handleChangeThayDoiDiaChiGiaoHang}
+                        >
+                          Thay đổi
+                        </Typography>
+                      </Box>
+                      <Box className={clsx(style.col2)}>
+                        <Typography
+                          className={clsx(style.text, style.text1)}
+                          color={(theme) => theme?.palette?.text?.primary4}
+                        >
+                          {userLogin?.username}
+                        </Typography>
+                        <i className={clsx(style.i)}></i>
+                        <Typography
+                          className={clsx(style.text, style.text2)}
+                          color={(theme) => theme?.palette?.text?.primary4}
+                        >
+                          {userLogin?.phoneNumber}
+                        </Typography>
+                      </Box>
+                      <Box className={clsx(style.col3)}>
+                        <Typography
+                          className={clsx(style.text, style.text2)}
+                          color={(theme) => theme?.palette?.text?.primary6}
+                        >
+                          <span className={clsx(style.text1)}>Nhà</span>
+                          {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện}
+                          ,{userLogin?.address?.Tỉnh_Thành_phố}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    // nếu chưa có địa chỉ giao hàng => cho chọn địa chỉ giao hàng => và lưu địa chỉ giao hàng lại trong server
+                    <AddressUser isModalAddresss={isModalAddresss} setIsAddress={setIsAddress} />
+                  )}
+                </Box>
+
+                {/* Nút đặt hàng => BTN đặt hàng */}
+                <Box className={clsx(style.wrapBtnOrder)}>
+                  <Typography className={clsx(style.textOrder)} color={(theme) => theme?.palette?.text?.primary4}>
+                    Đơn hàng
+                  </Typography>
+                  <Divider
+                    className={clsx(style.divider)}
+                    sx={{
+                      borderColor: (theme) => theme?.palette?.text?.primary6,
+                    }}
+                  />
+                  <Box className={clsx(style.orderText)}>
+                    <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
+                      Tạm tính
+                    </Typography>
+                    <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
+                      {dataOrder?.sumOrderList.toLocaleString('vn-VN')}₫
+                    </Typography>
+                  </Box>
+                  <Box className={clsx(style.orderText)}>
+                    <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
+                      Phí vận chuyển
+                    </Typography>
+                    <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
+                      45.000₫
+                    </Typography>
+                  </Box>
+                  <Box className={clsx(style.orderText)}>
+                    <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
+                      Khuyến mãi vận chuyển
+                    </Typography>
+                    <Typography
+                      className={clsx(style.text_order2)}
+                      sx={{
+                        color: 'rgb(0, 171, 86)',
+                      }}
+                    >
+                      -{dataOrder?.freeShip.toLocaleString('vn-VN')}₫
+                    </Typography>
+                  </Box>
+                  <Divider
+                    className={clsx(style.divider)}
+                    sx={{
+                      borderColor: (theme) => theme?.palette?.text?.primary6,
+                    }}
+                  />
+                  <Box className={clsx(style.sumPrice)}>
+                    <Typography className={clsx(style.sumPriceText)} color={(theme) => theme?.palette?.text?.primary4}>
+                      Tổng tiền
+                    </Typography>
+                    <Box className={clsx(style.sumPriceNumber)}>
+                      <Typography className={clsx(style.labelSumNumber)} textAlign="right">
+                        {sumPriceCurrent.toLocaleString('vn-VN')} ₫
+                      </Typography>
+                      <Typography className={clsx(style.vatNumber)} color={(theme) => theme?.palette?.text?.primary6}>
+                        (Đã bao gồm VAT nếu có)
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box className={clsx(style.wrapFreeShip)}>
+                    <img src={imageFreeship} alt="icon freeship" className={clsx(style.img)} />
+                    <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+                      đã được áp dụng!
+                    </Typography>
+                  </Box>
+
+                  <Button
+                    variant="contained"
+                    className={clsx(style.btnBuyOrder)}
+                    color="secondary"
+                    onClick={handleSubmitAddOrder}
+                    disabled={isAddress === false ? true : false}
+                  >
+                    Đặt hàng
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+
+          {/* Footer PayOrder */}
+          <FooterPayOrder />
+          {/* Back top */}
+          <BackTop />
+        </Box>
+      </Spin>
+    ) : (
+      // Khi bình thường thì hiển thị Bình Thường
+      <Box className={clsx(style.wrapPayOrder)}>
+        {/* Header */}
+        <HeaderPayOrder />
+
+        {/* Content PayMents */}
+        <Box className={clsx(style.contents)}>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
+            <Grid lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+              {/* danh sách các sản phẩm có => map qua để  */}
+              <Box className={clsx(style.wrapContent_PayMent_Info)}>
+                {dataOrder?.listProductCard?.map((item, index) => {
+                  return (
+                    <Box className={clsx(style.wrapContent1)} key={item?.id}>
+                      <Box className={clsx(style.BoxAll)}>
+                        {/* box 1 */}
+                        <Box className={clsx(style.box1)}>
+                          <Box className={clsx(style.packageShipping)}>
+                            <Box className={clsx(style.leftContent)}>
+                              <Box className={clsx(style.headerLeft1)}>
+                                <Box className={clsx(style.header1)}>
+                                  <img src={iconNow} alt="icon now" className={clsx(style.img)} />
+                                  <Typography
+                                    className={clsx(style.text)}
+                                    color={(theme) => theme?.palette?.text?.primary4}
+                                  >
+                                    Giao siêu tốc 3h
+                                  </Typography>
+                                </Box>
+                                <Box className={clsx(style.header2)}>
+                                  <Typography
+                                    className={clsx(style.text1)}
+                                    color={(theme) => theme?.palette?.text?.primary6}
+                                  >
+                                    45.000 ₫
+                                  </Typography>
+                                  <Typography
+                                    className={clsx(style.text2)}
+                                    color={(theme) => theme?.palette?.text?.primary4}
+                                  >
+                                    {Number.parseFloat(45000 - Number.parseFloat(dataOrder?.freeShip)).toLocaleString(
+                                      'vn-VN',
+                                    )}{' '}
+                                    ₫
+                                  </Typography>
+                                  <Box className={clsx(style.wrapIcon)}>
+                                    <InfoOutlinedIcon
+                                      className={clsx(style.iconInfo)}
+                                      sx={{
+                                        color: (theme) => theme?.palette?.text?.primary6,
+                                      }}
+                                    />
+                                    {/* hover */}
+                                    <Box className={clsx(style.hover)}>
+                                      <Box className={clsx(style.label1)}>
+                                        <Typography className={clsx(style.text1Label)}>Phí ban đầu</Typography>
+                                        <Typography className={clsx(style.text2Label)}>45.000 ₫</Typography>
+                                      </Box>
+                                      <Box className={clsx(style.label1)}>
+                                        <Typography className={clsx(style.text1Label)}>
+                                          Khuyến mãi vận chuyển
+                                        </Typography>
+                                        <Typography className={clsx(style.text2Label)}>
+                                          - {dataOrder?.freeShip?.toLocaleString('vn-VN')} ₫
+                                        </Typography>
+                                      </Box>
+                                      <Divider className={clsx(style.divider)} />
+                                      <Box className={clsx(style.label1)}>
+                                        <Typography className={clsx(style.text1Label, style.textActive)}>
+                                          Phí còn lại
+                                        </Typography>
+                                        <Typography className={clsx(style.text2Label, style.textActive)}>
+                                          {Number.parseFloat(
+                                            45000 - Number.parseFloat(dataOrder?.freeShip),
+                                          ).toLocaleString('vn-VN')}
+                                          ₫
+                                        </Typography>
+                                      </Box>
                                     </Box>
                                   </Box>
                                 </Box>
                               </Box>
                             </Box>
                           </Box>
-                        </Box>
-                        {/* content */}
-                        <Box className={clsx(style.infoPhone)}>
-                          <img src={item?.image} alt="anh" className={clsx(style.img)} />
-                          <Box className={clsx(style.infoContent)}>
-                            <Typography
-                              className={clsx(style.firstLine)}
-                              color={(theme) => theme?.palette?.text?.primary6}
-                            >
-                              {item?.name}
-                            </Typography>
-                            <Box className={clsx(style.secondLine)}>
+                          {/* content */}
+                          <Box className={clsx(style.infoPhone)}>
+                            <img src={item?.image} alt="anh" className={clsx(style.img)} />
+                            <Box className={clsx(style.infoContent)}>
                               <Typography
-                                className={clsx(style.secondLine_text1)}
+                                className={clsx(style.firstLine)}
                                 color={(theme) => theme?.palette?.text?.primary6}
                               >
-                                SL: x{item?.sumQuantity}
+                                {item?.name}
                               </Typography>
-                              <Typography className={clsx(style.secondLine_text2)}>
-                                {item?.priceAll?.toLocaleString('vn-VN')} ₫
-                              </Typography>
+                              <Box className={clsx(style.secondLine)}>
+                                <Typography
+                                  className={clsx(style.secondLine_text1)}
+                                  color={(theme) => theme?.palette?.text?.primary6}
+                                >
+                                  SL: x{item?.sumQuantity}
+                                </Typography>
+                                <Typography
+                                  className={clsx(style.secondLine_text2)}
+                                  color={(theme) => theme?.palette?.text?.primary6}
+                                >
+                                  {item?.priceAll?.toLocaleString('vn-VN')} ₫
+                                </Typography>
+                              </Box>
                             </Box>
                           </Box>
                         </Box>
-                      </Box>
 
-                      {/* Box 2 */}
-                      <Box>
-                        <Box className={clsx(style.box2)}>
-                          <IconCar className={clsx(style.iconCarOto)} />
-                          <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
-                            Được giao bởi TikiNOW Smart Logistics (giao từ Hà Nội)
-                          </Typography>
+                        {/* Box 2 */}
+                        <Box>
+                          <Box className={clsx(style.box2)}>
+                            <IconCar className={clsx(style.iconCarOto)} />
+                            <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
+                              Được giao bởi TikiNOW Smart Logistics (giao từ Hà Nội)
+                            </Typography>
+                          </Box>
+                        </Box>
+
+                        {/* Pakage Title */}
+                        <Box className={clsx(style.wrapPakageTitle)}>
+                          <img src={pakageIcon} alt="icon pakage" className={clsx(style.iconImage)} />
+                          <Typography className={clsx(style.text)}>Gói {index + 1}:Giao siêu tốc 3h</Typography>
                         </Box>
                       </Box>
-
-                      {/* Pakage Title */}
-                      <Box className={clsx(style.wrapPakageTitle)}>
-                        <img src={pakageIcon} alt="icon pakage" className={clsx(style.iconImage)} />
-                        <Typography className={clsx(style.text)}>Gói {index + 1}:Giao siêu tốc 3h</Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+              {/* Chọn Phương thức thanh toán */}
+              <Box className={clsx(style.paymentMethod)}>
+                <Typography className={clsx(style.labelPayments)} color={(theme) => theme?.palette?.text?.primary4}>
+                  Chọn hình thức thanh toán
+                </Typography>
+                <Radio.Group onChange={onChangeRadio} value={value} buttonStyle="outline">
+                  <Space direction="vertical">
+                    <Radio value={1} className={clsx(style.radio)}>
+                      <Box className={clsx(style.wrapContent)}>
+                        <img alt="icon" src={paymentTienMat} className={clsx(style.icon)} />
+                        <Typography
+                          className={clsx(style.textPayMent)}
+                          color={(theme) => theme?.palette?.text?.primary4}
+                        >
+                          Thanh toán tiền mặt khi nhận hàng
+                        </Typography>
                       </Box>
-                    </Box>
-                  </Box>
-                );
-              })}
-            </Box>
-            {/* Chọn Phương thức thanh toán */}
-            <Box className={clsx(style.paymentMethod)}>
-              <Typography className={clsx(style.labelPayments)} color={(theme) => theme?.palette?.text?.primary4}>
-                Chọn hình thức thanh toán
-              </Typography>
-              <Radio.Group onChange={onChangeRadio} value={value} buttonStyle="outline">
-                <Space direction="vertical">
-                  <Radio value={1} className={clsx(style.radio)}>
-                    <Box className={clsx(style.wrapContent)}>
-                      <img alt="icon" src={paymentTienMat} className={clsx(style.icon)} />
-                      <Typography className={clsx(style.textPayMent)} color={(theme) => theme?.palette?.text?.primary4}>
-                        Thanh toán tiền mặt khi nhận hàng
+                    </Radio>
+                    <Radio value={2}>
+                      <Box className={clsx(style.wrapContent)}>
+                        <img alt="icon" src={paymentVNP} className={clsx(style.icon)} />
+                        <Typography
+                          className={clsx(style.textPayMent)}
+                          color={(theme) => theme?.palette?.text?.primary4}
+                        >
+                          Thanh toán bằng VNPAY
+                        </Typography>
+                      </Box>
+                    </Radio>
+                  </Space>
+                </Radio.Group>
+              </Box>
+            </Grid>
+
+            {/* grid phần 2 */}
+            <Grid lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+              {/* Địa chỉ giao hàng */}
+              <Box className={clsx(style.actionAddress)}>
+                {/* nếu đã có địa chỉ giao hàng => hiển thị ĐỊA CHỈ GIAO HÀNG ra màn hình */}
+                {isAddress ? (
+                  <Box className={clsx(style.wrapAddressCard)}>
+                    <Box className={clsx(style.col1)}>
+                      <Typography
+                        className={clsx(style.text, style.text1)}
+                        color={(theme) => theme?.palette?.text?.primary6}
+                      >
+                        Giao tới
+                      </Typography>
+                      <Typography className={clsx(style.text, style.text2)} onClick={handleChangeThayDoiDiaChiGiaoHang}>
+                        Thay đổi
                       </Typography>
                     </Box>
-                  </Radio>
-                  <Radio value={2}>
-                    <Box className={clsx(style.wrapContent)}>
-                      <img alt="icon" src={paymentVNP} className={clsx(style.icon)} />
-                      <Typography className={clsx(style.textPayMent)} color={(theme) => theme?.palette?.text?.primary4}>
-                        Thanh toán bằng VNPAY
+                    <Box className={clsx(style.col2)}>
+                      <Typography
+                        className={clsx(style.text, style.text1)}
+                        color={(theme) => theme?.palette?.text?.primary4}
+                      >
+                        {userLogin?.username}
+                      </Typography>
+                      <i className={clsx(style.i)}></i>
+                      <Typography
+                        className={clsx(style.text, style.text2)}
+                        color={(theme) => theme?.palette?.text?.primary4}
+                      >
+                        {userLogin?.phoneNumber}
                       </Typography>
                     </Box>
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            </Box>
-          </Grid>
-
-          {/* grid phần 2 */}
-          <Grid lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
-            {/* Địa chỉ giao hàng */}
-            <Box className={clsx(style.actionAddress)}>
-              {/* nếu đã có địa chỉ giao hàng => hiển thị ĐỊA CHỈ GIAO HÀNG ra màn hình */}
-              {isAddress ? (
-                <Box className={clsx(style.wrapAddressCard)}>
-                  <Box className={clsx(style.col1)}>
-                    <Typography
-                      className={clsx(style.text, style.text1)}
-                      color={(theme) => theme?.palette?.text?.primary6}
-                    >
-                      Giao tới
-                    </Typography>
-                    <Typography className={clsx(style.text, style.text2)} onClick={handleChangeThayDoiDiaChiGiaoHang}>
-                      Thay đổi
-                    </Typography>
+                    <Box className={clsx(style.col3)}>
+                      <Typography
+                        className={clsx(style.text, style.text2)}
+                        color={(theme) => theme?.palette?.text?.primary6}
+                      >
+                        <span className={clsx(style.text1)}>Nhà</span>
+                        {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện},
+                        {userLogin?.address?.Tỉnh_Thành_phố}
+                      </Typography>
+                    </Box>
                   </Box>
-                  <Box className={clsx(style.col2)}>
-                    <Typography
-                      className={clsx(style.text, style.text1)}
-                      color={(theme) => theme?.palette?.text?.primary4}
-                    >
-                      {userLogin?.username}
-                    </Typography>
-                    <i className={clsx(style.i)}></i>
-                    <Typography
-                      className={clsx(style.text, style.text2)}
-                      color={(theme) => theme?.palette?.text?.primary4}
-                    >
-                      {userLogin?.phoneNumber}
-                    </Typography>
-                  </Box>
-                  <Box className={clsx(style.col3)}>
-                    <Typography
-                      className={clsx(style.text, style.text2)}
-                      color={(theme) => theme?.palette?.text?.primary6}
-                    >
-                      <span className={clsx(style.text1)}>Nhà</span>
-                      {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện},
-                      {userLogin?.address?.Tỉnh_Thành_phố}
-                    </Typography>
-                  </Box>
-                </Box>
-              ) : (
-                // nếu chưa có địa chỉ giao hàng => cho chọn địa chỉ giao hàng => và lưu địa chỉ giao hàng lại trong server
-                <AddressUser isModalAddresss={isModalAddresss} setIsAddress={setIsAddress} />
-              )}
-            </Box>
-
-            {/* Nút đặt hàng => BTN đặt hàng */}
-            <Box className={clsx(style.wrapBtnOrder)}>
-              <Typography className={clsx(style.textOrder)} color={(theme) => theme?.palette?.text?.primary4}>
-                Đơn hàng
-              </Typography>
-              <Divider
-                className={clsx(style.divider)}
-                sx={{
-                  borderColor: (theme) => theme?.palette?.text?.primary6,
-                }}
-              />
-              <Box className={clsx(style.orderText)}>
-                <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
-                  Tạm tính
-                </Typography>
-                <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
-                  {dataOrder?.sumOrderList.toLocaleString('vn-VN')}₫
-                </Typography>
+                ) : (
+                  // nếu chưa có địa chỉ giao hàng => cho chọn địa chỉ giao hàng => và lưu địa chỉ giao hàng lại trong server
+                  <AddressUser isModalAddresss={isModalAddresss} setIsAddress={setIsAddress} />
+                )}
               </Box>
-              <Box className={clsx(style.orderText)}>
-                <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
-                  Phí vận chuyển
+
+              {/* Nút đặt hàng => BTN đặt hàng */}
+              <Box className={clsx(style.wrapBtnOrder)}>
+                <Typography className={clsx(style.textOrder)} color={(theme) => theme?.palette?.text?.primary4}>
+                  Đơn hàng
                 </Typography>
-                <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
-                  45.000₫
-                </Typography>
-              </Box>
-              <Box className={clsx(style.orderText)}>
-                <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
-                  Khuyến mãi vận chuyển
-                </Typography>
-                <Typography
-                  className={clsx(style.text_order2)}
+                <Divider
+                  className={clsx(style.divider)}
                   sx={{
-                    color: 'rgb(0, 171, 86)',
+                    borderColor: (theme) => theme?.palette?.text?.primary6,
                   }}
-                >
-                  -{dataOrder?.freeShip.toLocaleString('vn-VN')}₫
-                </Typography>
-              </Box>
-              <Divider
-                className={clsx(style.divider)}
-                sx={{
-                  borderColor: (theme) => theme?.palette?.text?.primary6,
-                }}
-              />
-              <Box className={clsx(style.sumPrice)}>
-                <Typography className={clsx(style.sumPriceText)} color={(theme) => theme?.palette?.text?.primary4}>
-                  Tổng tiền
-                </Typography>
-                <Box className={clsx(style.sumPriceNumber)}>
-                  <Typography className={clsx(style.labelSumNumber)} textAlign="right">
-                    {sumPriceCurrent.toLocaleString('vn-VN')} ₫
+                />
+                <Box className={clsx(style.orderText)}>
+                  <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
+                    Tạm tính
                   </Typography>
-                  <Typography className={clsx(style.vatNumber)} color={(theme) => theme?.palette?.text?.primary6}>
-                    (Đã bao gồm VAT nếu có)
+                  <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
+                    {dataOrder?.sumOrderList.toLocaleString('vn-VN')}₫
                   </Typography>
                 </Box>
-              </Box>
+                <Box className={clsx(style.orderText)}>
+                  <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
+                    Phí vận chuyển
+                  </Typography>
+                  <Typography className={clsx(style.text_order2)} color={(theme) => theme?.palette?.text?.primary4}>
+                    45.000₫
+                  </Typography>
+                </Box>
+                <Box className={clsx(style.orderText)}>
+                  <Typography className={clsx(style.text_order1)} color={(theme) => theme?.palette?.text?.primary6}>
+                    Khuyến mãi vận chuyển
+                  </Typography>
+                  <Typography
+                    className={clsx(style.text_order2)}
+                    sx={{
+                      color: 'rgb(0, 171, 86)',
+                    }}
+                  >
+                    -{dataOrder?.freeShip.toLocaleString('vn-VN')}₫
+                  </Typography>
+                </Box>
+                <Divider
+                  className={clsx(style.divider)}
+                  sx={{
+                    borderColor: (theme) => theme?.palette?.text?.primary6,
+                  }}
+                />
+                <Box className={clsx(style.sumPrice)}>
+                  <Typography className={clsx(style.sumPriceText)} color={(theme) => theme?.palette?.text?.primary4}>
+                    Tổng tiền
+                  </Typography>
+                  <Box className={clsx(style.sumPriceNumber)}>
+                    <Typography className={clsx(style.labelSumNumber)} textAlign="right">
+                      {sumPriceCurrent.toLocaleString('vn-VN')} ₫
+                    </Typography>
+                    <Typography className={clsx(style.vatNumber)} color={(theme) => theme?.palette?.text?.primary6}>
+                      (Đã bao gồm VAT nếu có)
+                    </Typography>
+                  </Box>
+                </Box>
 
-              <Box className={clsx(style.wrapFreeShip)}>
-                <img src={imageFreeship} alt="icon freeship" className={clsx(style.img)} />
-                <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-                  đã được áp dụng!
-                </Typography>
-              </Box>
+                <Box className={clsx(style.wrapFreeShip)}>
+                  <img src={imageFreeship} alt="icon freeship" className={clsx(style.img)} />
+                  <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+                    đã được áp dụng!
+                  </Typography>
+                </Box>
 
-              <Button
-                variant="contained"
-                className={clsx(style.btnBuyOrder)}
-                color="secondary"
-                onClick={handleSubmitAddOrder}
-                disabled={isAddress === false ? true : false}
-              >
-                Đặt hàng
-              </Button>
-            </Box>
+                <Button
+                  variant="contained"
+                  className={clsx(style.btnBuyOrder)}
+                  color="secondary"
+                  onClick={handleSubmitAddOrder}
+                  disabled={isAddress === false ? true : false}
+                >
+                  Đặt hàng
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
 
-      {/* Footer PayOrder */}
-      <FooterPayOrder />
-      {/* Back top */}
-      <BackTop />
-    </Box>
+        {/* Footer PayOrder */}
+        <FooterPayOrder />
+        {/* Back top */}
+        <BackTop />
+      </Box>
+    )
   );
 }
 
