@@ -31,7 +31,8 @@ const FooterPayOrder = lazy(() => import('./Component/FooterPayOrder'));
 import orderApi from '~/apis/orderApi.js';
 import userApi from '~/apis/userApi.js';
 import { updateUser } from '~/redux/userSlice.js';
-
+import { addOrderThanhToanTienMat } from '~/redux/OrderTienMat.js';
+import { addOrderPayVNP } from '~/redux/OrderVNP.js';
 // PropTypes
 PayOrder.propTypes = {};
 
@@ -52,7 +53,7 @@ function PayOrder(props) {
         image: item?.img,
         name: item?.name,
         priceAll: item?.sumPrice,
-        // priceDefaults: 2000,
+        priceDefaults: item?.priceDefault,
         sumQuantity: item?.quantityBuyPhone,
       };
     }),
@@ -82,8 +83,6 @@ function PayOrder(props) {
     setIsAddress(false);
   };
   // --------------------------KHI CLICK NÚT ĐẶT HÀNG TRONG TRANG THANH TOÁN -----------------------
-  // ---LƯU ID ĐƠN HÀNG ----
-  const [dataUserUpdate, setDataUserUpdate] = useState({});
   const navigate = useNavigate();
   const handleSubmitAddOrder = () => {
     setLoading(true);
@@ -100,6 +99,7 @@ function PayOrder(props) {
         payment_method: 'Thanh toán khi nhận hàng',
         user: userLogin?._id,
         total_price: sumPriceCurrent,
+        products: dataOrder?.listProductCard[0],
         products2: dataOrder?.listProductCard,
       };
 
@@ -107,18 +107,19 @@ function PayOrder(props) {
       orderApi
         .addOrderDatabase(infoDetailsOrder)
         .then((response) => {
-          // console.log('id đơn hàng là', response?.data?._id);
           // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
           const userUpdate = {
             ...userLogin,
             orders: [response?.data?._id],
           };
+          // console.log('THÊM ĐƠN HÀNG MỚI THÀNH CÔNG:', response);
+          dispatch(addOrderThanhToanTienMat(response?.data));
 
-          // ---THÊM ID ĐƠN HÀNG VÀO USER ------- ĐỂ POPULATE ---
+          // ---THÊM ID ĐƠN HÀNG VÀO TRONG USER ------- ĐỂ POPULATE ----
           userApi
             .updateOneUser(userUpdate)
             .then((res) => {
-              console.log('thêm ID đơn hàng vào user thành công', res);
+              // console.log('thêm ID đơn hàng vào user thành công', res);
               setLoading(false);
 
               // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
@@ -138,8 +139,26 @@ function PayOrder(props) {
           setLoading(false);
         });
     }
-    // Đây là --2--- => Thanh Toán Bằng VNP
+
+    // Đây là --2--- => Thanh Toán Bằng VNP ----
     else {
+      // thông tin đơn hàng khi thanh toán bằng VNP ---
+      const infoDetailsOrder = {
+        status: {
+          code: 1,
+          state: 'Chờ xác nhận',
+        },
+        shipping_address: userLogin?.address,
+        payment_method: 'Thanh toán qua VNP',
+        user: userLogin?._id,
+        total_price: sumPriceCurrent,
+        products: dataOrder?.listProductCard[0],
+        products2: dataOrder?.listProductCard,
+      };
+      // Lưu thông tin tạm thời của đơn hàng vào trong redux
+      dispatch(addOrderPayVNP(infoDetailsOrder));
+
+      //  ---chuyển đến trang thanh toán VNP ---
       axiosClient
         .post('/payment/create_payment_url', {
           amount: sumPriceCurrent,

@@ -11,6 +11,8 @@ import { InputNumber } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addOrderReview } from '~/redux/OrderPreview.js';
+import { addPhoneCart } from '~/redux/GioHang.js';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 // propTypes
 BuyPhone.propTypes = {
@@ -97,6 +99,7 @@ function BuyPhone({ phoneDetails }) {
         img: phoneDetails?.image_urls[0],
         quantityBuyPhone: value,
         sumPrice: newPricePhone,
+        priceDefault: pricePhone,
       };
       // console.log('mua sản phẩm', infoPhone);
 
@@ -110,10 +113,20 @@ function BuyPhone({ phoneDetails }) {
     }
   };
   // -------------KHI USER CLICK THÊM VÀO GIỎ HÀNG-------
+
   const handleClickAddCart = () => {
     // ----NẾU ĐÃ ĐĂNG NHẬP MỚI CHO THỰC HIỆN TIẾP ----
     if (isUserLogin) {
-      console.log('thêm sản phẩm giỏ hàng');
+      const dataAddCart = {
+        _id: phoneDetails?._id,
+        name: phoneDetails?.name,
+        url: phoneDetails?.image_urls[0],
+        price: phoneDetails?.price,
+        quantity: phoneDetails?.stock_quantity,
+      };
+      console.log('SẢN PHẨM CẦN THÊM GIỎ HÀNG LÀ:', dataAddCart);
+
+      // ---KHI CLICK THÊM VÀO GIỎ HÀNG SẼ LƯU CÁC SẢN PHẨM ĐƯỢC THÊM VÀO TRONG REDUX NHÉ -
     } else {
       navigate('/login');
     }
@@ -208,6 +221,16 @@ function BuyPhone({ phoneDetails }) {
             Thêm vào giỏ
           </Button>
         </Box>
+      </Box>
+
+      {/* hộp thoại thông báo khi click thêm giỏ hàng thành công */}
+      <Box className={clsx(style.wrapNotifyCart)}>
+        <Box className={clsx(style.notify_Header)}>
+          <CheckCircleRoundedIcon className={clsx(style.icon)} />
+          <Typography className={clsx(style.text)}>Thêm vào giỏ hàng thành công!</Typography>
+        </Box>
+
+        <Button>Xem giỏ hàng và thanh toán</Button>
       </Box>
     </Box>
   );

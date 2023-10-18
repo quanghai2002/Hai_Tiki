@@ -12,6 +12,7 @@ import paymentVNP from '~/assets/images/paymentVNP.png';
 import paymenSuccess from '~/assets/images/paymenSuccess.svg';
 import chucmung from '~/assets/images/chucmung.svg';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const HeaderPayOrder = lazy(() => import('~/pages/PayOrder/Component/HeaderPayOrder'));
 const FooterPayOrder = lazy(() => import('~/pages/PayOrder/Component/FooterPayOrder'));
 // PropTypes
@@ -24,6 +25,15 @@ function PayMentTienMat(props) {
     naviagate('/');
   };
 
+  // --------LẤY DỮ LIỆU ĐƠN HÀNG VỪA ĐẶT TRONG REDUX ---- ĐÃ LƯU KHI THÊM ĐƠN HÀNG MỚI THÀNH CÔNG-----
+  const infoOrderTienMat = useSelector((state) => state?.orderPayTienMat);
+  console.log({ infoOrderTienMat });
+
+  // -------KHI CLICK VÀO NÚT XEM ĐƠN HÀNG -----
+  const handleHistoryOrder = () => {
+    console.log('xem đơn hàng');
+    naviagate('/order/history');
+  };
   // render JSX
   return (
     <Box className={clsx(style.wrapPaySuccess)}>
@@ -40,7 +50,9 @@ function PayMentTienMat(props) {
                 <img src={paymenSuccess} alt="icon chuc mung" className={clsx(style.img)} />
                 <Box className={style.textContent}>
                   <Typography className={clsx(style.text)}>Yay, đặt hàng thành công!</Typography>
-                  <Typography className={clsx(style.text2)}>Chuẩn bị tiền mặt 54.000 ₫</Typography>
+                  <Typography className={clsx(style.text2)}>
+                    Chuẩn bị tiền mặt {infoOrderTienMat[0]?.total_price.toLocaleString('vi-VN')} ₫
+                  </Typography>
 
                   <Box className={clsx(style.summary)}>
                     <Typography className={clsx(style.method1)} color={(theme) => theme?.palette?.text?.primary6}>
@@ -67,7 +79,7 @@ function PayMentTienMat(props) {
                         fontSize: '18px !important',
                       }}
                     >
-                      54.000 ₫
+                      {infoOrderTienMat[0]?.total_price.toLocaleString('vi-VN')} ₫
                     </Typography>
                   </Box>
                   <Box className={clsx(style.summaryVat)}>
@@ -93,27 +105,40 @@ function PayMentTienMat(props) {
             <Box className={clsx(style.content2)}>
               <Box className={clsx(style.orderPakageHeader)}>
                 <Typography className={clsx(style.text1)} color={(theme) => theme?.palette?.text?.primary4}>
-                  Mã đơn hàng: 900797587
+                  Mã đơn hàng: {infoOrderTienMat[0]?._id}
                 </Typography>
-                <Typography className={clsx(style.text2)} color={(theme) => theme?.palette?.text?.primary7}>
+                <Typography
+                  className={clsx(style.text2)}
+                  color={(theme) => theme?.palette?.text?.primary7}
+                  onClick={handleHistoryOrder}
+                >
                   Xem đơn hàng
                 </Typography>
               </Box>
-              <Divider
+              {/* <Divider
                 sx={{
                   borderColor: (theme) => theme?.palette?.text?.primary12,
                 }}
-              />
-              <Box className={clsx(style.infoPhone)}>
-                <img
-                  src="https://salt.tikicdn.com/cache/96x96/ts/product/fc/e3/3c/59eb482a1fd85fd9bd38534a7a6b2577.png.webp"
-                  alt="icon anh"
-                  className={clsx(style.image)}
-                />
-                <Typography className={clsx(style.name)} color={(theme) => theme?.palette?.text?.primary6}>
-                  Kẹo dẻo trái cây hỗn hợp - Welch's Mixed Fruit Snack Chứa Vitamin A,C,E Giúp ăn ngon + bổ + khỏe
-                  (22,7g/gói)- Massel Official - 1 gói lẻ
-                </Typography>
+              /> */}
+              {/* DANH SÁCH CÁC SẢN PHẨM TRONG ĐƠN HÀNG ĐÓ */}
+              <Box className={clsx(style.wrapListProductOrder)}>
+                {infoOrderTienMat[0]?.products2?.map((phone) => {
+                  return (
+                    <Box key={phone?.id}>
+                      <Divider
+                        sx={{
+                          borderColor: (theme) => theme?.palette?.text?.primary12,
+                        }}
+                      />
+                      <Box className={clsx(style.infoPhone)}>
+                        <img src={phone?.image} alt="icon anh" className={clsx(style.image)} />
+                        <Typography className={clsx(style.name)} color={(theme) => theme?.palette?.text?.primary6}>
+                          {phone?.name}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  );
+                })}
               </Box>
             </Box>
           </Grid>

@@ -424,6 +424,22 @@
         }
       }
     }
+
+    // thông báo khi click thêm sản phẩm vào giỏ hàng thành công
+    .wrapNotifyCart {
+      background-color: red;
+      position: fixed;
+      right: 0;
+      top: 50px;
+      z-index: 99999999999999 !important;
+      .notify_Header {
+        .icon {
+        }
+
+        .text {
+        }
+      }
+    }
   }
 }
 

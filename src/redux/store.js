@@ -13,7 +13,9 @@ import storage from 'redux-persist/lib/storage';
 import reducerUser from './userSlice.js';
 import PhoneReducer from './PhoneSlice.js';
 import OrderPreview from './OrderPreview.js';
-
+import OrderPayTienMat from './OrderTienMat.js';
+import OrderPayVNP from './OrderVNP.js';
+import GioHang from './GioHang.js';
 
 const persistConfig = {
   key: 'root',
@@ -25,9 +27,10 @@ const rootReducer = combineReducers(
   {
     userAuth: reducerUser,
     orderPreview: OrderPreview,
-    // phone: PhoneReducer
-    // students: reducerStudents
-    // ....
+    orderPayTienMat: OrderPayTienMat,
+    orderPayVNP: OrderPayVNP,
+    gioHang: GioHang
+
   }
 );
 

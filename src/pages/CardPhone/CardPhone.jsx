@@ -12,11 +12,17 @@ import Divider from '@mui/material/Divider';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
 import { WaringIconDelteAll } from '~/assets/iconSVG.jsx';
-const Header = lazy(() => import('~/components/Header'));
-const Footer = lazy(() => import('~/components/Footer'));
-const OneCard = lazy(() => import('./OneCard.jsx'));
-const AddressUser = lazy(() => import('./AddressUser.jsx'));
-const CardEmpty = lazy(() => import('./CardEmpty'));
+import { useSelector } from 'react-redux';
+// const Header = lazy(() => import('~/components/Header'));
+// const Footer = lazy(() => import('~/components/Footer'));
+// const OneCard = lazy(() => import('./OneCard.jsx'));
+// const AddressUser = lazy(() => import('./AddressUser.jsx'));
+// const CardEmpty = lazy(() => import('./CardEmpty'));
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
+import OneCard from './OneCard.jsx';
+import AddressUser from './AddressUser.jsx';
+import CardEmpty from './CardEmpty';
 
 // prop types
 CardPhone.propTypes = {};
@@ -47,9 +53,19 @@ function CardPhone(props) {
     },
   ]);
 
-  // ---- ----------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
-  const [addressUserShip, setAddressUserShip] = useState('');
-  const isAddressUser = Boolean(addressUserShip);
+  console.log({ listCardTest });
+  // ---- ----------KIỂM TRA XEM ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA -------------------
+  const userLogin = useSelector((state) => state?.userAuth?.user);
+  const [addressUserShip, setAddressUserShip] = useState(Boolean(userLogin?.address));
+  const isAddressUser = addressUserShip;
+  const [isModalOpen, setIsModalOpenAddress] = useState(false);
+
+  // ------KHI CLICK VÀO THAY ĐỔI - CẬP NHẬT ĐỊA CHỈ GIAO HÀNG  ---
+  const handleClickChangeAddress = () => {
+    setAddressUserShip(false);
+    // set isModal === true => để bật lên hộp thoại chỉnh sửa
+    setIsModalOpenAddress(true);
+  };
   // console.log(isAddressUser);
   // console.log({ addressUserShip });
   // text list card => để render => giỏ các sản phẩm trong giỏ hàng
@@ -435,7 +451,7 @@ function CardPhone(props) {
                 minWidth: '308px',
               }}
             >
-              {/* address địa chỉ => giao hàng */}
+              {/* ADDRESS USER => ĐỊA CHỈ GIAO HÀNG XEM ĐÃ CÓ HAY CHƯA BẠN NHÉ */}
               {/* nếu có địa chỉ rồi thì hiển thị > nếu không bắt chọn địa chỉ  */}
               <Grid lg={12}>
                 {isAddressUser ? (
@@ -447,12 +463,7 @@ function CardPhone(props) {
                       >
                         Giao tới
                       </Typography>
-                      <Typography
-                        className={clsx(style.text, style.text2)}
-                        onClick={() => {
-                          setAddressUserShip('');
-                        }}
-                      >
+                      <Typography className={clsx(style.text, style.text2)} onClick={handleClickChangeAddress}>
                         Thay đổi
                       </Typography>
                     </Box>
@@ -461,14 +472,14 @@ function CardPhone(props) {
                         className={clsx(style.text, style.text1)}
                         color={(theme) => theme?.palette?.text?.primary4}
                       >
-                        {addressUserShip?.nameUser}
+                        {userLogin?.username}
                       </Typography>
                       <i className={clsx(style.i)}></i>
                       <Typography
                         className={clsx(style.text, style.text2)}
                         color={(theme) => theme?.palette?.text?.primary4}
                       >
-                        {addressUserShip?.phoneNumber}
+                        {userLogin?.phoneNumber}
                       </Typography>
                     </Box>
                     <Box className={clsx(style.col3)}>
@@ -477,13 +488,17 @@ function CardPhone(props) {
                         color={(theme) => theme?.palette?.text?.primary6}
                       >
                         <span className={clsx(style.text1)}>Nhà</span>
-                        {addressUserShip?.diachi_cuthe},{addressUserShip?.phuongxa},{addressUserShip?.quanhuyen},
-                        {addressUserShip?.thanhpho}
+                        {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện},
+                        {userLogin?.address?.Tỉnh_Thành_phố}
                       </Typography>
                     </Box>
                   </Box>
                 ) : (
-                  <AddressUser setAddressUserShip={setAddressUserShip} />
+                  <AddressUser
+                    isModal={isModalOpen}
+                    setIsModalOpenAddress={setIsModalOpenAddress}
+                    setAddressUserShip={setAddressUserShip}
+                  />
                 )}
               </Grid>
 
