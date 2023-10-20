@@ -12,6 +12,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import removeIcon from '~/assets/images/removeIcon.svg';
 import iconNow from '~/assets/images/iconNow.png';
 import { WaringIconDelteAll } from '~/assets/iconSVG.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { updatePhoneCart } from '~/redux/GioHang.js';
 
 OneCard.propTypes = {
   detailsPhone: PropTypes.object.isRequired,
@@ -30,6 +32,7 @@ OneCard.propTypes = {
   setListSumPriceCheckAll: PropTypes.func,
   setOneIDProducts: PropTypes.func,
   setListProductCard: PropTypes.func,
+  setListCardTest: PropTypes.func,
 };
 
 function OneCard({
@@ -49,7 +52,9 @@ function OneCard({
   setListSumPriceCheckAll,
   setOneIDProducts,
   setListProductCard,
+  setListCardTest,
 }) {
+  const dispatch = useDispatch();
   // ---------------------- TĂNG GIẢM SỐ LƯỢNG SẢN PHẨM--------------------------------------------------------
   // xử lý khi click tăng hoặc giảm số lượng sản phẩm
   // khi chọn tăng hoặc giảm số lượn sản phẩm
@@ -67,8 +72,8 @@ function OneCard({
   // chuyển từ number => sang string => render
   const formatPricePhone = newPricePhone.toLocaleString('vi-VN');
 
-  // input quantity => khi nhập số lượng sản phẩm => để mua => mặc định là 1 sản phẩm
-  const [value, setValue] = useState(1);
+  // input quantity => khi nhập số lượng sản phẩm => để mua => mặc định là 1 sản phẩm => NẾU CÓ TRUYỀN VÀO LẤY MẶC ĐỊNH GIÁ TRỊ TRUYỀN VÀO
+  const [value, setValue] = useState(detailsPhone?.soluongmua);
 
   // khi onchangr input => quantity
   const onChangeInput = (values) => {
@@ -289,12 +294,12 @@ function OneCard({
       };
 
       // lưu danh sách giá đơn hàng => khi click vào check all
-
       setListSumPriceCheckAll((prev) => {
         //  tìm id sản phẩm
         const index = prev?.findIndex((item) => {
           return item?.id === detailsPhone?.id;
         });
+
         //  tìm thấy sản phẩm cũ => cập nhật lại giá sản phẩm
         if (index !== -1) {
           prev?.splice(index, 1, {
@@ -321,10 +326,6 @@ function OneCard({
       // khi checkAll bằng false set => lại bằng []
 
       setListSumPriceCheckAll((prev) => {
-        // console.log('giá trị cũ 1', prev);
-
-        // console.log('index', listCheckedBox);
-
         const oldList = [...prev];
         const index = oldList?.findIndex((item) => {
           return item?.id === detailsPhone?.id;
@@ -493,6 +494,8 @@ function OneCard({
     }
   }, [checkAll, value, newPricePhone, detailsPhone, checkGetSumPrice, listCheckedBox?.length]);
 
+  // ---LẤY THÔNG TIN CÁC SẢN PHẨM TRONG GIỎ HÀNG TRONG REDUX => ĐỂ XÓA CÁC KIỂU---
+  const listPhoneCart = useSelector((state) => state?.gioHang?.cartList);
   // ---------------------------------------MODAL HIỆN THỊ XÓA 1 SẢN PHẨM ---------------------
   // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
   const [isModal, setIsModal] = useState(false);
@@ -505,9 +508,81 @@ function OneCard({
     setIsModal(false);
   };
 
-  // khi clik nút ----XÁC NHẬN ---- => đồng ý xóa nhiều SẢN PHẨM
+  // khi click nút ----XÁC NHẬN ---- => đồng ý xóa -- 1 SẢN PHẨM
   const handleClickOK = () => {
+    // --KHI Xóa các sản phẩm sẽ lọc ra sản phẩm không thuộc ID đó và cập nhật lại trong redux là OK
     console.log('id 1 sản phẩm cần xóa', detailsPhone?.id);
+    const newListPhoneCart = listPhoneCart?.filter((item) => {
+      return item?._id !== detailsPhone?.id;
+    });
+    // console.log('danh sách sản phẩm sau khi xóa là', newListPhoneCart);
+
+    // --UPDATE LẠI GIỎ HÀNG TRONG REDUX ---
+    dispatch(updatePhoneCart(newListPhoneCart));
+
+    // -- CẬP NHẬT LẠI SẢN PHẨM GIỎ HÀNG Ở NGOÀI TRANG TỔNG => ĐỂ RENDER ĐÚNG --
+    // -- Map qua vì bên kia lưu là id => lên phải update 1 tẹo => _id === id
+    const listPhoneCartUpdateState = newListPhoneCart?.map((item) => {
+      return {
+        id: item?._id,
+        name: item?.name,
+        url: item?.url,
+        price: item?.price,
+        quantity: item?.quantity,
+        soluongmua: item?.soluongmua,
+      };
+    });
+    setListCardTest(listPhoneCartUpdateState);
+
+    //  ---CẬP NHẬT LẠI GIÁ CỦA LIST SẢN PHẨM KHI CHECK ALL BỊ XÓA ĐI 1
+    setListSumPriceCheckAll((prev) => {
+      const index = prev.findIndex((item) => {
+        return item.id === detailsPhone?.id;
+      });
+
+      // tìm kiếm sản phẩm và cập nhật
+      // đây là giá các sản phẩm khi chekall bằng TRUE
+      if (index !== -1) {
+        const newPhonePrice = prev?.filter((item) => {
+          return item?.id !== detailsPhone?.id;
+        });
+        return newPhonePrice;
+      } else {
+        return prev;
+      }
+    });
+
+    // setSumPriceCard
+    // đây là giá các sản phẩm khi checkAll bằng false
+    setSumPriceCard((prev) => {
+      const index = prev.findIndex((item) => {
+        return item.id === detailsPhone?.id;
+      });
+
+      if (index !== -1) {
+        prev?.splice(index, 1);
+        return prev;
+      } else {
+        return prev;
+      }
+    });
+
+    // setListCheckedBox
+    // đây là danh sách list check box => điều kiện để xem có checkall hay không
+    setListCheckedBox((prev) => {
+      const index = prev.findIndex((item) => {
+        return item === detailsPhone?.id;
+      });
+
+      if (index !== -1) {
+        prev?.splice(index, 1);
+        return prev;
+      } else {
+        return prev;
+      }
+    });
+    // ĐÓNG MODAL ĐI
+    setIsModal(false);
   };
   // RENDER JSX
   return (

@@ -26,6 +26,9 @@ import PhoneDetailLazy from './PhoneDetailsLazy/PhoneDetailLazy';
 PhoneDetails.propTypes = {};
 
 function PhoneDetails(props) {
+  // ---TRẠNG THÁI ĐỂ HIỆN THỊ NOTIFY KHI THÊM SẢN PHẨM VÀO GIỎ HÀNG THÀNH CÔNG ----
+  const [isHidenNotify, setIsHidenNotify] = useState(false);
+
   // -- KHI ĐANG TẢI THÔNG TIN SẢN 1 SẢN PHẨM THÌ HIỆN LOADING LAZY---------
   const [loading, setLoading] = useState(true);
   // --------LẤY ID SẢN PHẨM TỪ BÊN KIA TRUYỀN SANG --------
@@ -59,7 +62,7 @@ function PhoneDetails(props) {
       ) : (
         <>
           {/* Header */}
-          <Header />
+          <Header isHidenNotify={isHidenNotify} setIsHidenNotify={setIsHidenNotify} />
           {/* Content */}
           <Box className={clsx(style.wrapContent)}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
@@ -77,7 +80,7 @@ function PhoneDetails(props) {
 
                 {/* Buy Phone */}
                 <Grid lg={3.5}>
-                  <BuyPhone phoneDetails={phoneDetails} />
+                  <BuyPhone phoneDetails={phoneDetails} setIsHidenNotify={setIsHidenNotify} />
                 </Grid>
               </Grid>
 

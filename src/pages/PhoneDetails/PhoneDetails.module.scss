@@ -424,22 +424,6 @@
         }
       }
     }
-
-    // thông báo khi click thêm sản phẩm vào giỏ hàng thành công
-    .wrapNotifyCart {
-      background-color: red;
-      position: fixed;
-      right: 0;
-      top: 50px;
-      z-index: 99999999999999 !important;
-      .notify_Header {
-        .icon {
-        }
-
-        .text {
-        }
-      }
-    }
   }
 }
 
@@ -447,5 +431,29 @@
 .backTop {
   & :global .ant-float-btn-icon {
     color: rgb(10, 104, 255) !important;
+  }
+}
+
+// thông báo message khi thêm sản phẩm vào giỏ hàng vượt quá giới hạn
+body {
+  & :global .ant-message-notice-content {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+  & :global .ant-message-warning {
+    font-size: 1.6rem;
+    color: white;
+    padding: 3px 0;
+    user-select: none;
+    display: flex;
+    align-items: center;
+
+    .anticon-exclamation-circle {
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  & :global .ant-message-notice-warning {
+    padding: 46px 0 !important;
   }
 }

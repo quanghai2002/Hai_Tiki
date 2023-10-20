@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import style from './Header.module.scss';
 import clsx from 'clsx';
@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { Mentions } from 'antd';
+import CloseIcon from '@mui/icons-material/Close';
 
 const { Search } = Input;
 import HomeIcon from '~/assets/images/iconHome.png';
@@ -29,10 +30,30 @@ import { logOut } from '~/redux/userSlice.js';
 import removeToken from '~/utils/removeToken';
 import getrefreshToken from '~/utils/getRefreshToken';
 import getTokenCookie from '~/utils/getTokenCookie';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
-Header.propTypes = {};
+// Proptypes
+Header.propTypes = {
+  isHidenNotify: PropTypes.bool,
+  setIsHidenNotify: PropTypes.func,
+};
 
-function Header(props) {
+function Header({ isHidenNotify = true, setIsHidenNotify }) {
+  // --LẤY THÔNG TIN SỐ LƯỢNG ĐƠN HÀNG TRONG GIỎ HÀNG CỦA USER ĐỂ HIỂN THỊ SỐ LƯỢNG SẢN PHẨM TRONG GIỎ HÀNG ---
+  const listPhoneCart = useSelector((state) => state?.gioHang?.cartList);
+
+  // ---KHI CLICK VÀO NÚT X TẮT NOTIFY THÔNG BÁO THÊM ĐƠN HÀNG THÀNH CÔNG ĐI --
+  const handleClickCloseNotify = () => {
+    setIsHidenNotify(true);
+  };
+
+  // ---KHI TẢI LẠI TRANG => SET LẠI ĐỂ TẮT NOTIFY ---
+  useEffect(() => {
+    if (setIsHidenNotify) {
+      setIsHidenNotify(true);
+    }
+  }, []);
+
   const dispatch = useDispatch();
   // --- LẤY THÔNG TIN USER TRONG REDUX KHI ĐÃ ĐĂNG NHẬP =>
   // ----------NẾU CÓ THÔNG TIN USER TRONG REDUX LÀ ĐÃ ĐĂNG NHẬP VÀ NGƯỢC LẠI--------------
@@ -290,7 +311,9 @@ function Header(props) {
             <Box className={clsx(style.action)}>
               <DarkMode />
             </Box>
+
             {/* giỏ hàng => cart */}
+
             <Box
               className={clsx(style.action, style.cart)}
               sx={{
@@ -302,9 +325,41 @@ function Header(props) {
                 },
               }}
             >
-              <Badge badgeContent={0} color="secondary" showZero>
-                <AddShoppingCartIcon color="primary" />
-              </Badge>
+              <Link to="/card" className={clsx(style.linktoCart)}>
+                <Badge badgeContent={listPhoneCart?.length} color="secondary" showZero>
+                  <AddShoppingCartIcon color="primary" />
+                </Badge>
+              </Link>
+
+              {/* hộp thoại thông báo khi click thêm giỏ hàng thành công */}
+              <Box
+                className={clsx(style.wrapNotifyCart, {
+                  [style.hiddenNotify]: isHidenNotify,
+                })}
+              >
+                <Box className={clsx(style.notify_Header)}>
+                  <CheckCircleRoundedIcon className={clsx(style.icon)} />
+                  <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+                    Thêm vào giỏ hàng thành công!
+                  </Typography>
+                </Box>
+
+                <Box className={clsx(style.wrapBtn)}>
+                  <Link to="/card" className={clsx(style.linktoCart)}>
+                    <Button className={clsx(style.buttonNotify)} variant="contained" color="secondary">
+                      Xem giỏ hàng và thanh toán
+                    </Button>
+                  </Link>
+                </Box>
+
+                <CloseIcon
+                  className={clsx(style.iconClose)}
+                  sx={{
+                    color: (theme) => theme?.palette?.text?.primary4,
+                  }}
+                  onClick={handleClickCloseNotify}
+                />
+              </Box>
             </Box>
           </Box>
         </Box>

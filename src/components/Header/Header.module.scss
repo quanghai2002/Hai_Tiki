@@ -176,6 +176,10 @@
           position: relative;
           top: 1px;
         }
+
+        .linktoCart {
+          text-decoration: none;
+        }
         .cart {
           padding: 8px 8px;
           position: relative;
@@ -193,6 +197,66 @@
             border: 1px solid rgb(235, 235, 240);
             top: 50%;
             transform: translateY(-50%);
+          }
+
+          // hộp thoại hiển thị khi click thêm sản phẩm vào giỏ hàng
+          .wrapNotifyCart {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            padding: 16px;
+            border-radius: 6px;
+            box-shadow: rgb(179, 179, 179) 1px 1px 15px;
+            background-color: rgb(255, 255, 255);
+            width: 272px;
+            &.hiddenNotify {
+              display: none;
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              bottom: 100%;
+              right: 12px;
+              border-width: 8px;
+              border-style: solid;
+              border-color: transparent transparent rgb(255, 255, 255);
+              border-image: initial;
+            }
+            .notify_Header {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+
+              .icon {
+                width: 19px;
+                height: 19px;
+                color: rgb(76, 175, 80);
+              }
+
+              .text {
+                font-size: 1.3rem;
+                user-select: none;
+              }
+            }
+
+            .wrapBtn {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              margin-top: 16px;
+              .buttonNotify {
+                font-size: 1.4rem;
+                font-weight: 400;
+              }
+            }
+            .iconClose {
+              width: 19px;
+              height: 19px;
+              position: absolute;
+              top: 6px;
+              right: 6px;
+            }
           }
         }
         & :global .MuiBadge-badge {

@@ -285,15 +285,16 @@
     // box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 1px 0px;
   }
   .wrapListAllCard {
-    // background: white;
-    // border-radius: 4px;
-    // padding: 8px 15px;
-    // box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
     display: grid;
     grid-template-columns: 398px 170px 150px 130px 30px;
     -webkit-box-align: center;
     align-items: center;
     padding: 15px 0;
+    border-bottom: 1px solid rgb(242, 242, 242);
+
+    &:last-child {
+      border-bottom: 1px solid transparent;
+    }
 
     // info => thông tin sản phẩm
     .wrapInfo {
@@ -561,7 +562,12 @@
       }
     }
   }
-
+  //  wrap lại tất cả 3 action bên phải: địa chỉ giao hàng, tổng giá trị + nút mua hàng
+  // mục đích như này để có thể dùng position sticky được
+  .wrapAddressBuyPhone {
+    position: sticky;
+    top: 89px;
+  }
   // wrapSumPriceCard
   .wrapSumPriceCard {
     background: white;

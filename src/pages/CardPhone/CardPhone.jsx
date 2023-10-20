@@ -12,7 +12,7 @@ import Divider from '@mui/material/Divider';
 
 import removeIcon from '~/assets/images/removeIcon.svg';
 import { WaringIconDelteAll } from '~/assets/iconSVG.jsx';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // const Header = lazy(() => import('~/components/Header'));
 // const Footer = lazy(() => import('~/components/Footer'));
 // const OneCard = lazy(() => import('./OneCard.jsx'));
@@ -23,37 +23,32 @@ import Footer from '~/components/Footer';
 import OneCard from './OneCard.jsx';
 import AddressUser from './AddressUser.jsx';
 import CardEmpty from './CardEmpty';
+import { updatePhoneCart } from '~/redux/GioHang.js';
 
 // prop types
 CardPhone.propTypes = {};
 
 function CardPhone(props) {
-  // list card test
-  const [listCardTest, setListCardTest] = useState([
-    {
-      id: '1',
-      name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng -  Đen',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/e5/55/3c/a00e836b2d4131f18c546166f7f05cb0.jpeg.webp',
-      price: 100000,
-      quantity: 8,
-    },
-    {
-      id: '2',
-      name: 'Điện thoại Xiaomi Redmi 10C (4GB/128GB)',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/fd/4d/66/f30dc912aa333f0b7b76f6ca28f6e409.png.webp',
-      price: 5000,
-      quantity: 16,
-    },
-    {
-      id: '3',
-      name: 'Điện thoại Realme C33 (3GB/32GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/19/84/0e/b8ba4857452cc85b7b2bcb4b3ff162f6.jpg.webp',
-      price: 2000,
-      quantity: 3,
-    },
-  ]);
+  const dispatch = useDispatch();
+  // ---LẤY DANH SÁCH SẢN PHẨM ĐÃ THÊM VÀO TRONG GIỎ HÀNG -----LẤY TỪ TRONG REDUX NHÉ --
 
-  console.log({ listCardTest });
+  const listInfoPhoneCart = useSelector((state) => state?.gioHang?.cartList);
+
+  // list cart test === DANH SÁCH SẢN PHẨM TRONG GIỎ HÀNG ----
+  const [listCardTest, setListCardTest] = useState(
+    listInfoPhoneCart?.map((item) => {
+      return {
+        id: item?._id,
+        name: item?.name,
+        url: item?.url,
+        price: item?.price,
+        quantity: item?.quantity,
+        soluongmua: item?.soluongmua,
+      };
+    }),
+  );
+
+  // console.log({ listCardTest });
   // ---- ----------KIỂM TRA XEM ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA -------------------
   const userLogin = useSelector((state) => state?.userAuth?.user);
   const [addressUserShip, setAddressUserShip] = useState(Boolean(userLogin?.address));
@@ -76,6 +71,7 @@ function CardPhone(props) {
   // action checked => kiểm tra xem trạng thái của checkaAll tất cả sản phẩm
   const [checkAll, setCheckAll] = useState(false);
   const [listID, setListId] = useState([]);
+  // console.log('listID', listID);
   const [listChecked, setListChecked] = useState([]);
 
   // lấy 1 ID sản phẩm để xóa 1 sản phẩm nếu muốn
@@ -95,37 +91,6 @@ function CardPhone(props) {
     };
   }, [isAlert]);
 
-  // ------------------MODAL HIỆN THỊ XÓA 1 || NHIỀU SẢN PHẨM ---------------------
-  // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
-  const [isModal, setIsModal] = useState(false);
-  // click nút Hủy modal
-  const handleCancelModal = () => {
-    setIsModal(false);
-  };
-
-  // khi clik nút ----XÁC NHẬN ---- => đồng ý xóa nhiều SẢN PHẨM
-  const handleClickOK = () => {
-    // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
-    const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
-    console.log('danh sách ID cần xóa', isCheckID);
-  };
-
-  /*--------------DELETE ALL SẢN PHẨM CARD -------------------------------    */
-  //  click DETELE all sản phẩm
-  const handleClickDeleteAll = () => {
-    // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
-    const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
-
-    // console.log('isCheckID', isCheckID);
-
-    // nếu chưa chọn sản phẩm nào => hiển thị thông alert => để biết
-    if (isCheckID?.length === 0) {
-      setAlert(true);
-    } else {
-      setIsModal(true);
-    }
-  };
-
   const [listCheckedBox, setListCheckedBox] = useState([]);
   // console.log('listCheckedBox:', listCheckedBox);
 
@@ -137,6 +102,9 @@ function CardPhone(props) {
 
   // kiểm tra xem tổng giá trị đơn hàng để check xem có được freeship không
   const [sumPriceCard, setSumPriceCard] = useState([]);
+  // console.log('sumPriceCard', sumPriceCard);
+
+  // TỔNG GIÁ TRỊ ĐƠN HÀNG
   const [total, setTotal] = useState(0);
 
   /* ----------------CLICK CHECK ALL SẢN PHẨM-------------------  */
@@ -156,15 +124,15 @@ function CardPhone(props) {
     } else {
       setCheckAll(false);
     }
-  }, [listCheckedBox]);
+  }, [listCardTest, listCheckedBox]);
 
   //
   useEffect(() => {
+    // console.log('check All tất cả sản phẩm:', checkAll);
     // nếu là checkAll sẽ lấy danh sách , giá sản phẩm là =>  listSumPriceCheckAll
     if (checkAll) {
       // setSumPriceCard();
       // console.log('list A', listSumPriceCheckAll);
-
       const newTotal = listSumPriceCheckAll?.reduce((total, item) => {
         return total + item?.newSumPrice;
       }, 0);
@@ -182,7 +150,6 @@ function CardPhone(props) {
     // ngược lại => nếu checkAll bằng false => sẽ lấy danh sách giá sản phẩm khác sumPriceCard
     else {
       // console.log('List B', sumPriceCard);
-
       const newTotal = sumPriceCard?.reduce((total, item) => {
         return total + item?.newSumPrice;
       }, 0);
@@ -225,8 +192,95 @@ function CardPhone(props) {
     console.log('danh sách đơn hàng', orderList);
   };
 
+  // ------------------MODAL HIỆN THỊ XÓA 1 || NHIỀU SẢN PHẨM ---------------------
+  // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
+  const [isModal, setIsModal] = useState(false);
+  // click nút Hủy modal
+  const handleCancelModal = () => {
+    setIsModal(false);
+  };
+
+  // khi clik nút ----XÁC NHẬN ---- => đồng ý xóa nhiều SẢN PHẨM
+  // ---XÓA NHIỀU SẢN PHẨM TRONG 1 LẦN Ở ĐÂY NHÉ ----
+  const handleClickOK = () => {
+    // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
+    const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
+
+    // Khi click xóa nhiều sẽ loại bỏ đi các sản phẩm đang được chọn bạn nhé -
+    // --LOẠI BỎ CÁC SẢN PHẨM DÃ CHỌN BẰNG CÁCH FILTER RA CÁC SẢN PHẨM KHÁC ID ĐÓ
+    const newPhoneListCartDeleteAll = listCardTest?.filter((cart) => {
+      return !isCheckID?.includes(cart?.id);
+    });
+    // cập nhật lại list sản phẩm
+    setListCardTest(newPhoneListCartDeleteAll);
+
+    // Danh sách sản phẩm chuẩn bị update lên redux là
+    const newPhoneLisCarttUpdateRedux = newPhoneListCartDeleteAll?.map((item) => {
+      return {
+        _id: item?.id,
+        name: item?.name,
+        url: item?.url,
+        price: item?.price,
+        quantity: item?.quantity,
+        soluongmua: item?.soluongmua,
+      };
+    });
+
+    dispatch(updatePhoneCart(newPhoneLisCarttUpdateRedux));
+
+    // console.log('danh sách ID cần xóa', isCheckID);
+    // setSumPriceCard -- set bằng [] để xóa giá sản phẩm mặc định về không
+    setSumPriceCard([]);
+
+    // setListSumPriceCheckAll
+    setListSumPriceCheckAll((prev) => {
+      // console.log('giá trị cũ SumPriceCheckAll', prev);
+
+      const newPriceCheckAll = prev?.filter((item) => {
+        return !isCheckID?.includes(item?.id);
+      });
+      // console.log('giá trị MỚI SumPriceCheckAll', newPriceCheckAll);
+      return newPriceCheckAll;
+    });
+
+    // setListCheckedBox
+    setListCheckedBox((prev) => {
+      // console.log('giá trị cũ checkBox là', prev);
+
+      const newPriceCheckBox = prev?.filter((item) => {
+        return !isCheckID?.includes(item);
+      });
+
+      // console.log('giá trị MỚI CheckBox là:', newPriceCheckBox);
+      return newPriceCheckBox;
+    });
+
+    //-- Đóng modal xóa nhiều sản phẩm đi --
+    setIsModal(false);
+
+    // setOneIDProducts
+    setOneIDProducts([]);
+  };
+
+  /*--------------DELETE ALL SẢN PHẨM CARD -------------------------------    */
+  //  click DETELE all sản phẩm
+  const handleClickDeleteAll = () => {
+    // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
+    const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
+
+    // console.log('isCheckID', isCheckID);
+
+    // nếu chưa chọn sản phẩm nào => hiển thị thông alert => để biết
+    if (isCheckID?.length === 0) {
+      setAlert(true);
+    } else {
+      setIsModal(true);
+    }
+  };
   // -------------------------KIỂM TRA XEM KHI NÀO GIỎ HÀNG BẰNG === 0 => HIỆN GIỎ HÀNG TRỐNG-------
-  const [lengthOrder, setLengthOrder] = useState(1);
+  const lengthOrder = listCardTest?.length;
+
+  //  HIỂN THỊ JSX TẠI ĐÂY
   return lengthOrder === 0 ? (
     <CardEmpty />
   ) : (
@@ -437,6 +491,7 @@ function CardPhone(props) {
                       setListSumPriceCheckAll={setListSumPriceCheckAll}
                       setOneIDProducts={setOneIDProducts}
                       setListProductCard={setListProductCard}
+                      setListCardTest={setListCardTest}
                     />
                   );
                 })}
@@ -451,117 +506,119 @@ function CardPhone(props) {
                 minWidth: '308px',
               }}
             >
-              {/* ADDRESS USER => ĐỊA CHỈ GIAO HÀNG XEM ĐÃ CÓ HAY CHƯA BẠN NHÉ */}
-              {/* nếu có địa chỉ rồi thì hiển thị > nếu không bắt chọn địa chỉ  */}
-              <Grid lg={12}>
-                {isAddressUser ? (
-                  <Box className={clsx(style.wrapAddressCard)}>
-                    <Box className={clsx(style.col1)}>
-                      <Typography
-                        className={clsx(style.text, style.text1)}
-                        color={(theme) => theme?.palette?.text?.primary6}
-                      >
-                        Giao tới
-                      </Typography>
-                      <Typography className={clsx(style.text, style.text2)} onClick={handleClickChangeAddress}>
-                        Thay đổi
-                      </Typography>
-                    </Box>
-                    <Box className={clsx(style.col2)}>
-                      <Typography
-                        className={clsx(style.text, style.text1)}
-                        color={(theme) => theme?.palette?.text?.primary4}
-                      >
-                        {userLogin?.username}
-                      </Typography>
-                      <i className={clsx(style.i)}></i>
-                      <Typography
-                        className={clsx(style.text, style.text2)}
-                        color={(theme) => theme?.palette?.text?.primary4}
-                      >
-                        {userLogin?.phoneNumber}
-                      </Typography>
-                    </Box>
-                    <Box className={clsx(style.col3)}>
-                      <Typography
-                        className={clsx(style.text, style.text2)}
-                        color={(theme) => theme?.palette?.text?.primary6}
-                      >
-                        <span className={clsx(style.text1)}>Nhà</span>
-                        {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện},
-                        {userLogin?.address?.Tỉnh_Thành_phố}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ) : (
-                  <AddressUser
-                    isModal={isModalOpen}
-                    setIsModalOpenAddress={setIsModalOpenAddress}
-                    setAddressUserShip={setAddressUserShip}
-                  />
-                )}
-              </Grid>
-
-              {/* sum price => tổng giá trị đơn hàng */}
-              <Grid lg={12}>
-                <Box className={clsx(style.wrapSumPriceCard)}>
-                  <Box className={clsx(style.header)}>
-                    <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
-                      Tạm tính
-                    </Typography>
-                    <Box className={clsx(style.price)}>
-                      <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
-                        {total.toLocaleString('vi-VN')}
-                      </Typography>
-                      <Typography className={clsx(style.vnd)} color={(theme) => theme?.palette?.text?.primary4}>
-                        đ
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Divider
-                    sx={{
-                      borderColor: (theme) => theme?.palette?.text?.primary6,
-                    }}
-                  />
-                  <Box className={clsx(style.content)}>
-                    <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
-                      Tổng tiền
-                    </Typography>
-                    <Box className={clsx(style.wrapFooter)}>
+              <Box className={clsx(style.wrapAddressBuyPhone)}>
+                {/* ADDRESS USER => ĐỊA CHỈ GIAO HÀNG XEM ĐÃ CÓ HAY CHƯA BẠN NHÉ */}
+                {/* nếu có địa chỉ rồi thì hiển thị > nếu không bắt chọn địa chỉ  */}
+                <Grid lg={12}>
+                  {isAddressUser ? (
+                    <Box className={clsx(style.wrapAddressCard)}>
                       <Box className={clsx(style.col1)}>
-                        {total > 0 ? (
-                          <>
-                            <Typography className={clsx(style.text1)}> {total.toLocaleString('vi-VN')}</Typography>
-                            <Typography className={clsx(style.text2)}>đ</Typography>
-                          </>
-                        ) : (
-                          <Typography className={clsx(style.text3)}> Vui lòng chọn sản phẩm</Typography>
-                        )}
+                        <Typography
+                          className={clsx(style.text, style.text1)}
+                          color={(theme) => theme?.palette?.text?.primary6}
+                        >
+                          Giao tới
+                        </Typography>
+                        <Typography className={clsx(style.text, style.text2)} onClick={handleClickChangeAddress}>
+                          Thay đổi
+                        </Typography>
                       </Box>
-                      <Typography
-                        className={clsx(style.vat)}
-                        color={(theme) => theme?.palette?.text?.primary6}
-                        textAlign="right"
-                      >
-                        (Đã bao gồm VAT nếu có)
+                      <Box className={clsx(style.col2)}>
+                        <Typography
+                          className={clsx(style.text, style.text1)}
+                          color={(theme) => theme?.palette?.text?.primary4}
+                        >
+                          {userLogin?.username}
+                        </Typography>
+                        <i className={clsx(style.i)}></i>
+                        <Typography
+                          className={clsx(style.text, style.text2)}
+                          color={(theme) => theme?.palette?.text?.primary4}
+                        >
+                          {userLogin?.phoneNumber}
+                        </Typography>
+                      </Box>
+                      <Box className={clsx(style.col3)}>
+                        <Typography
+                          className={clsx(style.text, style.text2)}
+                          color={(theme) => theme?.palette?.text?.primary6}
+                        >
+                          <span className={clsx(style.text1)}>Nhà</span>
+                          {userLogin?.address?.Địa_chỉ},{userLogin?.address?.Phường_Xã},{userLogin?.address?.Quận_Huyện}
+                          ,{userLogin?.address?.Tỉnh_Thành_phố}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <AddressUser
+                      isModal={isModalOpen}
+                      setIsModalOpenAddress={setIsModalOpenAddress}
+                      setAddressUserShip={setAddressUserShip}
+                    />
+                  )}
+                </Grid>
+
+                {/* sum price => tổng giá trị đơn hàng */}
+                <Grid lg={12}>
+                  <Box className={clsx(style.wrapSumPriceCard)}>
+                    <Box className={clsx(style.header)}>
+                      <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
+                        Tạm tính
                       </Typography>
+                      <Box className={clsx(style.price)}>
+                        <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
+                          {total.toLocaleString('vi-VN')}
+                        </Typography>
+                        <Typography className={clsx(style.vnd)} color={(theme) => theme?.palette?.text?.primary4}>
+                          đ
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Divider
+                      sx={{
+                        borderColor: (theme) => theme?.palette?.text?.primary6,
+                      }}
+                    />
+                    <Box className={clsx(style.content)}>
+                      <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
+                        Tổng tiền
+                      </Typography>
+                      <Box className={clsx(style.wrapFooter)}>
+                        <Box className={clsx(style.col1)}>
+                          {total > 0 ? (
+                            <>
+                              <Typography className={clsx(style.text1)}> {total.toLocaleString('vi-VN')}</Typography>
+                              <Typography className={clsx(style.text2)}>đ</Typography>
+                            </>
+                          ) : (
+                            <Typography className={clsx(style.text3)}> Vui lòng chọn sản phẩm</Typography>
+                          )}
+                        </Box>
+                        <Typography
+                          className={clsx(style.vat)}
+                          color={(theme) => theme?.palette?.text?.primary6}
+                          textAlign="right"
+                        >
+                          (Đã bao gồm VAT nếu có)
+                        </Typography>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              </Grid>
+                </Grid>
 
-              {/* btn buy card => nút mua sản phẩm*/}
-              <Grid lg={12}>
-                <Button
-                  className={clsx(style.btnBuyPhone)}
-                  variant="contained"
-                  color="secondary"
-                  disabled={total === 0 || isAddressUser === false ? true : false}
-                  onClick={handleClickBtnBuyCard}
-                >
-                  Mua hàng
-                </Button>
-              </Grid>
+                {/* btn buy card => nút mua sản phẩm*/}
+                <Grid lg={12}>
+                  <Button
+                    className={clsx(style.btnBuyPhone)}
+                    variant="contained"
+                    color="secondary"
+                    disabled={total === 0 || isAddressUser === false ? true : false}
+                    onClick={handleClickBtnBuyCard}
+                  >
+                    Mua hàng
+                  </Button>
+                </Grid>
+              </Box>
             </Box>
           </Grid>
 

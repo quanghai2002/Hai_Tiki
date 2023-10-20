@@ -12,14 +12,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addOrderReview } from '~/redux/OrderPreview.js';
 import { addPhoneCart } from '~/redux/GioHang.js';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import { message } from 'antd';
 
 // propTypes
 BuyPhone.propTypes = {
   phoneDetails: PropTypes.object,
+  setIsHidenNotify: PropTypes.func,
 };
 
-function BuyPhone({ phoneDetails }) {
+function BuyPhone({ phoneDetails, setIsHidenNotify }) {
+  const dispatch = useDispatch();
+
   // THÔNG TIN SẢN PHẨM
   // console.log('thông tin sp:', phoneDetails);
   // số lượng sản phẩm trong kho
@@ -86,7 +89,6 @@ function BuyPhone({ phoneDetails }) {
   const infoUser = useSelector((state) => state?.userAuth?.user);
   const isUserLogin = Boolean(infoUser);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // -------------KHI USER CLICK VÀO MUA SẢN PHẨM -------------
   const handleClickBuyPhone = () => {
@@ -112,21 +114,58 @@ function BuyPhone({ phoneDetails }) {
       navigate('/login');
     }
   };
-  // -------------KHI USER CLICK THÊM VÀO GIỎ HÀNG-------
 
+  // ---- KIỂM TRA XEM KHI THÊM SẢN PHẨM VÀO GIỎ HÀNG ĐÃ VƯỢT QUÁ SỐ LƯỢNG SẢN PHẨM ĐC MUA HAY CHƯA ---
+  const listBuyPhone = useSelector((state) => state?.gioHang?.cartList);
+
+  const phoneBuyCanMua = listBuyPhone?.find((item) => {
+    return item?._id === phoneDetails?._id;
+  });
+
+  // ---THÔNG BÁO NẾU NHƯ THÊM SỐ LƯỢNG SẢN PHẨM VƯỢT QUÁ GIỚI HẠN ---
+  const [messageApi, contextHolder] = message.useMessage({
+    maxCount: 1,
+  });
+  // -------------KHI USER CLICK THÊM VÀO GIỎ HÀNG-------
   const handleClickAddCart = () => {
     // ----NẾU ĐÃ ĐĂNG NHẬP MỚI CHO THỰC HIỆN TIẾP ----
     if (isUserLogin) {
+      // --KIỂM TRA XEM SỐ LƯỢNG SẢN PHẨM THÊM VÀO CÓ VƯỢT QUÁ GIỚI HẠN KHÔNG
+      // --NẾU KHÔNG THÌ HIỆN THỊ POPUP THÊM GIỎ HÀNG THÀNH CÔNG--
+      // ---NẾU VƯỢT QUÁ THÌ HIỂN THỊ => ĐÃ VƯỢT QUÁ GIỚI HẠN --
+      if (phoneBuyCanMua?.soluongmua + value >= phoneDetails?.stock_quantity) {
+        // đóng thông báo nếu đang hiện
+        setIsHidenNotify(true);
+
+        // hiện thị message số lượng mua sản phẩm vượt giới hạn
+        messageApi.open({
+          type: 'warning',
+          content: `Số lượng mua tối đa cho sản phẩm này là ${phoneDetails?.stock_quantity}`,
+          duration: 3,
+        });
+      } else {
+        // ---Hiển thị thông báo là thêm đơn hàng thành công ---
+        setIsHidenNotify(false);
+      }
+
+      // -- KHI CLICK THÊM GIỎ HÀNG => CUỘN VỀ ĐẦU TRANG
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+
+      // ----dữ liệu sản phẩm cần thêm vào đơn hàng ----
       const dataAddCart = {
         _id: phoneDetails?._id,
         name: phoneDetails?.name,
         url: phoneDetails?.image_urls[0],
         price: phoneDetails?.price,
         quantity: phoneDetails?.stock_quantity,
+        soluongmua: value,
       };
-      console.log('SẢN PHẨM CẦN THÊM GIỎ HÀNG LÀ:', dataAddCart);
 
       // ---KHI CLICK THÊM VÀO GIỎ HÀNG SẼ LƯU CÁC SẢN PHẨM ĐƯỢC THÊM VÀO TRONG REDUX NHÉ -
+      dispatch(addPhoneCart(dataAddCart));
     } else {
       navigate('/login');
     }
@@ -144,6 +183,8 @@ function BuyPhone({ phoneDetails }) {
 
       {/* content */}
       <Box className={clsx(style.wrapContents)}>
+        {/* Hiển thi thông báo khi thêm sản phẩm vượt quá giới hạn */}
+        {contextHolder}
         <Box className={clsx(style.wrapQuantity)}>
           <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
             Kho:
@@ -221,16 +262,6 @@ function BuyPhone({ phoneDetails }) {
             Thêm vào giỏ
           </Button>
         </Box>
-      </Box>
-
-      {/* hộp thoại thông báo khi click thêm giỏ hàng thành công */}
-      <Box className={clsx(style.wrapNotifyCart)}>
-        <Box className={clsx(style.notify_Header)}>
-          <CheckCircleRoundedIcon className={clsx(style.icon)} />
-          <Typography className={clsx(style.text)}>Thêm vào giỏ hàng thành công!</Typography>
-        </Box>
-
-        <Button>Xem giỏ hàng và thanh toán</Button>
       </Box>
     </Box>
   );
