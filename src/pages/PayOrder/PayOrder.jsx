@@ -33,10 +33,16 @@ import userApi from '~/apis/userApi.js';
 import { updateUser } from '~/redux/userSlice.js';
 import { addOrderThanhToanTienMat } from '~/redux/OrderTienMat.js';
 import { addOrderPayVNP } from '~/redux/OrderVNP.js';
+import { updatePhoneCart } from '~/redux/GioHang.js';
 // PropTypes
 PayOrder.propTypes = {};
 
 function PayOrder(props) {
+  // --- Lấy các sản phẩm trong giỏ hàng lưu trong redux --
+  const listCartPhone = useSelector((state) => state?.gioHang?.cartList);
+  // console.log('GIỎ HÀNG:', listCartPhone);
+  // ----LẤY THÔNG TIN USER ĐỂ LẤY ID USER => THÊM VÀO TRONG ĐƠN HÀNG + UPDATE USER CÓ ID ĐƠN HÀNG LUÔN ----
+  const userLogin = useSelector((state) => state?.userAuth?.user);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   // -------------------LẤY DỮ LIỆU TẠM THỜI TỪ TRONG REDUX ĐỂ RENDER RA MÀN HÌNH-------------------
@@ -45,22 +51,23 @@ function PayOrder(props) {
   const dataBuyPhone = useSelector((state) => state?.orderPreview);
 
   const dataOrder = {
-    freeShip: 10000,
-    sumOrderList: dataBuyPhone[0]?.sumPrice,
-    listProductCard: dataBuyPhone?.map((item) => {
+    freeShip: dataBuyPhone?.freeShip === 0 ? 10000 : dataBuyPhone?.freeShip,
+    sumOrderList: dataBuyPhone?.sumOrderList,
+    listProductCard: dataBuyPhone?.listProductCard?.map((item) => {
       return {
-        id: item?._id,
-        image: item?.img,
+        id: item?.id,
+        image: item?.image,
         name: item?.name,
-        priceAll: item?.sumPrice,
-        priceDefaults: item?.priceDefault,
-        sumQuantity: item?.quantityBuyPhone,
+        priceAll: item?.priceAll,
+        priceDefaults: item?.priceDefaults,
+        sumQuantity: item?.sumQuantity,
       };
     }),
   };
-
+  // console.log('đơn hàng PREVIEW LÀ:', dataOrder);
   // -----TỔNG TIỀN THỰC TẾ PHẢI THANH TOÁN => SAU KHI TRỪ PHÍ SHIP--------- Phí Ship mặc định là 45.000
   const sumPriceCurrent = Number.parseFloat(dataOrder?.sumOrderList) + 45000 - Number.parseFloat(dataOrder?.freeShip);
+
   // -----Radio => CHỌN PHƯƠNG THỨC THANH TOÁN KHI ONCHANGE -Mặc Định là 1 Thanh Toán Khi Nhận Hàng----------------
   const [value, setValue] = useState(1);
 
@@ -71,8 +78,7 @@ function PayOrder(props) {
 
   // ---- ------------------ĐỊA CHỈ GIAO HÀNG KHI CẬP NHẬT -------------------
   // ---KIỂM TRA XEM USER ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA---------------------
-  // ----LẤY THÔNG TIN USER ĐỂ LẤY ID USER => THÊM VÀO TRONG ĐƠN HÀNG + UPDATE USER CÓ ID ĐƠN HÀNG LUÔN ----
-  const userLogin = useSelector((state) => state?.userAuth?.user);
+
   const [isAddress, setIsAddress] = useState(Boolean(userLogin?.address));
 
   // ------------khi click THAY ĐỔI ĐỊA CHỈ GIAO HÀNG khi đã tồn tại----------
@@ -82,65 +88,159 @@ function PayOrder(props) {
     setIsModalAddress(true);
     setIsAddress(false);
   };
+
   // --------------------------KHI CLICK NÚT ĐẶT HÀNG TRONG TRANG THANH TOÁN -----------------------
   const navigate = useNavigate();
   const handleSubmitAddOrder = () => {
     setLoading(true);
+
+    // --THANH TOÁN BẰNG TIỀN MẶT ---
     // --Nếu chọn phương thức thanh toán là --- 1 ---- => Mặc Định => Thanh Toán Khi NHận hàng
     if (value === 1) {
-      // ----KHI CHỌN THANH TOÁN TIỀN MẶT THÌ LƯU LUÔN ĐƠN HÀNG VÀO DATA BASE ---
-      // thông tin đơn hàng để chuẩn bị thêm vào data base
-      const infoDetailsOrder = {
-        status: {
-          code: 1,
-          state: 'Chờ xác nhận',
-        },
-        shipping_address: userLogin?.address,
-        payment_method: 'Thanh toán khi nhận hàng',
-        user: userLogin?._id,
-        total_price: sumPriceCurrent,
-        products: dataOrder?.listProductCard[0],
-        products2: dataOrder?.listProductCard,
-      };
+      // ---CHECK XEM NẾU LÀ THANH TOÁN CHO 1 ĐƠN HÀNG THÌ SẼ INSERT 1 ĐƠN HÀNG VÀO Database
+      const isLengthCartPhone = dataOrder?.listProductCard?.length;
+      console.log('số lượng sản phẩm  trong 1 đơn hàng là:', isLengthCartPhone);
 
-      // ---------THÊM ĐƠN HÀNG MỚI VÀO DATA BASE -------
-      orderApi
-        .addOrderDatabase(infoDetailsOrder)
-        .then((response) => {
-          // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
-          const userUpdate = {
-            ...userLogin,
-            orders: [response?.data?._id],
-          };
-          // console.log('THÊM ĐƠN HÀNG MỚI THÀNH CÔNG:', response);
-          dispatch(addOrderThanhToanTienMat(response?.data));
+      //  ---NẾU ĐƠN HÀNG CHỈ CÓ 1 SẢN PHẨM THÌ => THÊM 1 ĐƠN HÀNG BÌNH THƯỜNG ---
+      if (isLengthCartPhone === 1) {
+        // == NẾU ĐƠN HÀNG CÓ 1 SẢN PHẨM  => INSERT 1 SẢN PHẨM BÌNH THƯỜNG -
+        // ----KHI CHỌN THANH TOÁN TIỀN MẶT THÌ LƯU LUÔN ĐƠN HÀNG VÀO DATA BASE ---
+        // thông tin đơn hàng để chuẩn bị thêm vào data base
+        const infoDetailsOrder = {
+          status: {
+            code: 1,
+            state: 'Chờ xác nhận',
+          },
+          shipping_address: userLogin?.address,
+          payment_method: 'Thanh toán khi nhận hàng',
+          user: userLogin?._id,
+          total_price: sumPriceCurrent,
+          products: dataOrder?.listProductCard[0], // lưu 1 sản phẩm cho 1 đơn hàng => để sau xem lịch sử đơn hàng
+          products2: dataOrder?.listProductCard, // lưu 1 [] để hiển thị ra màn hình trong redux thôi nhé
+        };
+        // ---------THÊM 1 ĐƠN HÀNG MỚI VÀO DATA BASE -------
+        orderApi
+          .addOrderDatabase(infoDetailsOrder)
+          .then((response) => {
+            // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
+            const userUpdate = {
+              ...userLogin,
+              orders: [response?.data?._id],
+            };
+            // console.log('THÊM ĐƠN HÀNG MỚI THÀNH CÔNG:', response);
+            dispatch(addOrderThanhToanTienMat(response?.data));
 
-          // ---THÊM ID ĐƠN HÀNG VÀO TRONG USER ------- ĐỂ POPULATE ----
-          userApi
-            .updateOneUser(userUpdate)
-            .then((res) => {
-              // console.log('thêm ID đơn hàng vào user thành công', res);
-              setLoading(false);
+            // ---THÊM ID ĐƠN HÀNG VÀO TRONG USER ------- ĐỂ POPULATE ----
+            userApi
+              .updateOneUser(userUpdate)
+              .then((res) => {
+                // console.log('thêm ID đơn hàng vào user thành công', res);
+                setLoading(false);
 
-              // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
-              dispatch(updateUser(res?.data));
+                // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
+                dispatch(updateUser(res?.data));
 
-              //-------- CHUYỂN ĐẾN TRANG THÔNG BÁO THANH TOÁN THÀNH CÔNG---------- YUP
-              navigate('/payment/tienmat');
-            })
-            .catch((err) => {
-              console.log('thêm ID đơn hàng vào user thất bại');
-              setLoading(false);
-            });
-          // console.log({ userUpdate });
-        })
-        .catch((err) => {
-          console.log('thêm đơn hàng THẤT BẠI', err);
-          setLoading(false);
+                //-------- CHUYỂN ĐẾN TRANG THÔNG BÁO THANH TOÁN THÀNH CÔNG---------- YUP
+                navigate('/payment/tienmat');
+              })
+              .catch((err) => {
+                console.log('thêm ID đơn hàng vào user thất bại');
+                setLoading(false);
+              });
+            // console.log({ userUpdate });
+          })
+          .catch((err) => {
+            console.log('thêm đơn hàng THẤT BẠI', err);
+            setLoading(false);
+          });
+      } else {
+        // --XỬ LÝ THANH TOÁN TIỀN MẶT CHO NHIỀU SẢN PHẨM TRONG 1 ĐƠN HÀNG ----
+        // ---TÁCH MỖI SẢN PHẨM SẼ THÊM LÀ 1 ĐƠN HÀNG RIÊNG ---
+
+        // --DANH SÁCH ID CÁC SẢN PHẨM ĐƯỢC CHỌN ĐỂ MUA => ĐỂ SAU ĐÓ XÓA CÁC SẢN PHẨM ĐÃ THANH TOÁN THÀNH CÔNG TRONG ĐƠN HÀNG-
+        const listIdPhone = dataOrder?.listProductCard?.map((item) => {
+          return item?.id;
         });
+
+        // console.log('dách sách id các sản phẩm được chọn để mua là:', listIdPhone);
+
+        // --DANH SÁCH CÁC ĐƠN HÀNG ĐỂ CHUẨN BỊ UPDATE LÊN DATABAE --
+        const newPhoneCartMany = dataOrder?.listProductCard?.map((oneCart) => {
+          return {
+            status: {
+              code: 1,
+              state: 'Chờ xác nhận',
+            },
+            total_price: oneCart?.priceAll,
+            shipping_address: userLogin?.address,
+            payment_method: 'Thanh toán khi nhận hàng',
+            user: userLogin?._id,
+            products: oneCart,
+          };
+        });
+
+        // -- THÊM NHIỀU ĐƠN HÀNG CÙNG 1 LÚC =>MỖI ĐƠN HÀNG LÀ 1 SẢN PHẨM -> UPDATE LÊN DATABASSE
+        const orders = newPhoneCartMany;
+
+        // console.log('danh sách sản phẩm chuẩn bị cập nhật lên trên server', orders);
+        orderApi
+          .addOrderMany({ orders })
+          .then((response) => {
+            // ---KHI THANH TOÁN THÀNH CÔNG XÓA CÁC SẢN PHẨM ĐÃ THANH TOÁN ĐÓ TRONG GIỎ HÀNG REDUX ĐI --
+            const newCartBuyPhone = listCartPhone?.filter((item) => {
+              return !listIdPhone?.includes(item?._id);
+            });
+
+            // console.log('danh sách GIỎ HÀNG SAU KHI THANH TOÁN LÀ:', newCartBuyPhone);
+            dispatch(updatePhoneCart(newCartBuyPhone));
+
+            // THÊM ĐƠN HÀNG ĐỂ LƯU TRONG REDUX ĐỂ HIỂN THỊ RA MÀN HÌNH TRONG CHỖ THANH TOÁN TIỀN MẶT ---
+            const listOrderCartThanhToanTienMat = {
+              total_price: dataOrder?.sumOrderList,
+              payment_method: 'Thanh toán khi nhận hàng',
+              _id: listIdPhone[0],
+              products2: dataOrder?.listProductCard,
+            };
+
+            // console.log('ĐƠN HÀNG ĐỂ HIỂN THỊ RA MÀN HÌNH THANH TOÁN THÀNH CÔNG LÀ:', listOrderCartThanhToanTienMat);
+            dispatch(addOrderThanhToanTienMat(listOrderCartThanhToanTienMat));
+
+            //  lấy ID CÁC ĐƠN HÀNG VỪA ĐƯỢC THÊM => ĐỂ CẬP NHẬT VÀO TRONG USER NHÉ ---
+            // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
+            const userUpdate = {
+              ...userLogin,
+              orders: response?.data?.map((item) => {
+                return item?._id;
+              }),
+            };
+
+            // ---THÊM LIST ID ĐƠN HÀNG VÀO TRONG USER ------- ĐỂ POPULATE ----
+            userApi
+              .updateOneUser(userUpdate)
+              .then((res) => {
+                // console.log('thêm ID đơn hàng vào user thành công', res);
+                setLoading(false);
+
+                // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
+                dispatch(updateUser(res?.data));
+
+                //-------- CHUYỂN ĐẾN TRANG THÔNG BÁO THANH TOÁN TIỀN MẶT THÀNH CÔNG---------- YUP
+                navigate('/payment/tienmat');
+              })
+              .catch((err) => {
+                console.log('thêm ID đơn hàng vào user thất bại');
+                setLoading(false);
+              });
+          })
+          .catch((err) => {
+            console.log('thêm mới nhiều đơn hàng thất bại:', err);
+            setLoading(false);
+          });
+      }
     }
 
-    // Đây là --2--- => Thanh Toán Bằng VNP ----
+    // --THAH TOÁN VNP --
+    // Đây là -- 2 --- => Thanh Toán Bằng VNP ----
     else {
       // thông tin đơn hàng khi thanh toán bằng VNP ---
       const infoDetailsOrder = {
@@ -152,13 +252,13 @@ function PayOrder(props) {
         payment_method: 'Thanh toán qua VNP',
         user: userLogin?._id,
         total_price: sumPriceCurrent,
-        products: dataOrder?.listProductCard[0],
-        products2: dataOrder?.listProductCard,
+        products: dataOrder?.listProductCard[0], // lưu cái này để sau lấy tất cả các đơn hàng => môi đơn hàng 1 sản phẩm => lịch sử mua hàng
+        products2: dataOrder?.listProductCard, // lưu cái này để render ra màn hình thanh toán thành công
       };
-      // Lưu thông tin tạm thời của đơn hàng vào trong redux
+      // Lưu thông tin tạm thời của đơn hàng VNP vào trong redux
       dispatch(addOrderPayVNP(infoDetailsOrder));
 
-      //  ---chuyển đến trang thanh toán VNP ---
+      //  ---chuyển đến trang thanh toán VNP => Chuyền tổng giá trị cần thanh toán cho đơn hàng vào ---
       axiosClient
         .post('/payment/create_payment_url', {
           amount: sumPriceCurrent,

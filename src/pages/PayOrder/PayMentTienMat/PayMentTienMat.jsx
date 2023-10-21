@@ -51,7 +51,7 @@ function PayMentTienMat(props) {
                 <Box className={style.textContent}>
                   <Typography className={clsx(style.text)}>Yay, đặt hàng thành công!</Typography>
                   <Typography className={clsx(style.text2)}>
-                    Chuẩn bị tiền mặt {infoOrderTienMat[0]?.total_price.toLocaleString('vi-VN')} ₫
+                    Chuẩn bị tiền mặt {infoOrderTienMat?.total_price.toLocaleString('vi-VN')} ₫
                   </Typography>
 
                   <Box className={clsx(style.summary)}>
@@ -79,7 +79,7 @@ function PayMentTienMat(props) {
                         fontSize: '18px !important',
                       }}
                     >
-                      {infoOrderTienMat[0]?.total_price.toLocaleString('vi-VN')} ₫
+                      {infoOrderTienMat?.total_price.toLocaleString('vi-VN')} ₫
                     </Typography>
                   </Box>
                   <Box className={clsx(style.summaryVat)}>
@@ -105,7 +105,7 @@ function PayMentTienMat(props) {
             <Box className={clsx(style.content2)}>
               <Box className={clsx(style.orderPakageHeader)}>
                 <Typography className={clsx(style.text1)} color={(theme) => theme?.palette?.text?.primary4}>
-                  Mã đơn hàng: {infoOrderTienMat[0]?._id}
+                  Mã đơn hàng: {infoOrderTienMat?._id}
                 </Typography>
                 <Typography
                   className={clsx(style.text2)}
@@ -122,7 +122,7 @@ function PayMentTienMat(props) {
               /> */}
               {/* DANH SÁCH CÁC SẢN PHẨM TRONG ĐƠN HÀNG ĐÓ */}
               <Box className={clsx(style.wrapListProductOrder)}>
-                {infoOrderTienMat[0]?.products2?.map((phone) => {
+                {infoOrderTienMat?.products2?.map((phone) => {
                   return (
                     <Box key={phone?.id}>
                       <Divider

@@ -44,6 +44,10 @@ body {
     user-select: none;
   }
 
+  & :global .ant-spin-spinning {
+    top: 23% !important;
+  }
+
   // toast message
   //  toast messages
 

@@ -24,12 +24,15 @@ import OneCard from './OneCard.jsx';
 import AddressUser from './AddressUser.jsx';
 import CardEmpty from './CardEmpty';
 import { updatePhoneCart } from '~/redux/GioHang.js';
+import { addOrderReview } from '~/redux/OrderPreview.js';
+import { useNavigate } from 'react-router-dom';
 
 // prop types
 CardPhone.propTypes = {};
 
 function CardPhone(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // ---LẤY DANH SÁCH SẢN PHẨM ĐÃ THÊM VÀO TRONG GIỎ HÀNG -----LẤY TỪ TRONG REDUX NHÉ --
 
   const listInfoPhoneCart = useSelector((state) => state?.gioHang?.cartList);
@@ -49,7 +52,8 @@ function CardPhone(props) {
   );
 
   // console.log({ listCardTest });
-  // ---- ----------KIỂM TRA XEM ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA -------------------
+
+  // ---- ---------- ------   KIỂM TRA XEM ĐÃ CÓ ĐỊA CHỈ GIAO HÀNG HAY CHƯA --- -------------------
   const userLogin = useSelector((state) => state?.userAuth?.user);
   const [addressUserShip, setAddressUserShip] = useState(Boolean(userLogin?.address));
   const isAddressUser = addressUserShip;
@@ -116,7 +120,7 @@ function CardPhone(props) {
     setListCheckedBox([]);
   };
 
-  /*  -------------CHECK ALL ---------------------------------- */
+  /*  -------------------CHECK ALL ---------------------------------- */
   // nếu như các nút check bên trong => bằng tổng số đơn hàng => setCheckAll => Bằng True
   useEffect(() => {
     if (listCardTest?.length === listCheckedBox?.length) {
@@ -166,31 +170,10 @@ function CardPhone(props) {
     }
   }, [sumPriceCard, checkAll, listSumPriceCheckAll]);
 
+  // ---  CLIK NÚT MUA HÀNG ----
   // -------------KHI CLICK BTN MUA HÀNG => DANH SÁCH CHI TIẾT ĐƠN HÀNG +Address giao hàng
   // danh sách chi tiết đơn hàng => các sản phẩm cộng giá...
   const [listProductCard, setListProductCard] = useState([]);
-
-  //khi click vào nút mua hàng trong giỏ hàng
-  const handleClickBtnBuyCard = () => {
-    // kiểm tra để lấy mã giảm giá
-    let freeShip = 0;
-    if (valueProcessStep === 0) {
-      freeShip = 0;
-    } else if (valueProcessStep === 1) {
-      freeShip = 15000;
-    } else if (valueProcessStep === 2) {
-      freeShip = 30000;
-    }
-
-    // danh sách đơn hàng sau khi UPDATE
-    const orderList = {
-      sumOrderList: total,
-      listProductCard,
-      addressUserShip,
-      freeShip,
-    };
-    console.log('danh sách đơn hàng', orderList);
-  };
 
   // ------------------MODAL HIỆN THỊ XÓA 1 || NHIỀU SẢN PHẨM ---------------------
   // modal hiển thị xóa tất cả => để Xác nhận chắc chắn người dùng sẽ xóa hay không
@@ -206,6 +189,9 @@ function CardPhone(props) {
     // nếu list listID chưa có thì lấy danh sách id của từng sản phẩm => không phải checkAll
     const isCheckID = listID?.length === 0 ? oneIDProducts : listID;
 
+    // console.log('id cần xóa là:', isCheckID);
+    // console.log('danh sách sản phẩm cũ là:', listCardTest);
+
     // Khi click xóa nhiều sẽ loại bỏ đi các sản phẩm đang được chọn bạn nhé -
     // --LOẠI BỎ CÁC SẢN PHẨM DÃ CHỌN BẰNG CÁCH FILTER RA CÁC SẢN PHẨM KHÁC ID ĐÓ
     const newPhoneListCartDeleteAll = listCardTest?.filter((cart) => {
@@ -214,6 +200,7 @@ function CardPhone(props) {
     // cập nhật lại list sản phẩm
     setListCardTest(newPhoneListCartDeleteAll);
 
+    // console.log('danh sách sản phẩm sau khi đã xóa là:', newPhoneListCartDeleteAll);
     // Danh sách sản phẩm chuẩn bị update lên redux là
     const newPhoneLisCarttUpdateRedux = newPhoneListCartDeleteAll?.map((item) => {
       return {
@@ -280,6 +267,40 @@ function CardPhone(props) {
   // -------------------------KIỂM TRA XEM KHI NÀO GIỎ HÀNG BẰNG === 0 => HIỆN GIỎ HÀNG TRỐNG-------
   const lengthOrder = listCardTest?.length;
 
+  //khi click vào nút mua hàng trong giỏ hàng
+  const handleClickBtnBuyCard = () => {
+    // kiểm tra để lấy mã giảm giá
+    let freeShip = 0;
+    if (valueProcessStep === 0) {
+      freeShip = 0;
+    } else if (valueProcessStep === 1) {
+      freeShip = 15000;
+    } else if (valueProcessStep === 2) {
+      freeShip = 30000;
+    }
+
+    // danh sách đơn hàng sau khi UPDATE---
+    // --- Danh sách sản phẩm của đơn hàng ---
+
+    //  id các sản phẩm mới nhât hiện tại;
+    const idNewCartPhone = listCardTest?.map((item) => {
+      return item?.id;
+    });
+
+    const orderList = {
+      sumOrderList: total,
+      listProductCard: listProductCard?.filter((cart) => {
+        return idNewCartPhone?.includes(cart?.id);
+      }),
+      freeShip,
+    };
+
+    // ---DISPATCH LƯU THÔNG TIN TẠM THỜI => LÊN REDUX => TRÙNG VỚI FORMART CỦA 1 ĐƠN HÀNG NHÉ --
+    dispatch(addOrderReview(orderList));
+
+    //--- Chuyển đến trang thanh TOÁN ---
+    navigate('/payment');
+  };
   //  HIỂN THỊ JSX TẠI ĐÂY
   return lengthOrder === 0 ? (
     <CardEmpty />

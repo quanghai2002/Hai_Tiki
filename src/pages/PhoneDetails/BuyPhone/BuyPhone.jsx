@@ -96,14 +96,20 @@ function BuyPhone({ phoneDetails, setIsHidenNotify }) {
     if (isUserLogin) {
       // nếu đã đăng nhập lấy thông tin sản phẩm cần mua
       const infoPhone = {
-        _id: phoneDetails?._id,
-        name: phoneDetails?.name,
-        img: phoneDetails?.image_urls[0],
-        quantityBuyPhone: value,
-        sumPrice: newPricePhone,
-        priceDefault: pricePhone,
+        sumOrderList: newPricePhone,
+        freeShip: 0,
+        listProductCard: [
+          {
+            id: phoneDetails?._id,
+            name: phoneDetails?.name,
+            image: phoneDetails?.image_urls[0],
+            sumQuantity: value,
+            priceAll: newPricePhone,
+            priceDefaults: pricePhone,
+          },
+        ],
       };
-      // console.log('mua sản phẩm', infoPhone);
+      console.log('mua 1 sản phẩm đơn hàng là:', infoPhone);
 
       // lưu sản phẩm tạm thời vào redux
       dispatch(addOrderReview(infoPhone));

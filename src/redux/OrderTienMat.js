@@ -10,7 +10,7 @@ const orderPayTienMat = createSlice({
 
     //--- THÊM ĐƠN HÀNG THANH TOÁN TIỀN MẶT =>> SAU KHI ĐÃ THÊM ĐƠN HÀNG ĐÓ VÀO DATA BASE----
     addOrderThanhToanTienMat(state, action) {
-      const newState = [action?.payload];
+      const newState = action?.payload;
       return state = newState;
     }
   }

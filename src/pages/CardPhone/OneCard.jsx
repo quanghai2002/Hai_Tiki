@@ -383,7 +383,7 @@ function OneCard({
 
   // -----------------------------------------
   // --------------------------------LẤY DANH SÁCH SẢN PHẨM ĐỂ THÊM VÀO CARD DATABASE ------------
-  // DANH SÁCH ĐƠN HÀNG THEO ĐIỀU KIỆN => CHECKBOX CON
+  // ----- DANH SÁCH ĐƠN HÀNG THEO ĐIỀU KIỆN => CHECKBOX CON ----
   useEffect(() => {
     // lưu sản phẩm đã chọn đó vào danh sách đơn hàng
     // nếu nút check box con bằng true > thêm mới hoặc update
@@ -447,7 +447,7 @@ function OneCard({
     }
   }, [detailsPhone, value, newPricePhone, checkGetSumPrice, listCheckedBox?.length, checkAll]);
 
-  // danh sách đơn hàng => theo điều kiện => CHECK ALL
+  // danh sách đơn hàng => theo điều kiện => CHECK ALL ----
   useEffect(() => {
     // thêm mới hoặc update
     if (checkAll) {

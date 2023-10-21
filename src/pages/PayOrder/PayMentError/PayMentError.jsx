@@ -29,10 +29,10 @@ function PayMentError(props) {
   // console.log({ userLogin });
   // --LẤY DỮ LIỆU ĐÃ LƯU TRONG REDUX -- TẠM THỜI CỦA ĐƠN HÀNG ------
   const dataOrderPreview = useSelector((state) => state?.orderPayVNP);
-  // console.log({ dataOrderPreview });
+  console.log('thông tin thanh toán VNP THẤT BẠI', dataOrderPreview);
+
   // --------------KHI CLICK BTN THANH TOÁN LẠI --------------
   const navigate = useNavigate();
-
   const handleRepayment = () => {
     navigate('/payment');
   };
@@ -41,7 +41,7 @@ function PayMentError(props) {
   const handleClickPayMentTienMat = () => {
     setLoading(true);
     orderApi
-      .addOrderDatabase(dataOrderPreview[0])
+      .addOrderDatabase(dataOrderPreview)
       .then((response) => {
         // console.log('thanh toán lại bằng tiền mặt VNP', response);
         // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
@@ -49,7 +49,7 @@ function PayMentError(props) {
           ...userLogin,
           orders: [response?.data?._id],
         };
-        // console.log('THÊM ĐƠN HÀNG MỚI THÀNH CÔNG:', response);
+        // console.log('THANH TOÁN LẠI ĐƠN HÀNG BẰNG TIỀN MẶT THÀNH CÔNG:', response);
         dispatch(addOrderThanhToanTienMat(response?.data));
 
         // ---THÊM ID ĐƠN HÀNG VÀO TRONG USER ------- ĐỂ POPULATE ----
@@ -100,7 +100,7 @@ function PayMentError(props) {
                     Mã đơn hàng
                   </Typography>
                   <Typography className={clsx(style.right)} color={(theme) => theme?.palette?.text?.primary4}>
-                    {dataOrderPreview[0]?.products?.id}
+                    {dataOrderPreview?.products2[0].id}
                   </Typography>
                 </Box>
                 <Divider
@@ -131,7 +131,7 @@ function PayMentError(props) {
                     Tổng tiền
                   </Typography>
                   <Typography className={clsx(style.right)} color={(theme) => theme?.palette?.text?.primary4}>
-                    {dataOrderPreview[0]?.total_price.toLocaleString('vi-VN')} ₫
+                    {dataOrderPreview?.total_price.toLocaleString('vi-VN')} ₫
                   </Typography>
                 </Box>
 
@@ -169,7 +169,7 @@ function PayMentError(props) {
                   Mã đơn hàng
                 </Typography>
                 <Typography className={clsx(style.right)} color={(theme) => theme?.palette?.text?.primary4}>
-                  {dataOrderPreview[0]?.products?.id}
+                  {dataOrderPreview?.products2[0]?.id}
                 </Typography>
               </Box>
               <Divider
@@ -200,7 +200,7 @@ function PayMentError(props) {
                   Tổng tiền
                 </Typography>
                 <Typography className={clsx(style.right)} color={(theme) => theme?.palette?.text?.primary4}>
-                  {dataOrderPreview[0]?.total_price.toLocaleString('vi-VN')} ₫
+                  {dataOrderPreview?.total_price.toLocaleString('vi-VN')} ₫
                 </Typography>
               </Box>
 

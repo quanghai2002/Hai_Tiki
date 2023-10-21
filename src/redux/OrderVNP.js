@@ -10,7 +10,7 @@ const orderVNP = createSlice({
 
     //--- THÊM ĐƠN HÀNG PREVIEW THANH TOÁN VNP  ----
     addOrderPayVNP(state, action) {
-      const newState = [action?.payload];
+      const newState = action?.payload;
       return state = newState;
     }
   }
