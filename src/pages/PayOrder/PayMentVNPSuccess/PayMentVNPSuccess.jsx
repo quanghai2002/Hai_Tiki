@@ -17,11 +17,17 @@ import orderApi from '~/apis/orderApi.js';
 import { useDispatch, useSelector } from 'react-redux';
 import userApi from '~/apis/userApi.js';
 import VNPlazy from './VNPlazy.jsx';
+import { updatePhoneCart } from '~/redux/GioHang.js';
 
 // PropTypes
 PayMentVNPSuccess.propTypes = {};
 
 function PayMentVNPSuccess(props) {
+  // --LẤY CÁC SẢN PHẨM TRONG GIỎ HÀNG TRONG REDUX --
+  const historyCart = useSelector((state) => state?.gioHang?.cartList);
+
+  // console.log('danh sách giỏ hàng cũ là:', historyCart);
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [listOrder, setListOrder] = useState([]);
@@ -30,13 +36,13 @@ function PayMentVNPSuccess(props) {
 
   const orderPreviewVNP = useSelector((state) => state?.orderPayVNP);
 
-  console.log('thông tin thanh toán VNP:', listOrder);
+  // console.log('thông tin thanh toán VNP:', listOrder);
 
   // Kiểm tra xem đây là thanh toán cho 1 đơn hàng hay nhiều đơn hàng
   // --Nếu thanh toán VNP cho 1 đơn hàng thì thanh toán kiểu khác ---
 
   const lengtOrderVnp = orderPreviewVNP?.products2?.length;
-  console.log('số đơn hàng Thanh Toán cho VNP:', lengtOrderVnp);
+
   // --LƯU THÔNG TIN ĐƠN HÀNG LÊN DATABSE --
   useEffect(() => {
     // ---NẾU SỐ ĐƠN HÀNG LÀ 1 ==> THÌ THÊM 1 ĐƠN HÀNG KIỂU KHÁC --
@@ -88,12 +94,10 @@ function PayMentVNPSuccess(props) {
 
       // -- THÊM NHIỀU ĐƠN HÀNG CÙNG 1 LÚC =>MỖI ĐƠN HÀNG LÀ 1 SẢN PHẨM -> UPDATE LÊN DATABASSE
       const orders = newPhoneCartMany;
-      console.log('danh sách đơn hàng chuẩn bị cập nhật là:', orders);
+
       orderApi
         .addOrderMany({ orders })
         .then((response) => {
-          console.log('thêm mới nhiều đơn hàng VNP thành công:', response);
-
           //  --SAU KHI THÊM ĐƠN HÀNG THÀNH CÔNG HIỆN THỊ LẠI THÔNG TIN TẤT CẢ ĐƠN HÀNG ---
           const infoDetailsOrderVNP = {
             ...orderPreviewVNP,
@@ -110,11 +114,23 @@ function PayMentVNPSuccess(props) {
             }),
           };
 
+          //  XÓA CÁC ĐƠN HÀNG ĐÃ THANH TOÁN THÀNH CÔNG TRONG CART LƯU TRONG REDUX ĐI
+          const listIdCart = orders.map((item) => {
+            return item?.products?.id;
+          });
+
+          // -- DANH SÁCH GIỎ HÀNG SUA KHI THANH TOÁN THÀNH CÔNG ---
+          const deleteCartOld = historyCart?.filter((item) => {
+            return !listIdCart?.includes(item?._id);
+          });
+          // console.log('DANH SÁCH GIỎ HÀNG CHUẨN SAU KHI THANH TOÁN LÀ:', deleteCartOld);
+          dispatch(updatePhoneCart(deleteCartOld));
+
           // ---THÊM LIST ID ĐƠN HÀNG VÀO TRONG USER ------- ĐỂ POPULATE ----
           userApi
             .updateOneUser(userUpdate)
             .then((res) => {
-              console.log('thêm ID đơn hàng vào user thành công', res);
+              // console.log('thêm ID đơn hàng vào user thành công', res);
               setLoading(false);
             })
             .catch((err) => {

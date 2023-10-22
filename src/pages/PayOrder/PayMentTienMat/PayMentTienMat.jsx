@@ -27,7 +27,7 @@ function PayMentTienMat(props) {
 
   // --------LẤY DỮ LIỆU ĐƠN HÀNG VỪA ĐẶT TRONG REDUX ---- ĐÃ LƯU KHI THÊM ĐƠN HÀNG MỚI THÀNH CÔNG-----
   const infoOrderTienMat = useSelector((state) => state?.orderPayTienMat);
-  console.log({ infoOrderTienMat });
+  // console.log({ infoOrderTienMat });
 
   // -------KHI CLICK VÀO NÚT XEM ĐƠN HÀNG -----
   const handleHistoryOrder = () => {

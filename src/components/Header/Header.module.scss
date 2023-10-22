@@ -179,6 +179,18 @@
 
         .linktoCart {
           text-decoration: none;
+          position: relative;
+
+          &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 40px;
+            height: 39px;
+            top: -8px;
+            left: -7px;
+            background-color: transparent;
+          }
         }
         .cart {
           padding: 8px 8px;
