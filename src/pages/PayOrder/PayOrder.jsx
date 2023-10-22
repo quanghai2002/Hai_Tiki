@@ -40,6 +40,7 @@ PayOrder.propTypes = {};
 function PayOrder(props) {
   // --- Lấy các sản phẩm trong giỏ hàng lưu trong redux --
   const listCartPhone = useSelector((state) => state?.gioHang?.cartList);
+  // console.log('danh sách giỏ hàng cũ là:', listCartPhone);
   // console.log('GIỎ HÀNG:', listCartPhone);
   // ----LẤY THÔNG TIN USER ĐỂ LẤY ID USER => THÊM VÀO TRONG ĐƠN HÀNG + UPDATE USER CÓ ID ĐƠN HÀNG LUÔN ----
   const userLogin = useSelector((state) => state?.userAuth?.user);
@@ -136,6 +137,17 @@ function PayOrder(props) {
               .then((res) => {
                 // console.log('thêm ID đơn hàng vào user thành công', res);
                 setLoading(false);
+
+                // --NẾU THANH TOÁN 1 SẢN PHẨM --
+                // --TÌM SẢN PHẨM ĐÓ TRONG REDUX XEM CÓ TRONG ĐƠN HÀNG CHƯA => NẾU CÓ SAU KHI THANH TOÁN THÌ XÓA ĐI --
+                const idDelePhone = infoDetailsOrder?.products?.id;
+
+                const cartUpdate = listCartPhone?.filter((item) => {
+                  return item?._id !== idDelePhone;
+                });
+
+                // console.log('danh sách giỏ hàng hiện tại là:', cartUpdate);
+                dispatch(updatePhoneCart(cartUpdate));
 
                 // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
                 dispatch(updateUser(res?.data));

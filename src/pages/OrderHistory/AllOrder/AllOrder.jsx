@@ -13,38 +13,22 @@ import userApi from '~/apis/userApi.js';
 import { useSelector } from 'react-redux';
 import { Spin } from 'antd';
 import LazyOrder from '~/pages/OrderHistory/LazyOrder/LazyOrder.jsx';
+import orderApi from '~/apis/orderApi.js';
 
 // Proptypes
-AllOrder.propTypes = {};
+AllOrder.propTypes = {
+  keyTab: PropTypes.number,
+  listAllOrder: PropTypes.object,
+  loading: PropTypes.bool,
+  setLoading: PropTypes.func,
+  setKeyTab: PropTypes.func,
+};
 
-function AllOrder(props) {
-  const [loading, setLoading] = useState(true);
+function AllOrder({ keyTab, listAllOrder, loading, setLoading, setKeyTab }) {
   // lây ID USER
   const infoUser = useSelector((state) => state?.userAuth?.user);
 
-  // -- LẤY DỮ LIỆU TẤT CẢ ĐƠN HÀNG CỦA 1 USER ĐÓ -----
-  const [listAllOrder, setListAllOrder] = useState([]);
-
-  useEffect(() => {
-    userApi
-      .getOneUser(infoUser?._id)
-      .then((response) => {
-        // console.log('thông tin user', response);
-        setListAllOrder(response?.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log({ err });
-        setLoading(false);
-      });
-  }, []);
-
-  // ------------CLICK ĐỒNG Ý XÓA ĐƠN HÀNG ---------
-  const handelAgreeDeleteOrder = (id) => {
-    console.log('ID đơn hàng cần xóa', id);
-  };
-
-  console.log(' danh sách đơn hàng của USER:', listAllOrder?.orders);
+  // console.log(' danh sách đơn hàng của USER:', listAllOrder?.orders);
   // --------------------DATA TEST ĐỂ RENDER RA TẤT CẢ ĐƠN HÀNG -----------------
   const dataTest = listAllOrder?.orders?.map((order) => {
     return {
@@ -61,21 +45,38 @@ function AllOrder(props) {
     };
   });
 
-  // const dataTest = [
-  //   {
-  //     id: 1,
-  //     name: 'Nước súc họng miệng nano bạc PlasmaKare giảm rát họng, dịu cơn ho, phòng tái phát VlÊM họng chai 250ml',
-  //     url: 'https://salt.tikicdn.com/cache/200x200/ts/product/7f/0f/76/229138797dd25d93835b075637050dde.png',
-  //     soluongmua: 10,
-  //     giaMacDinh: 135000,
-  //     tonggiatri: 1350000,
-  //     trangthai: {
-  //       code: 1,
-  //       title: 'Chờ Xác Nhận',
-  //     },
-  //   },
-  // ];
+  // tets hiển thị đơn hàng trống
+  // const dataTest = [];
+  // ------------CLICK ĐỒNG Ý XÓA ĐƠN HÀNG ---------
+  const handelAgreeDeleteOrder = (id) => {
+    console.log('ID đơn hàng cần HỦY LÀ', id);
+    setLoading(true);
 
+    //  --- KHI ẤN HỦY THÌ CHUẨN BỊ DỮ LIỆU ĐỂ CẬP NHẬT LÊN SERVER ---
+    // --- HỦY ĐƠN HÀNG --- THÌ CHỈ CẦN UPDATE 1 Status là đc --
+    const dataUpdateOrder = {
+      _id: id,
+      status: {
+        code: 4,
+        state: 'Đã hủy',
+      },
+    };
+
+    //  --- UPDATE ĐƠN HÀNG => CÓ status === 4 để hủy đơn hàng --
+    orderApi
+      .updateOrder(dataUpdateOrder)
+      .then((response) => {
+        // console.log('HỦY ĐƠN HÀNG THÀNH CÔNG', response);
+        setLoading(false);
+        setKeyTab(5);
+      })
+      .catch((err) => {
+        console.log('hủy đơn hàng thất bại:', err);
+        setLoading(false);
+      });
+  };
+
+  // console.log('Thông tin các đơn hàng của USER -- TẤT CẢ ĐƠN HÀNG LÀ -- là:', dataTest);
   // -------------JSX--------------
 
   return (
@@ -97,7 +98,7 @@ function AllOrder(props) {
                   {item?.trangthai?.code === 1 ? (
                     <Typography className={clsx(style.title)}>Chờ xác nhận</Typography>
                   ) : item?.trangthai?.code === 2 ? (
-                    <Typography className={clsx(style.title)}>Đang vận chuyển</Typography>
+                    <Typography className={clsx(style.titleDangVanChuyen)}>Đang vận chuyển</Typography>
                   ) : item?.trangthai?.code === 3 ? (
                     <Typography className={clsx(style.titleGiaoThanhCong)}>Giao hàng thành công</Typography>
                   ) : item?.trangthai?.code === 4 ? (
@@ -180,7 +181,7 @@ function AllOrder(props) {
             );
           })
         ) : (
-          // KHI KHÔNG CÓ ĐƠN HÀNG NÀO
+          // KHI KHÔNG CÓ ĐƠN HÀNG NÀO =>HIỂN THỊ RA MÀN HÌNH ĐƠN HÀNG TRỐNG BẠN NHÉ --
           <Box className={clsx(style.wrapNoOrder)}>
             <img src={lichsudonhangtrong} alt="dang hang trong" className={clsx(style.img)} />
             <Typography className={clsx(style.text)}>Chưa có đơn hàng</Typography>

@@ -52,8 +52,13 @@ function PayMentError(props) {
 
     if (lengthPayThanhToanLai === 1) {
       console.log('thanh toán lại bằng KHI CÓ 1 SẢN PHẨM');
+      // --DỮ LIỆU CHUẨN BỊ ĐỂ THÊM MỚI 1 ĐƠN HÀNG => sửa thanh toán VNP = Tiền mặt
+      const newDataOrderPreview = {
+        ...dataOrderPreview,
+        payment_method: 'Thanh toán khi nhận hàng',
+      };
       orderApi
-        .addOrderDatabase(dataOrderPreview)
+        .addOrderDatabase(newDataOrderPreview)
         .then((response) => {
           // console.log('thanh toán lại bằng tiền mặt VNP', response);
           // --- LẤY ID ĐƠN HÀNG ĐÓ ---- VÀ CẬP NHẬT VÀO TRONG USER ----
@@ -72,6 +77,19 @@ function PayMentError(props) {
 
               // --CẬP NHẬT LẠI THÔNG TIN USER TRONG REDUX--
               dispatch(updateUser(res?.data));
+
+              // --XÓA 1 ĐƠN HÀNG NẾU ĐƠN HÀNG ĐÓ CÓ TỒN TẠI TRONG GIỎ HÀNG CŨ
+              // --NẾU THANH TOÁN 1 SẢN PHẨM --
+              // --TÌM SẢN PHẨM ĐÓ TRONG REDUX XEM CÓ TRONG ĐƠN HÀNG CHƯA => NẾU CÓ SAU KHI THANH TOÁN THÌ XÓA ĐI --
+              const idDelePhone = dataOrderPreview?.products?.id;
+              // console.log('ID đơn hàng cần xóa là:', idDelePhone);
+
+              const cartUpdate = listCartPhone?.filter((item) => {
+                return item?._id !== idDelePhone;
+              });
+              // console.log('danh sách giỏ hàng cũ:', listCartPhone);
+              // console.log('danh sách giỏ hàng hiện tại là:', cartUpdate);
+              dispatch(updatePhoneCart(cartUpdate));
 
               setLoading(false);
               //-------- CHUYỂN ĐẾN TRANG THÔNG BÁO THANH TOÁN THÀNH CÔNG TIỀN MẶT---------- YUP

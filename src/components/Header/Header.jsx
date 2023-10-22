@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Logo from '~/assets/images/haiLoGoTiki2.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Input } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
@@ -39,6 +39,8 @@ Header.propTypes = {
 };
 
 function Header({ isHidenNotify = true, setIsHidenNotify }) {
+  // ---NẾU ĐANG Ở TRANG TRỦ THÌ ACTIVE ICON TRANG CHỦ NÊN --
+  const location = useLocation();
   // --LẤY THÔNG TIN SỐ LƯỢNG ĐƠN HÀNG TRONG GIỎ HÀNG CỦA USER ĐỂ HIỂN THỊ SỐ LƯỢNG SẢN PHẨM TRONG GIỎ HÀNG ---
   const listPhoneCart = useSelector((state) => state?.gioHang?.cartList);
 
@@ -62,7 +64,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
   const isLogin = !!userLogin;
   console.log({ isLogin });
 
-  // --------------KHI CLICK LOGOUT ---------
+  // --------------KHI CLICK LOGOUT- -- ĐĂNG XUẤT ---------
   const handleLogoutUser = () => {
     // Xóa Cookie trong trình duyệt
     removeToken('tokenID');
@@ -216,19 +218,28 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                 sx={{
                   '&:hover': {
                     cursor: 'pointer',
-                    backgroundColor: (theme) => {
-                      return theme?.palette?.action?.hoverActive;
-                    },
+                    backgroundColor:
+                      location?.pathname === '/'
+                        ? (theme) => {
+                            return theme?.palette?.action?.hoverActive;
+                          }
+                        : (theme) => {
+                            return theme?.palette?.action?.hover;
+                          },
                   },
                 }}
               >
-                <img className={clsx(style.iconImage)} src={true ? HomeIconActive : HomeIcon} alt="home icon" />
+                <img
+                  className={clsx(style.iconImage)}
+                  src={location?.pathname === '/' ? HomeIconActive : HomeIcon}
+                  alt="home icon"
+                />
                 <Typography
                   className={clsx(style.text)}
                   variant="h6"
-                  color="primary"
+                  color={location?.pathname === '/' ? 'primary' : (theme) => theme?.palette?.text?.secondary}
                   sx={{
-                    fontWeight: '600 !important',
+                    fontWeight: location?.pathname === '/' ? '600!important' : '400 !important',
                   }}
                 >
                   Trang chủ

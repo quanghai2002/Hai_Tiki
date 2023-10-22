@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import style from './ChoXacNhan.module.scss';
 import clsx from 'clsx';
@@ -9,177 +9,82 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import lichsudonhangtrong from '~/assets/images/lichsudonhangtrong.png';
+import { useSelector } from 'react-redux';
+import userApi from '~/apis/userApi.js';
+import LazyOrder from '~/pages/OrderHistory/LazyOrder/LazyOrder.jsx';
+import orderApi from '~/apis/orderApi.js';
 // Proptypes
-ChoXacNhan.propTypes = {};
+ChoXacNhan.propTypes = {
+  keyTab: PropTypes.number,
+  listAllOrder: PropTypes.object,
+  loading: PropTypes.bool,
+  setLoading: PropTypes.func,
+  setKeyTab: PropTypes.func,
+};
 
-function ChoXacNhan(props) {
-  // ------------CLICK ĐỒNG Ý XÓA ĐƠN HÀNG ---------
-  const handelAgreeDeleteOrder = (id) => {
-    console.log('ID đơn hàng cần xóa', id);
-  };
-
+function ChoXacNhan({ keyTab, listAllOrder, loading, setLoading, setKeyTab }) {
   // --------------------DATA TEST ĐỂ RENDER RA TẤT CẢ ĐƠN HÀNG -----------------
-  const dataTest = [
-    {
-      id: 1,
-      name: 'Nước súc họng miệng nano bạc PlasmaKare giảm rát họng, dịu cơn ho, phòng tái phát VlÊM họng chai 250ml',
-      url: 'https://salt.tikicdn.com/cache/200x200/ts/product/7f/0f/76/229138797dd25d93835b075637050dde.png',
-      soluongmua: 10,
-      giaMacDinh: 135000,
-      tonggiatri: 1350000,
-      trangthai: {
-        code: 1,
-        title: 'Chờ Xác Nhận',
-      },
-    },
-    {
-      id: 2,
-      name: 'Nước súc miệng Dr. Muối truyền thống (1000ml)-Ngừa viêm họng, sâu răng, loại vi khuẩn, trắng răng, hết hôi miệng',
-      url: 'https://salt.tikicdn.com/cache/200x200/ts/product/20/f4/45/529288817076bfcc9484a8f048dd9426.jpg',
-      soluongmua: 1,
-      giaMacDinh: 26000,
-      tonggiatri: 26000,
-      trangthai: {
-        code: 2,
-        title: 'Đang giao hàng',
-      },
-    },
-    {
-      id: 3,
-      name: 'Chuột không dây HXSJ T15 wireless 2.4G tự sạc pin siêu mỏng không gây tiếng ồn chuyên dùng cho Máy tính, pc, Laptop, Tivi - Hàng chính hãng - Đen',
-      url: 'https://salt.tikicdn.com/cache/200x200/ts/product/85/8d/c2/3cbd22f4b1c64df1965c6d533738a3c0.jpg',
-      soluongmua: 1,
-      giaMacDinh: 182000,
-      tonggiatri: 182000,
-      trangthai: {
-        code: 3,
-        title: 'Giao hàng thành công',
-      },
-    },
-    {
-      id: 4,
-      name: 'Kẹo dẻo trái cây hỗn hợp - Welch s Mixed Fruit Snack Chứa Vitamin A,C,E Giúp ăn ngon + bổ + khỏe (22,7g/gói)- Massel Official - 1 gói  lẻ',
-      url: 'https://salt.tikicdn.com/cache/200x200/ts/product/fc/e3/3c/59eb482a1fd85fd9bd38534a7a6b2577.png',
-      soluongmua: 2,
-      giaMacDinh: 21000,
-      tonggiatri: 42000,
-      trangthai: {
-        code: 4,
-        title: 'Đã hủy',
-      },
-    },
-    {
-      id: 5,
-      name: 'Điện Thoại Samsung Galaxy S20 FE (8GB/256GB) - Hàng Chính Hãng - Đã kích hoạt bảo hành điện tử',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/50/a9/b8/c757cd53a900b0e0f8f09d19f940125b.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 6990000,
-      tonggiatri: 699000,
-      trangthai: {
-        code: 1,
-        title: 'Chờ Xác Nhận',
-      },
-    },
-    {
-      id: 6,
-      name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/2a/a1/3f/0316aa8136759cadc84b943a015148a8.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 4100000,
-      tonggiatri: 4100000,
-      trangthai: {
-        code: 1,
-        title: 'Chờ Xác Nhận',
-      },
-    },
-    {
-      id: 8,
-      name: 'Điện Thoại Oppo A77s (8GB/128GB)',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/ce/ec/0c/f24a4d558fbfddfe667eeca21b06f041.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 4850000,
-      tonggiatri: 4850000,
-      trangthai: {
-        code: 2,
-        title: 'Đang giao hàng',
-      },
-    },
-    {
-      id: 9,
-      name: 'Điện thoại Realme C55 (6GB/128GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/4b/7c/b1/28c70b59ae12e05c3413c3e91a64ac10.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 3990000,
-      tonggiatri: 3990000,
-      trangthai: {
-        code: 2,
-        title: 'Đang giao hàng',
-      },
-    },
 
-    {
-      id: 10,
-      name: 'Điện thoại Samsung Galaxy S21 FE 5G (8GB/128GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/c6/95/af/e997e7d74c39f40cbd9b2e36b65f5ff1.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 9000000,
-      tonggiatri: 9000000,
+  const dataTest = listAllOrder?.orders?.map((order) => {
+    return {
+      id: order?._id,
+      name: order?.products?.name,
+      url: order?.products?.image,
+      soluongmua: order?.products?.sumQuantity,
+      giaMacDinh: order?.products?.priceDefaults,
+      tonggiatri: order?.products?.priceAll,
       trangthai: {
-        code: 3,
-        title: 'Giao hàng thành công',
+        code: order?.status?.code,
+        title: order?.status?.state,
       },
-    },
-    {
-      id: 11,
-      name: 'Điện thoại Samsung Galaxy S21 FE 5G (8GB/128GB) - Hàng chính hãng',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/c6/95/af/e997e7d74c39f40cbd9b2e36b65f5ff1.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 9000000,
-      tonggiatri: 9000000,
-      trangthai: {
-        code: 3,
-        title: 'Giao hàng thành công',
-      },
-    },
-    {
-      id: 12,
-      name: 'Điện thoại Samsung Galaxy S23 Ultra 5G (12GB/512GB)',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/f5/4b/12/22ab9f1aba574346d5fcd53fd2fa0f4c.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 26000000,
-      tonggiatri: 26000000,
-      trangthai: {
-        code: 4,
-        title: 'Đã hủy',
-      },
-    },
-    {
-      id: 13,
-      name: 'Điện thoại Samsung Galaxy S23 Ultra 5G (12GB/512GB)',
-      url: 'https://salt.tikicdn.com/cache/280x280/ts/product/f5/4b/12/22ab9f1aba574346d5fcd53fd2fa0f4c.jpg.webp',
-      soluongmua: 1,
-      giaMacDinh: 26000000,
-      tonggiatri: 26000000,
-      trangthai: {
-        code: 4,
-        title: 'Đã hủy',
-      },
-    },
-  ];
+    };
+  });
 
-  //
-  // console.log(
-  //   'data:',
-  //   dataTest?.sort((a, b) => {
-  //     return a?.trangthai?.code - b?.trangthai?.code;
-  //   }),
-  // );
+  // đây là để TEST khi đơn hàng trống => Không có đơn hàng ở trạng thái xác nhận
+  // const dataTest = [];
 
   // LỌC RA CÁC ĐƠN HÀNG CÓ TRẠNG THÁI 1 => Chờ Xác Nhận
   const DataSort = dataTest?.filter((item) => {
     return item?.trangthai.code === 1;
   });
-  return (
+
+  // console.log('Thông tin các đơn hàng của USER -- CHỜ XÁC NHẬN LÀ:', DataSort);
+
+  // -------HỦY ĐƠN HÀNG ----
+  // ------------CLICK ĐỒNG Ý HỦY ĐƠN HÀNG ---------
+  const handelAgreeDeleteOrder = (id) => {
+    console.log('ID đơn hàng cần HỦY LÀ:', id);
+    setLoading(true);
+    //  --- KHI ẤN HỦY THÌ CHUẨN BỊ DỮ LIỆU ĐỂ CẬP NHẬT LÊN SERVER ---
+    // --- HỦY ĐƠN HÀNG --- THÌ CHỈ CẦN UPDATE 1 Status là đc --
+    const dataUpdateOrder = {
+      _id: id,
+      status: {
+        code: 4,
+        state: 'Đã hủy',
+      },
+    };
+
+    //  --- UPDATE ĐƠN HÀNG => CÓ status === 4 để hủy đơn hàng --
+    orderApi
+      .updateOrder(dataUpdateOrder)
+      .then((response) => {
+        // console.log('HỦY ĐƠN HÀNG THÀNH CÔNG', response);
+        setLoading(false);
+        setKeyTab(5);
+      })
+      .catch((err) => {
+        console.log('hủy đơn hàng thất bại:', err);
+        setLoading(false);
+      });
+  };
+
+  //  --- RENDER JSX ---
+
+  // -- NẾU đang lấy thông tin từ server trả về thì hiển thị LazyOrder
+  return loading ? (
+    <LazyOrder />
+  ) : (
     <Box className={clsx(style.wrapAllChoXacNhan)}>
       {/* NẾU ĐƠN HÀNG CÓ SẢN PHẨM THÌ RENDER => KHÔN THÌ RENDER ĐƠN HÀNG TRỐNG */}
       {/* Khi có đơn hàng render ở đây */}
@@ -275,7 +180,7 @@ function ChoXacNhan(props) {
           );
         })
       ) : (
-        // KHI KHÔNG CÓ ĐƠN HÀNG NÀO
+        // KHI KHÔNG CÓ ĐƠN HÀNG NÀO =>Hiện thị đơn hàng trống
         <Box className={clsx(style.wrapNoOrder)}>
           <img src={lichsudonhangtrong} alt="dang hang trong" className={clsx(style.img)} />
           <Typography className={clsx(style.text)}>Chưa có đơn hàng</Typography>

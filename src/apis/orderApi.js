@@ -13,6 +13,11 @@ const orderApi = {
     addOrderMany: (params) => {
         const url = '/order/insertmany';
         return axiosClient.post(url, params);
+    },
+    // --CẬP NHẬT ĐƠN HÀNG -> CÁI NÀY ĐỂ HỦY 1 ĐƠN HÀNG TỪ USER
+    updateOrder: (params) => {
+        const url = '/order/update';
+        return axiosClient.post(url, params);
     }
 
 };

@@ -1,4 +1,4 @@
-import { memo, lazy } from 'react';
+import { memo, lazy, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import style from './OrderHistory.module.scss';
 import clsx from 'clsx';
@@ -26,41 +26,88 @@ import ChoXacNhan from './ChoXacNhan';
 import DangVanChuyen from './DangVanChuyen';
 import DaGiao from './DaGiao';
 import DaHuy from './DaHuy';
+import { useSelector } from 'react-redux';
+import userApi from '~/apis/userApi.js';
 
 //PropTypes
 OrderHistory.propTypes = {};
 
 function OrderHistory(props) {
+  const [loading, setLoading] = useState(true);
   // -----------------CÁC TABS ĐỂ XEM THÔNG TIN ĐƠN HÀNG -----------
+  // --- Truyền Key TAB XUỐNG CÁC component con => để làm điều kiện GỌI LẠI API => KHI tab qua Tab lại --
+  const [keyTab, setKeyTab] = useState(1);
   const onChangeTabs = (key) => {
     // console.log(key);
+    setKeyTab(key);
+    setLoading(true);
   };
+
+  // ------CALL API CỦA CÁC ĐƠN HÀNG  CỦA 1 USER---
+  // LẤY ID USER
+  const infoUser = useSelector((state) => state?.userAuth?.user);
+
+  // -- LẤY DỮ LIỆU TẤT CẢ ĐƠN HÀNG CỦA 1 USER ĐÃ MUA HOẶC ĐANG MUA => TẤT CẢ ĐƠN HÀNG CỦA USER -----
+  const [listAllOrder, setListAllOrder] = useState({});
+
+  useEffect(() => {
+    userApi
+      .getOneUser(infoUser?._id)
+      .then((response) => {
+        // console.log('thông tin user', response);
+        setListAllOrder(response?.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log({ err });
+        setLoading(false);
+      });
+  }, [keyTab]);
+
+  // --------- DANH DÁCH ĐƠN HÀNG CỦA 1 USER --
+  // console.log('danh sách tất cả đơn hàng của 1 USER LÀ:', listAllOrder);
   const items = [
     {
       key: 1,
       label: 'Tất cả đơn',
       // disabled: true,
-      children: <AllOrder />,
+      children: (
+        <AllOrder
+          keyTab={keyTab}
+          listAllOrder={listAllOrder}
+          loading={loading}
+          setLoading={setLoading}
+          setKeyTab={setKeyTab}
+        />
+      ),
     },
     {
       key: 2,
       label: 'Chờ xác nhận',
-      children: <ChoXacNhan />,
+      children: (
+        <ChoXacNhan
+          keyTab={keyTab}
+          listAllOrder={listAllOrder}
+          loading={loading}
+          setLoading={setLoading}
+          setKeyTab={setKeyTab}
+        />
+      ),
     },
     {
       key: 3,
       label: 'Đang vận chuyển',
-      children: <DangVanChuyen />,
+      children: <DangVanChuyen keyTab={keyTab} listAllOrder={listAllOrder} loading={loading} />,
     },
     {
       key: 4,
       label: 'Đã giao',
-      children: <DaGiao />,
+      children: <DaGiao keyTab={keyTab} listAllOrder={listAllOrder} loading={loading} />,
     },
     {
       key: 5,
       label: 'Đã huỷ',
-      children: <DaHuy />,
+      children: <DaHuy keyTab={keyTab} listAllOrder={listAllOrder} loading={loading} />,
     },
   ];
 
@@ -167,6 +214,7 @@ function OrderHistory(props) {
                   <Box className={clsx(style.wrapTabs)}>
                     <Tabs
                       defaultActiveKey={1}
+                      activeKey={keyTab}
                       items={items}
                       onChange={onChangeTabs}
                       className={clsx(style.tabs)}

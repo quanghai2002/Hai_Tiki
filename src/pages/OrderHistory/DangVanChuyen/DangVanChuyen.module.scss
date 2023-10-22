@@ -30,7 +30,7 @@
       display: flex;
       align-items: center;
 
-      // Đang vận chuyển + Chờ xác nhận
+      //  Chờ xác nhận
       .title {
         font-size: 1.4rem;
         line-height: 2rem;
@@ -41,6 +41,25 @@
           content: '';
           display: block;
           background: url('~/assets/images/dotvanchuyen.png') center center / 20px 20px no-repeat;
+          width: 20px;
+          height: 20px;
+          float: left;
+          margin: 0px 6px 0px 0px;
+        }
+      }
+
+      // ĐANG VẬN CHUYỂN
+      .titleDangVanChuyen {
+        font-size: 1.4rem;
+        line-height: 2rem;
+        user-select: none;
+        font-weight: 500;
+        color: rgb(128, 128, 137);
+
+        &::before {
+          content: '';
+          display: block;
+          background: url('~/assets/images/iconGiaoHangThanhCong.png') center center / 20px 20px no-repeat;
           width: 20px;
           height: 20px;
           float: left;

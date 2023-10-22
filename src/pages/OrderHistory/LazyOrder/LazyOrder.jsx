@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import style from './LazyOrder.module.scss';
 import clsx from 'clsx';
@@ -9,7 +9,8 @@ import { Skeleton } from 'antd';
 // PropTypes
 LazyOrder.propTypes = {};
 
-function LazyOrder(props) {
+function LazyOrder() {
+  // ---HIỂN THỊ LAZY THEO ĐÚNG SỐ LƯỢNG SẢN PHẨM CHUẨN BỊ RENDER RA --
   return (
     <Box className={clsx(style.wrapLazyOrder)}>
       <Box>
@@ -20,11 +21,7 @@ function LazyOrder(props) {
         </Box>
         <Skeleton.Input active={true} className={clsx(style.lazy3)} />
       </Box>
-      <Box
-        sx={{
-          marginTop: '36px',
-        }}
-      >
+      <Box>
         <Skeleton.Input active={true} className={clsx(style.lazy1)} />
         <Box className={clsx(style.wrapLazy2)}>
           <Skeleton.Image active={true} className={clsx(style.wrapLazy21)} />
@@ -36,4 +33,4 @@ function LazyOrder(props) {
   );
 }
 
-export default LazyOrder;
+export default memo(LazyOrder);

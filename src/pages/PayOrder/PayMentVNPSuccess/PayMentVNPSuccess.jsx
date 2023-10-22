@@ -62,6 +62,18 @@ function PayMentVNPSuccess(props) {
           userApi
             .updateOneUser(userUpdate)
             .then((res) => {
+              // --XÓA 1 ĐƠN HÀNG NẾU ĐƠN HÀNG ĐÓ CÓ TỒN TẠI TRONG GIỎ HÀNG CŨ
+              // --NẾU THANH TOÁN 1 SẢN PHẨM --
+              // --TÌM SẢN PHẨM ĐÓ TRONG REDUX XEM CÓ TRONG ĐƠN HÀNG CHƯA => NẾU CÓ SAU KHI THANH TOÁN THÌ XÓA ĐI --
+              const idDelePhone = orderPreviewVNP?.products?.id;
+              // console.log('ID đơn hàng cần xóa là:', idDelePhone);
+
+              const cartUpdate = historyCart?.filter((item) => {
+                return item?._id !== idDelePhone;
+              });
+
+              // console.log('danh sách giỏ hàng hiện tại là:', cartUpdate);
+              dispatch(updatePhoneCart(cartUpdate));
               // console.log('thêm ID đơn hàng vào user thành công', res);
               setLoading(false);
             })
