@@ -52,12 +52,25 @@ const phoneApi = {
         const url = `/phone/getonephone/${idPhone}`;
         return axiosClient.get(url);
     },
+
+    //  LẤY NHIỀU SẢN PHẨM THEO ID
+    getManyPhoneBuyID: (params) => {
+        const url = '/phone/getmanyphone';
+        return axiosClient.post(url, params);
+    },
+
     // CẬP NHẬT 1 SẢN PHẨM
     updatePhone: (params) => {
         const url = '/phone/update';
         // console.log('params', params);
         return axiosClient.patch(url, params);
     },
+
+    // CẬP NHẬT NHIỀU SẢN PHẨM => CẬP NHẬT LẠI SỐ LƯỢNG SẢN PHẨM TRONG KHO
+    updataManyPhoneSoLuong: (params) => {
+        const url = '/phone/updatemany';
+        return axiosClient.post(url, params);
+    }
 
 };
 

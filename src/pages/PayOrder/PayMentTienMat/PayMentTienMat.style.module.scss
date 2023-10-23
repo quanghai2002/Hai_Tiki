@@ -178,4 +178,31 @@
       }
     }
   }
+
+  // wrapTienMat lazy
+  .wrapTienMatlazy {
+    width: 100%;
+    z-index: 999999;
+    max-width: 1270px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 132px;
+    padding-bottom: 80px;
+
+    .lazy1 {
+      width: 100% !important;
+      height: 113px !important;
+    }
+    .lazy2 {
+      margin-top: 6px;
+      width: 100% !important;
+      height: 113px !important;
+    }
+    .lazy3 {
+      width: 100% !important;
+      height: 161px !important;
+    }
+  }
 }

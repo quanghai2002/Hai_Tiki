@@ -27,6 +27,9 @@ function BuyPhone({ phoneDetails, setIsHidenNotify }) {
   // console.log('thông tin sp:', phoneDetails);
   // số lượng sản phẩm trong kho
   const [quantityPhone, setQuanityPhone] = useState(phoneDetails?.stock_quantity);
+  // const quantityPhone = 0;
+
+  // console.log('số lượng sản phẩm còn lại trong kho:', quantityPhone);
 
   // giá mặc định của 1 sản phẩm =>ban đầu
   const pricePhone = phoneDetails?.price;
@@ -109,7 +112,7 @@ function BuyPhone({ phoneDetails, setIsHidenNotify }) {
           },
         ],
       };
-      console.log('mua 1 sản phẩm đơn hàng là:', infoPhone);
+      // console.log('mua 1 sản phẩm đơn hàng là:', infoPhone);
 
       // lưu sản phẩm tạm thời vào redux
       dispatch(addOrderReview(infoPhone));
@@ -199,61 +202,71 @@ function BuyPhone({ phoneDetails, setIsHidenNotify }) {
             {quantityPhone}
           </Typography>
         </Box>
-        <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
-          Số lượng
-        </Typography>
-        {/* quantity */}
 
-        <Box
-          className={clsx(style.quantity)}
-          sx={{
-            '& .Mui-disabled': {
-              color: (theme) => theme?.palette?.text?.primary8,
-              borderColor: (theme) => theme?.palette?.text?.primary9,
-            },
-          }}
-        >
-          {/* - */}
-          <Button variant="outlined" className={clsx(style.btn)} onClick={handleClickMinus} disabled={value === 1}>
-            <RemoveIcon />
-          </Button>
-
-          {/* input number */}
-          <InputNumber
-            min={1}
-            max={quantityPhone}
-            defaultValue={value}
-            value={value}
-            onChange={onChangeInput}
-            type="number"
-            onKeyDown={onInputKeyDown}
-            className={clsx(style.input)}
-          />
-          {/* + */}
-          <Button
-            variant="outlined"
-            className={clsx(style.btn)}
-            onClick={handleClickAdd}
-            disabled={value === quantityPhone}
-          >
-            <AddIcon />
-          </Button>
-        </Box>
-
-        {/* sum price */}
-        <Box className={clsx(style.sumPrice)}>
-          <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
-            Tạm tính
-          </Typography>
-          <Box className={clsx(style.wrapNumber)}>
-            <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
-              {formatPricePhone}
+        {/* NẾU SỐ LƯỢNG SẢN PHẨM > 0 THÌ MỚI HIỆN THỊ SỐ LƯỢNG => KHÔNG HIỂN THỊ HẾT HÀNG */}
+        {quantityPhone > 0 ? (
+          // hiển thị số lượng khi kho còn sản phẩm
+          <>
+            <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
+              Số lượng
             </Typography>
-            <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
-              ₫
-            </Typography>
-          </Box>
-        </Box>
+            {/* quantity => CHỈ CHO CHỌN SỐ LƯỢNG SẢN PHẨM KHI CÒN HÀNG MÀ THÔI  */}
+            <Box
+              className={clsx(style.quantity)}
+              sx={{
+                '& .Mui-disabled': {
+                  color: (theme) => theme?.palette?.text?.primary8,
+                  borderColor: (theme) => theme?.palette?.text?.primary9,
+                },
+              }}
+            >
+              {/* - */}
+              <Button variant="outlined" className={clsx(style.btn)} onClick={handleClickMinus} disabled={value === 1}>
+                <RemoveIcon />
+              </Button>
+
+              {/* input number */}
+              <InputNumber
+                min={1}
+                max={quantityPhone}
+                defaultValue={value}
+                value={value}
+                onChange={onChangeInput}
+                type="number"
+                onKeyDown={onInputKeyDown}
+                className={clsx(style.input)}
+              />
+              {/* + */}
+              <Button
+                variant="outlined"
+                className={clsx(style.btn)}
+                onClick={handleClickAdd}
+                disabled={value === quantityPhone}
+              >
+                <AddIcon />
+              </Button>
+            </Box>
+
+            {/* sum price */}
+            <Box className={clsx(style.sumPrice)}>
+              <Typography className={clsx(style.label)} color={(theme) => theme?.palette?.text?.primary4}>
+                Tạm tính
+              </Typography>
+              <Box className={clsx(style.wrapNumber)}>
+                <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary4}>
+                  {formatPricePhone}
+                </Typography>
+                <Typography className={clsx(style.text, style.text2)} color={(theme) => theme?.palette?.text?.primary4}>
+                  ₫
+                </Typography>
+              </Box>
+            </Box>
+          </>
+        ) : (
+          //  KHI SẢN PHẨM HẾT HÀNG => SỐ LƯỢNG TRONG KHO BẰNG 0
+          <Typography className={clsx(style.hethang)}>Hết hàng</Typography>
+        )}
+
         {/* action buy phone */}
         <Box className={clsx(style.wrapActionBuy)}>
           <Button
@@ -261,10 +274,16 @@ function BuyPhone({ phoneDetails, setIsHidenNotify }) {
             className={clsx(style.btn, style.btnBuy)}
             color="secondary"
             onClick={handleClickBuyPhone}
+            disabled={quantityPhone === 0 ? true : false}
           >
             Mua Ngay
           </Button>
-          <Button variant="outlined" className={clsx(style.btn, style.btnCard)} onClick={handleClickAddCart}>
+          <Button
+            variant="outlined"
+            className={clsx(style.btn, style.btnCard)}
+            onClick={handleClickAddCart}
+            disabled={quantityPhone === 0 ? true : false}
+          >
             Thêm vào giỏ
           </Button>
         </Box>

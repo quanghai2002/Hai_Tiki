@@ -594,6 +594,7 @@ function OneCard({
           className={clsx(style.checkBox)}
           checked={listCheckedBox.includes(detailsPhone?.id)}
           onChange={handleCheckBox}
+          // disabled={true}
         />
 
         <img className={clsx(style.img)} src={detailsPhone?.url} alt="anh" />

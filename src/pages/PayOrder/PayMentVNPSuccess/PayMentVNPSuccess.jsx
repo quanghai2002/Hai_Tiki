@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import userApi from '~/apis/userApi.js';
 import VNPlazy from './VNPlazy.jsx';
 import { updatePhoneCart } from '~/redux/GioHang.js';
+import phoneApi from '~/apis/phoneApi.js';
 
 // PropTypes
 PayMentVNPSuccess.propTypes = {};
@@ -156,6 +157,74 @@ function PayMentVNPSuccess(props) {
         });
     }
   }, [lengtOrderVnp, orderPreviewVNP, userLogin]);
+
+  //  --- LẤY THÔNG TIN SẢN PHẨM ĐANG MUA HIỆN TẠI ĐỂ CẬP NHẬT GIẢM SỐ LƯỢNG --
+  useEffect(() => {
+    // --- DANH SÁCH SẢN PHẨM ĐÃ THANH TOÁN THÀNH CÔNG ---
+    const listPhonePayCompleted = orderPreviewVNP?.products2;
+
+    // danh sách số lượng sản phẩm mua của 1 sản đó để trừ đi là
+    const sumquantity = listPhonePayCompleted?.map((item) => {
+      return item?.sumQuantity;
+    });
+
+    // DANH SÁCH ID SẢN PHẨM THANH TOÁN THÀNH CÔNG
+    const listIdCompleted = listPhonePayCompleted?.map((item) => {
+      return item?.id;
+    });
+
+    //  --- Xem thông tin SỐ LƯỢNG SẢN PHẨM ĐÓ TRÊN SERVER LÀ BAO NHIÊU --
+    phoneApi
+      .getManyPhoneBuyID(listIdCompleted)
+      .then((response) => {
+        //  --- LẶP QUA CÁC SẢN PHẨM ĐỂ TÍNH TOÁN LẠI SỐ LƯỢNG SẢN PHẨM MỚI NHẤT --
+        let listSoluongUpdate = [];
+
+        for (let index in response.data) {
+          // index là index => key của array sản phẩm trên server
+
+          //  -- nếu như số lượng sản phẩm trong kho lớn > số lượng sản phẩm mua thì trừ bớt đi
+          if (response?.data[index]?.stock_quantity >= sumquantity[index]) {
+            // console.log('đủ điều kiện để trừ');
+            const newStockquantity = response?.data[index]?.stock_quantity - sumquantity[index];
+
+            const dataUpdate = {
+              _id: response?.data[index]?._id,
+              stock_quantity: newStockquantity,
+            };
+
+            // console.log('số lượng sản phẩm hiện tại là:', dataUpdate);
+            listSoluongUpdate.push(dataUpdate);
+          } else {
+            // nếu không đủ điều kiên để trừ thì set số lượng sản phẩm === 0
+            const dataUpdate = {
+              _id: response?.data[index]?._id,
+              stock_quantity: 0,
+            };
+            // console.log('số lượng sản phẩm hiện tại là:', dataUpdate);
+            listSoluongUpdate.push(dataUpdate);
+          }
+        }
+
+        //  --- SAU vòng lặp for => sẽ được danh sách số lượng sản phẩm mơi nhất
+        // console.log('số lượng sản phẩm mới nhất là:', listSoluongUpdate);
+
+        //  -- SAU ĐÓ CẬP NHẬT LẠI SỐ LƯỢNG SẢN PHẨM MỚI NHẤT TRÊN SERVER --
+        phoneApi
+          .updataManyPhoneSoLuong(listSoluongUpdate)
+          .then((res) => {
+            // console.log('cập nhật số lượng sản phẩm thành công:', res);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log('cập nhật số lượng sản phẩm thất bại:', err);
+            setLoading(false);
+          });
+      })
+      .catch((err) => {
+        console.log('không lấy được thông tin sản phẩm trên server:', err);
+      });
+  }, []);
 
   // ------Khi CLIK VÀO NÚT BTN VỀ TRANG CHỦ ------------------
   const naviagate = useNavigate();
