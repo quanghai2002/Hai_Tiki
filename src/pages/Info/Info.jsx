@@ -21,22 +21,28 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
 import BackTop from '~/components/BackTop';
+import userApi from '~/apis/userApi.js';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Header = lazy(() => import('~/components/Header'));
-const Footer = lazy(() => import('~/components/Footer'));
+// const Header = lazy(() => import('~/components/Header'));
+// const Footer = lazy(() => import('~/components/Footer'));
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
 import { IconHisToryOrder } from '~/assets/iconSVG.jsx';
 import editImage from '~/assets/images/editImage.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '~/redux/userSlice.js';
 
 // PropTypes
 Info.propTypes = {};
 
 function Info(props) {
+  const dispatch = useDispatch();
+  //  --- LẤY THÔNG TIN CỦA USER TRONG REDUX ---ĐỂ HIỆN THỊ RA BÊN TABBAR BÊN PHẢI ---
+  const userLogin = useSelector((state) => state?.userAuth?.user);
+
   // -------------------UPDATE Image Avartar-----------------
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  };
 
   // trước khi update ảnh
   const beforeUpload = (file) => {
@@ -54,45 +60,47 @@ function Info(props) {
   };
   // image để hiển thị preview
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState(userLogin?.img_url ? userLogin?.img_url : '');
   const [isAlert, setIsAlert] = useState(false);
-  // 'https://lh3.googleusercontent.com/a-/AAuE7mA3FHFGm1V5aBwIFMBH-7jfUw-1DAZRfGcKqZqlzA',
 
-  // console.log('imageUrl', imageUrl);
+  //  ---CẬP NHẬT ẢNH ĐẠI DIỆN USER ---
   // ---------ACTION UPDATE IMAGES --------
   const hanldeUpdateImage = (info) => {
-    // console.log('newFileList', info);
-
-    const token =
-      getTokenCookie() ||
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGYzM2EyN2I4ZTU5ZTJlMjEyNmFlNjgiLCJlbWFpbCI6Im5ndXllbnF1YW5naGFpMjAwMi50bkBnbWFpbC5jb20iLCJwaG9uZU51bWJlciI6IjA5NjgxMDc1MDAiLCJhZGRyZXNzIjoiVGhhaSBOZ3V5ZW4iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNjk2NTE1NzAxLCJleHAiOjE2OTc4OTgxMDF9.4Igp1L0sD5DRv_szIvxntfqx0ZkIh0p62Es30td51Jk';
-
-    // console.log('token', token);
-
     // Tạo một đối tượng FormData để gửi tệp tin và token
     const formData = new FormData();
 
-    formData.append('image_urls', info); // upload 1 ảnh
-    // formData.append(
-    //   'token',
-    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGYzM2EyN2I4ZTU5ZTJlMjEyNmFlNjgiLCJlbWFpbCI6Im5ndXllbnF1YW5naGFpMjAwMi50bkBnbWFpbC5jb20iLCJwaG9uZU51bWJlciI6IjA5NjgxMDc1MDAiLCJhZGRyZXNzIjoiVGhhaSBOZ3V5ZW4iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNjk2NTE1NzAxLCJleHAiOjE2OTc4OTgxMDF9.4Igp1L0sD5DRv_szIvxntfqx0ZkIh0p62Es30td51Jk',
-    // );
+    formData.append('image_urls', info); // upload 1 ảnh => tải lên 1 ảnh đại diện
 
-    // console.log('formData', formData);
     setLoading(true);
     axiosClient
       .post('/phone/uploadurl/url', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Đặt tiêu đề Content-Type
-          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        // console.log('Cập nhật ảnh đại diện thành công', response);
-        // console.log({ response });
+        // set lại để hiển thị ảnh ra PREVIEW GIAO DIỆN
         setImageUrl(response?.data[0]);
-        setLoading(false);
-        setIsAlert(true);
+
+        //  SAU KHI TẢI ĐƯỢC ẢNH TRÊN SERVER => CẬP NHẬT LẠI ẢNH CHO USER --
+        const dataUpdateImageUser = {
+          _id: userLogin?._id,
+          img_url: response?.data[0],
+        };
+
+        // -- CẬP NHẬT USER ---
+        userApi
+          .updateOneUser(dataUpdateImageUser)
+          .then((res) => {
+            // console.log('cập nhật ảnh đại diện lên DB thành công', res);
+            setLoading(false);
+            setIsAlert(true);
+            // -- LƯU LẠI THÔNG TIN USER VÀO REDUX --
+            dispatch(updateUser(res?.data));
+          })
+          .catch((err) => {
+            console.log('cập nhật ảnh đại diện thất bại', err);
+          });
       })
       .catch((err) => {
         console.log('update ảnh thất bại', err);
@@ -110,25 +118,6 @@ function Info(props) {
       return clearTimeout(id);
     };
   });
-  // // handle change thay đổi ảnh đại diện
-  // const handleChange = (info) => {
-  //   console.log('trang thái', info.file.status);
-  //   if (info.file.status === 'uploading') {
-  //     setLoading(true);
-  //     return;
-  //   } else if (info.file.status === 'done') {
-  //     // Get this url from response in real world.
-  //     getBase64(info.file.originFileObj, (url) => {
-  //       setLoading(false);
-  //       // setImageUrl(url);
-  //     });
-  //   } else {
-  //     getBase64(info.file.originFileObj, (url) => {
-  //       setLoading(false);
-  //       // setImageUrl(url);
-  //     });
-  //   }
-  // };
 
   // khi không có ảnh mặc định hiện thị nút UPLOAD
   const uploadButton = (
@@ -170,16 +159,60 @@ function Info(props) {
   } = useForm({
     resolver: yupResolver(schema),
     // nếu có data => truyền vào => lấy data đó, còn mặc đinh là ''
-    defaultValues: {}, // Thêm defaultValues ở đây bo_nho: '32GB'
+    defaultValues: {
+      nameUser: userLogin?.username ? userLogin?.username : '',
+      phoneNumber: userLogin?.phoneNumber ? userLogin?.phoneNumber : '',
+    }, // Thêm defaultValues ở đây
   });
 
-  // KHI NHẤN CẬP NHẬT SẢN USER
+  //  --- CẬP NHẬT CÁC THÔNG TIN KHÁC CỦA USER ---
   const onSubmit = (data) => {
+    setLoading(true);
+    // --- DATA ĐỂ CẬP NHẬT LẠI THÔNG TIN USER --
     const newData = {
-      ...data,
-      imageUrl: imageUrl || '',
+      _id: userLogin?._id,
+      username: data?.nameUser,
+      phoneNumber: data?.phoneNumber,
+      address: {
+        Tỉnh_Thành_phố: data?.thanhpho,
+        Quận_Huyện: data?.quanhuyen,
+        Phường_Xã: data?.phuongxa,
+        Địa_chỉ: data?.diachi_cuthe,
+      },
     };
-    console.log('data Update User', newData);
+
+    // -- CẬP NHẬT USER LÊN SERVER ---
+    userApi
+      .updateOneUser(newData)
+      .then((res) => {
+        setLoading(false);
+        toast.success('Cập nhật thông tin thành công', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+        // -- LƯU LẠI THÔNG TIN USER VÀO REDUX --
+        dispatch(updateUser(res?.data));
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log('cập nhật thông tin user thất bại', err);
+        toast.error('Cập nhật thông tin thất bại', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+        });
+      });
   };
 
   // -------------ĐỊA CHỈ GIAO HÀNG -----------
@@ -371,13 +404,12 @@ function Info(props) {
                 <Box className={clsx(style.sideBar)}>
                   {/* box avartar */}
                   <Box className={clsx(style.headerAvartar)}>
-                    <Avatar
-                      srcSet="https://lh3.googleusercontent.com/a-/AAuE7mA3FHFGm1V5aBwIFMBH-7jfUw-1DAZRfGcKqZqlzA"
-                      className={clsx(style.avatar)}
-                    />
+                    <Avatar srcSet={userLogin?.img_url ? userLogin?.img_url : ''} className={clsx(style.avatar)} />
                     <Box className={clsx(style.infoUser)}>
                       <Typography className={clsx(style.text1)}>Tài khoản của</Typography>
-                      <Typography className={clsx(style.text2)}>Nguyễn Quang Hải</Typography>
+                      <Typography className={clsx(style.text2)}>
+                        {userLogin?.username ? userLogin?.username : ''}
+                      </Typography>
                     </Box>
                   </Box>
 
@@ -413,231 +445,462 @@ function Info(props) {
               </Grid>
               {/* container account */}
               <Grid lg={9.4}>
-                <Box className={clsx(style.container)}>
-                  {/* header */}
-                  <Typography className={clsx(style.label)}>Thông tin tài khoản</Typography>
-                  {/* Info */}
-                  <Box className={clsx(style.infoPage)}>
-                    <Box className={clsx(style.info)}>
-                      <Typography className={clsx(style.title)} color={(theme) => theme?.palette?.text?.primary6}>
-                        Thông tin cá nhân
-                      </Typography>
-                      {/*  */}
-                      <Box className={clsx(style.accountInfo)}>
-                        {/* update image url */}
-                        <Box className={clsx(style.wrapUpdateImage)}>
-                          <Upload
-                            name="avatar"
-                            listType="picture-circle"
-                            className={clsx(style.avatarUpload)}
-                            showUploadList={false}
-                            // action="http://localhost:8080/api/phone/uploadurl/url"
-                            action={hanldeUpdateImage}
-                            beforeUpload={beforeUpload}
-                            // onChange={handleChange}
-                          >
-                            {imageUrl ? (
-                              <Box className={clsx(style.imageUpdloadSuccess)}>
-                                <img
-                                  src={imageUrl}
-                                  alt="avatar"
-                                  style={{
-                                    width: '100%',
-                                    borderRadius: '50%',
-                                    // border: '3px solid rgb(194, 225, 255)',
-                                  }}
-                                  className={clsx(style.imageActive)}
-                                />
-                                <Box className={clsx(style.wrapImageEdit)}>
-                                  <img src={editImage} alt="edit" className={clsx(style.iconEdit)} />
-                                </Box>
-                              </Box>
-                            ) : (
-                              uploadButton
-                            )}
-                          </Upload>
-                          {/* THÔNG BÁO HIỆN THỊ KHI CẬP NHẬT ẢNH ĐẠI DIỆN THÀNH CÔNG */}
-                          {isAlert && (
-                            <Alert
-                              className={clsx(style.wrapAletUpdateImage)}
-                              message="Cập nhật ảnh đại diện thành công"
-                              type="success"
-                              showIcon
-                              closable
-                            />
-                          )}
-                        </Box>
-                        {/* Form UPDATE info user */}
-                        <Box className={clsx(style.wrapFormUpdate)}>
-                          {/* form */}
-                          <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
-                            {/* TÊN USER UPDATE*/}
-                            <Form.Item
-                              label="Họ & Tên"
-                              name="nameUser"
-                              validateStatus={errors.nameUser ? 'error' : ''}
-                              help={errors.nameUser && errors.nameUser.message}
-                              htmlFor="nameUser"
-                            >
-                              <Controller
-                                name="nameUser"
-                                control={control}
-                                render={({ field }) => (
-                                  <Input {...field} placeholder="Họ & Tên" id="nameUser" allowClear />
-                                )}
-                              />
-                            </Form.Item>
-                            {/*số điện thoại di động */}
-                            <Form.Item
-                              label="Điện thoại di động"
-                              name="phoneNumber"
-                              validateStatus={errors.phoneNumber ? 'error' : ''}
-                              help={errors.phoneNumber && errors.phoneNumber.message}
-                              htmlFor="phoneNumber"
-                              step={2}
-                            >
-                              <Controller
-                                name="phoneNumber"
-                                control={control}
-                                render={({ field }) => (
-                                  <Input {...field} placeholder="Nhập số điện thoại" id="phoneNumber" />
-                                  // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
-                                )}
-                              />
-                            </Form.Item>
-                            {/* tỉnh thành phố*/}
-                            <Form.Item
-                              label="Tỉnh/Thành phố"
-                              name="thanhpho"
-                              validateStatus={errors.thanhpho ? 'error' : ''}
-                              help={errors.thanhpho && errors.thanhpho.message}
-                              htmlFor="thanhpho"
-                            >
-                              <Controller
-                                name="thanhpho"
-                                control={control}
-                                render={({ field }) => {
-                                  return (
-                                    <Select
-                                      {...field}
-                                      className={clsx(style.inputSelect)}
-                                      allowClear // cho phép hiển thị nút xóa
-                                      placeholder="Chọn Tỉnh/Thành phố"
-                                      id="thanhpho"
-                                      options={city}
-                                      onChange={(selectedValue, e) => {
-                                        field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
-                                        handleChangCity(selectedValue, e);
-                                      }}
-                                    />
-                                  );
-                                }}
-                              />
-                            </Form.Item>
-
-                            {/* quận huyện*/}
-                            <Form.Item
-                              label="Quận/Huyện"
-                              name="quanhuyen"
-                              validateStatus={errors.quanhuyen ? 'error' : ''}
-                              help={errors.quanhuyen && errors.quanhuyen.message}
-                              htmlFor="quanhuyen"
-                            >
-                              <Controller
-                                name="quanhuyen"
-                                control={control}
-                                render={({ field }) => {
-                                  return (
-                                    <Select
-                                      {...field}
-                                      className={clsx(style.inputSelect)}
-                                      allowClear // cho phép hiển thị nút xóa
-                                      placeholder="Chọn Quận/Huyện"
-                                      id="quanhuyen"
-                                      disabled={isCity === false ? true : false}
-                                      options={district}
-                                      onChange={(selectedValue, e) => {
-                                        field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
-                                        hanldeChangeDistrict(selectedValue, e);
-                                      }}
-                                    />
-                                  );
-                                }}
-                              />
-                            </Form.Item>
-
-                            {/* phường xã*/}
-                            <Form.Item
-                              label="Phường/Xã"
-                              name="phuongxa"
-                              validateStatus={errors.phuongxa ? 'error' : ''}
-                              help={errors.phuongxa && errors.phuongxa.message}
-                              htmlFor="phuongxa"
-                            >
-                              <Controller
-                                name="phuongxa"
-                                control={control}
-                                render={({ field }) => {
-                                  return (
-                                    <Select
-                                      {...field}
-                                      className={clsx(style.inputSelect)}
-                                      allowClear // cho phép hiển thị nút xóa
-                                      placeholder="Chọn Phường/Xã"
-                                      id="phuongxa"
-                                      disabled={isDistrict === false ? true : false}
-                                      options={listWards}
-                                      onChange={(selectedValue) => {
-                                        field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
-                                      }}
-                                    />
-                                  );
-                                }}
-                              />
-                            </Form.Item>
-
-                            {/* địa chỉ giao hàng, số nhà cụ thể*/}
-                            <Form.Item
-                              label="Địa chỉ"
-                              name="diachi_cuthe"
-                              validateStatus={errors.diachi_cuthe ? 'error' : ''}
-                              help={errors.diachi_cuthe && errors.diachi_cuthe.message}
-                              htmlFor="diachi_cuthe"
-                            >
-                              <Controller
-                                name="diachi_cuthe"
-                                control={control}
-                                render={({ field }) => (
-                                  <TextArea
-                                    {...field}
-                                    rows={2}
-                                    placeholder="Ví dụ: Bưu điện, Phường Tiên Phong"
-                                    id="diachi_cuthe"
-                                    allowClear
-                                    // autoSize
-                                  />
-                                )}
-                              />
-                            </Form.Item>
-                            {/* button submit */}
-                            <Form.Item>
-                              {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
-
-                              <Button
-                                type="primary"
-                                htmltype="submit"
-                                variant="contained"
-                                className={clsx(style.btnAdd)}
+                {/* KHI ĐANG CẬP NHẬT THÔNG TIN HIỂN THỊ SPIN RA NHÉ */}
+                {loading ? (
+                  <Spin>
+                    <Box className={clsx(style.container)}>
+                      {/* header */}
+                      <Typography className={clsx(style.label)}>Thông tin tài khoản</Typography>
+                      {/* Info */}
+                      <Box className={clsx(style.infoPage)}>
+                        <Box className={clsx(style.info)}>
+                          <Typography className={clsx(style.title)} color={(theme) => theme?.palette?.text?.primary6}>
+                            Thông tin cá nhân
+                          </Typography>
+                          {/*  */}
+                          <Box className={clsx(style.accountInfo)}>
+                            {/* update image url */}
+                            <Box className={clsx(style.wrapUpdateImage)}>
+                              <Upload
+                                name="avatar"
+                                listType="picture-circle"
+                                className={clsx(style.avatarUpload)}
+                                showUploadList={false}
+                                // action="http://localhost:8080/api/phone/uploadurl/url"
+                                action={hanldeUpdateImage}
+                                beforeUpload={beforeUpload}
+                                // onChange={handleChange}
                               >
-                                Lưu thay đổi
-                              </Button>
-                            </Form.Item>
-                          </Form>
+                                {imageUrl ? (
+                                  <Box className={clsx(style.imageUpdloadSuccess)}>
+                                    <img
+                                      src={imageUrl}
+                                      alt="avatar"
+                                      style={{
+                                        width: '100%',
+                                        borderRadius: '50%',
+                                        // border: '3px solid rgb(194, 225, 255)',
+                                      }}
+                                      className={clsx(style.imageActive)}
+                                    />
+                                    <Box className={clsx(style.wrapImageEdit)}>
+                                      <img src={editImage} alt="edit" className={clsx(style.iconEdit)} />
+                                    </Box>
+                                  </Box>
+                                ) : (
+                                  uploadButton
+                                )}
+                              </Upload>
+                              {/* THÔNG BÁO HIỆN THỊ KHI CẬP NHẬT ẢNH ĐẠI DIỆN THÀNH CÔNG */}
+                              {isAlert && (
+                                <Alert
+                                  className={clsx(style.wrapAletUpdateImage)}
+                                  message="Cập nhật ảnh đại diện thành công"
+                                  type="success"
+                                  showIcon
+                                  closable
+                                />
+                              )}
+                            </Box>
+                            {/* Form UPDATE info user */}
+                            <Box className={clsx(style.wrapFormUpdate)}>
+                              {/* form */}
+                              <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
+                                {/* TÊN USER UPDATE*/}
+                                <Form.Item
+                                  label="Họ & Tên"
+                                  name="nameUser"
+                                  validateStatus={errors.nameUser ? 'error' : ''}
+                                  help={errors.nameUser && errors.nameUser.message}
+                                  htmlFor="nameUser"
+                                >
+                                  <Controller
+                                    name="nameUser"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <Input {...field} placeholder="Họ & Tên" id="nameUser" allowClear />
+                                    )}
+                                  />
+                                </Form.Item>
+                                {/*số điện thoại di động */}
+                                <Form.Item
+                                  label="Điện thoại di động"
+                                  name="phoneNumber"
+                                  validateStatus={errors.phoneNumber ? 'error' : ''}
+                                  help={errors.phoneNumber && errors.phoneNumber.message}
+                                  htmlFor="phoneNumber"
+                                  step={2}
+                                >
+                                  <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <Input {...field} placeholder="Nhập số điện thoại" id="phoneNumber" />
+                                      // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
+                                    )}
+                                  />
+                                </Form.Item>
+                                {/* tỉnh thành phố*/}
+                                <Form.Item
+                                  label="Tỉnh/Thành phố"
+                                  name="thanhpho"
+                                  validateStatus={errors.thanhpho ? 'error' : ''}
+                                  help={errors.thanhpho && errors.thanhpho.message}
+                                  htmlFor="thanhpho"
+                                >
+                                  <Controller
+                                    name="thanhpho"
+                                    control={control}
+                                    render={({ field }) => {
+                                      return (
+                                        <Select
+                                          {...field}
+                                          className={clsx(style.inputSelect)}
+                                          allowClear // cho phép hiển thị nút xóa
+                                          placeholder="Chọn Tỉnh/Thành phố"
+                                          id="thanhpho"
+                                          options={city}
+                                          onChange={(selectedValue, e) => {
+                                            field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                                            handleChangCity(selectedValue, e);
+                                          }}
+                                        />
+                                      );
+                                    }}
+                                  />
+                                </Form.Item>
+
+                                {/* quận huyện*/}
+                                <Form.Item
+                                  label="Quận/Huyện"
+                                  name="quanhuyen"
+                                  validateStatus={errors.quanhuyen ? 'error' : ''}
+                                  help={errors.quanhuyen && errors.quanhuyen.message}
+                                  htmlFor="quanhuyen"
+                                >
+                                  <Controller
+                                    name="quanhuyen"
+                                    control={control}
+                                    render={({ field }) => {
+                                      return (
+                                        <Select
+                                          {...field}
+                                          className={clsx(style.inputSelect)}
+                                          allowClear // cho phép hiển thị nút xóa
+                                          placeholder="Chọn Quận/Huyện"
+                                          id="quanhuyen"
+                                          disabled={isCity === false ? true : false}
+                                          options={district}
+                                          onChange={(selectedValue, e) => {
+                                            field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                                            hanldeChangeDistrict(selectedValue, e);
+                                          }}
+                                        />
+                                      );
+                                    }}
+                                  />
+                                </Form.Item>
+
+                                {/* phường xã*/}
+                                <Form.Item
+                                  label="Phường/Xã"
+                                  name="phuongxa"
+                                  validateStatus={errors.phuongxa ? 'error' : ''}
+                                  help={errors.phuongxa && errors.phuongxa.message}
+                                  htmlFor="phuongxa"
+                                >
+                                  <Controller
+                                    name="phuongxa"
+                                    control={control}
+                                    render={({ field }) => {
+                                      return (
+                                        <Select
+                                          {...field}
+                                          className={clsx(style.inputSelect)}
+                                          allowClear // cho phép hiển thị nút xóa
+                                          placeholder="Chọn Phường/Xã"
+                                          id="phuongxa"
+                                          disabled={isDistrict === false ? true : false}
+                                          options={listWards}
+                                          onChange={(selectedValue) => {
+                                            field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                                          }}
+                                        />
+                                      );
+                                    }}
+                                  />
+                                </Form.Item>
+
+                                {/* địa chỉ giao hàng, số nhà cụ thể*/}
+                                <Form.Item
+                                  label="Địa chỉ"
+                                  name="diachi_cuthe"
+                                  validateStatus={errors.diachi_cuthe ? 'error' : ''}
+                                  help={errors.diachi_cuthe && errors.diachi_cuthe.message}
+                                  htmlFor="diachi_cuthe"
+                                >
+                                  <Controller
+                                    name="diachi_cuthe"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <TextArea
+                                        {...field}
+                                        rows={2}
+                                        placeholder="Ví dụ: Bưu điện, Phường Tiên Phong"
+                                        id="diachi_cuthe"
+                                        allowClear
+                                        // autoSize
+                                      />
+                                    )}
+                                  />
+                                </Form.Item>
+                                {/* button submit */}
+                                <Form.Item>
+                                  {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
+
+                                  <Button
+                                    type="primary"
+                                    htmltype="submit"
+                                    variant="contained"
+                                    className={clsx(style.btnAdd)}
+                                  >
+                                    Lưu thay đổi
+                                  </Button>
+                                </Form.Item>
+                              </Form>
+                            </Box>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Spin>
+                ) : (
+                  <Box className={clsx(style.container)}>
+                    {/* header */}
+                    <Typography className={clsx(style.label)}>Thông tin tài khoản</Typography>
+                    {/* Info */}
+                    <Box className={clsx(style.infoPage)}>
+                      <Box className={clsx(style.info)}>
+                        <Typography className={clsx(style.title)} color={(theme) => theme?.palette?.text?.primary6}>
+                          Thông tin cá nhân
+                        </Typography>
+                        {/*  */}
+                        <Box className={clsx(style.accountInfo)}>
+                          {/* update image url */}
+                          <Box className={clsx(style.wrapUpdateImage)}>
+                            <Upload
+                              name="avatar"
+                              listType="picture-circle"
+                              className={clsx(style.avatarUpload)}
+                              showUploadList={false}
+                              // action="http://localhost:8080/api/phone/uploadurl/url"
+                              action={hanldeUpdateImage}
+                              beforeUpload={beforeUpload}
+                              // onChange={handleChange}
+                            >
+                              {imageUrl ? (
+                                <Box className={clsx(style.imageUpdloadSuccess)}>
+                                  <img
+                                    src={imageUrl}
+                                    alt="avatar"
+                                    style={{
+                                      width: '100%',
+                                      borderRadius: '50%',
+                                      // border: '3px solid rgb(194, 225, 255)',
+                                    }}
+                                    className={clsx(style.imageActive)}
+                                  />
+                                  <Box className={clsx(style.wrapImageEdit)}>
+                                    <img src={editImage} alt="edit" className={clsx(style.iconEdit)} />
+                                  </Box>
+                                </Box>
+                              ) : (
+                                uploadButton
+                              )}
+                            </Upload>
+                            {/* THÔNG BÁO HIỆN THỊ KHI CẬP NHẬT ẢNH ĐẠI DIỆN THÀNH CÔNG */}
+                            {isAlert && (
+                              <Alert
+                                className={clsx(style.wrapAletUpdateImage)}
+                                message="Cập nhật ảnh đại diện thành công"
+                                type="success"
+                                showIcon
+                                closable
+                              />
+                            )}
+                          </Box>
+                          {/* Form UPDATE info user */}
+                          <Box className={clsx(style.wrapFormUpdate)}>
+                            {/* form */}
+                            <Form onFinish={handleSubmit(onSubmit)} className={clsx(style.wrapForm)}>
+                              {/* TÊN USER UPDATE*/}
+                              <Form.Item
+                                label="Họ & Tên"
+                                name="nameUser"
+                                validateStatus={errors.nameUser ? 'error' : ''}
+                                help={errors.nameUser && errors.nameUser.message}
+                                htmlFor="nameUser"
+                              >
+                                <Controller
+                                  name="nameUser"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <Input {...field} placeholder="Họ & Tên" id="nameUser" allowClear />
+                                  )}
+                                />
+                              </Form.Item>
+                              {/*số điện thoại di động */}
+                              <Form.Item
+                                label="Điện thoại di động"
+                                name="phoneNumber"
+                                validateStatus={errors.phoneNumber ? 'error' : ''}
+                                help={errors.phoneNumber && errors.phoneNumber.message}
+                                htmlFor="phoneNumber"
+                                step={2}
+                              >
+                                <Controller
+                                  name="phoneNumber"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <Input {...field} placeholder="Nhập số điện thoại" id="phoneNumber" />
+                                    // <InputNumber {...field} placeholder="Nhập giá sản phẩm" id="pricePhone" size="middle" min={1} />
+                                  )}
+                                />
+                              </Form.Item>
+                              {/* tỉnh thành phố*/}
+                              <Form.Item
+                                label="Tỉnh/Thành phố"
+                                name="thanhpho"
+                                validateStatus={errors.thanhpho ? 'error' : ''}
+                                help={errors.thanhpho && errors.thanhpho.message}
+                                htmlFor="thanhpho"
+                              >
+                                <Controller
+                                  name="thanhpho"
+                                  control={control}
+                                  render={({ field }) => {
+                                    return (
+                                      <Select
+                                        {...field}
+                                        className={clsx(style.inputSelect)}
+                                        allowClear // cho phép hiển thị nút xóa
+                                        placeholder="Chọn Tỉnh/Thành phố"
+                                        id="thanhpho"
+                                        options={city}
+                                        onChange={(selectedValue, e) => {
+                                          field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                                          handleChangCity(selectedValue, e);
+                                        }}
+                                      />
+                                    );
+                                  }}
+                                />
+                              </Form.Item>
+
+                              {/* quận huyện*/}
+                              <Form.Item
+                                label="Quận/Huyện"
+                                name="quanhuyen"
+                                validateStatus={errors.quanhuyen ? 'error' : ''}
+                                help={errors.quanhuyen && errors.quanhuyen.message}
+                                htmlFor="quanhuyen"
+                              >
+                                <Controller
+                                  name="quanhuyen"
+                                  control={control}
+                                  render={({ field }) => {
+                                    return (
+                                      <Select
+                                        {...field}
+                                        className={clsx(style.inputSelect)}
+                                        allowClear // cho phép hiển thị nút xóa
+                                        placeholder="Chọn Quận/Huyện"
+                                        id="quanhuyen"
+                                        disabled={isCity === false ? true : false}
+                                        options={district}
+                                        onChange={(selectedValue, e) => {
+                                          field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                                          hanldeChangeDistrict(selectedValue, e);
+                                        }}
+                                      />
+                                    );
+                                  }}
+                                />
+                              </Form.Item>
+
+                              {/* phường xã*/}
+                              <Form.Item
+                                label="Phường/Xã"
+                                name="phuongxa"
+                                validateStatus={errors.phuongxa ? 'error' : ''}
+                                help={errors.phuongxa && errors.phuongxa.message}
+                                htmlFor="phuongxa"
+                              >
+                                <Controller
+                                  name="phuongxa"
+                                  control={control}
+                                  render={({ field }) => {
+                                    return (
+                                      <Select
+                                        {...field}
+                                        className={clsx(style.inputSelect)}
+                                        allowClear // cho phép hiển thị nút xóa
+                                        placeholder="Chọn Phường/Xã"
+                                        id="phuongxa"
+                                        disabled={isDistrict === false ? true : false}
+                                        options={listWards}
+                                        onChange={(selectedValue) => {
+                                          field.onChange(selectedValue); // Cập nhật thủ công giá trị trong React Hook Form => xóa error đi
+                                        }}
+                                      />
+                                    );
+                                  }}
+                                />
+                              </Form.Item>
+
+                              {/* địa chỉ giao hàng, số nhà cụ thể*/}
+                              <Form.Item
+                                label="Địa chỉ"
+                                name="diachi_cuthe"
+                                validateStatus={errors.diachi_cuthe ? 'error' : ''}
+                                help={errors.diachi_cuthe && errors.diachi_cuthe.message}
+                                htmlFor="diachi_cuthe"
+                              >
+                                <Controller
+                                  name="diachi_cuthe"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <TextArea
+                                      {...field}
+                                      rows={2}
+                                      placeholder="Ví dụ: Bưu điện, Phường Tiên Phong"
+                                      id="diachi_cuthe"
+                                      allowClear
+                                      // autoSize
+                                    />
+                                  )}
+                                />
+                              </Form.Item>
+                              {/* button submit */}
+                              <Form.Item>
+                                {/* nếu có truyền phone xuống => hiện thị nút Update => còn lại mặc định là thêm sản phẩm */}
+
+                                <Button
+                                  type="primary"
+                                  htmltype="submit"
+                                  variant="contained"
+                                  className={clsx(style.btnAdd)}
+                                >
+                                  Lưu thay đổi
+                                </Button>
+                              </Form.Item>
+                            </Form>
+                          </Box>
                         </Box>
                       </Box>
                     </Box>
                   </Box>
-                </Box>
+                )}
               </Grid>
             </Grid>
           </Box>
@@ -649,6 +912,9 @@ function Info(props) {
 
       {/* Back top */}
       <BackTop />
+
+      {/* ToastContainer */}
+      <ToastContainer />
     </Box>
   );
 }

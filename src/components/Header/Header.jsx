@@ -41,6 +41,7 @@ Header.propTypes = {
 function Header({ isHidenNotify = true, setIsHidenNotify }) {
   // ---NẾU ĐANG Ở TRANG TRỦ THÌ ACTIVE ICON TRANG CHỦ NÊN --
   const location = useLocation();
+
   // --LẤY THÔNG TIN SỐ LƯỢNG ĐƠN HÀNG TRONG GIỎ HÀNG CỦA USER ĐỂ HIỂN THỊ SỐ LƯỢNG SẢN PHẨM TRONG GIỎ HÀNG ---
   const listPhoneCart = useSelector((state) => state?.gioHang?.cartList);
 
@@ -270,9 +271,14 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                   sx={{
                     '&:hover': {
                       cursor: 'pointer',
-                      backgroundColor: (theme) => {
-                        return theme?.palette?.action?.hover;
-                      },
+                      backgroundColor:
+                        location?.pathname === '/info'
+                          ? (theme) => {
+                              return theme?.palette?.action?.hoverActive;
+                            }
+                          : (theme) => {
+                              return theme?.palette?.action?.hover;
+                            },
                     },
                   }}
                 >
@@ -285,7 +291,10 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                   <Typography
                     className={clsx(style.text)}
                     variant="h6"
-                    color={(theme) => theme?.palette?.text?.secondary}
+                    color={location?.pathname === '/info' ? 'primary' : (theme) => theme?.palette?.text?.secondary}
+                    sx={{
+                      fontWeight: location?.pathname === '/info' ? '600!important' : '400 !important',
+                    }}
                   >
                     Tài khoản
                   </Typography>

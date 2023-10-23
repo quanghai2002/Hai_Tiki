@@ -33,6 +33,9 @@ import userApi from '~/apis/userApi.js';
 OrderHistory.propTypes = {};
 
 function OrderHistory(props) {
+  //  --- LẤY THÔNG TIN CỦA USER TRONG REDUX --- ĐỂ HIỆN THỊ RA PHẦN TABBAR BÊN PHẢI--
+  const userLogin = useSelector((state) => state?.userAuth?.user);
+
   const [loading, setLoading] = useState(true);
   // -----------------CÁC TABS ĐỂ XEM THÔNG TIN ĐƠN HÀNG -----------
   // --- Truyền Key TAB XUỐNG CÁC component con => để làm điều kiện GỌI LẠI API => KHI tab qua Tab lại --
@@ -163,13 +166,10 @@ function OrderHistory(props) {
                 <Box className={clsx(style.sideBar)}>
                   {/* box avartar */}
                   <Box className={clsx(style.headerAvartar)}>
-                    <Avatar
-                      srcSet="https://lh3.googleusercontent.com/a-/AAuE7mA3FHFGm1V5aBwIFMBH-7jfUw-1DAZRfGcKqZqlzA"
-                      className={clsx(style.avatar)}
-                    />
+                    <Avatar srcSet={userLogin?.img_url ? userLogin?.img_url : ''} className={clsx(style.avatar)} />
                     <Box className={clsx(style.infoUser)}>
                       <Typography className={clsx(style.text1)}>Tài khoản của</Typography>
-                      <Typography className={clsx(style.text2)}>Nguyễn Quang Hải</Typography>
+                      <Typography className={clsx(style.text2)}>{userLogin ? userLogin?.username : ''}</Typography>
                     </Box>
                   </Box>
 
