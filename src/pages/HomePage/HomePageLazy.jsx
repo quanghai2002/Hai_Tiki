@@ -15,7 +15,7 @@ function HomePageLazy(props) {
     <Box>
       {/* thanh progress auto khi hiển trang đó đang được tải */}
       <LinearProgress />
-      <Skeleton variant="text" sx={{ fontSize: '5rem' }} />
+      <Skeleton variant="text" sx={{ fontSize: '5rem' }} height={86} />
 
       <Box className={clsx(style.wrapContent)}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
@@ -25,45 +25,45 @@ function HomePageLazy(props) {
 
           <Grid container xs={4} sm={4} md={6} lg={9.8}>
             <Grid xs={4} sm={4} md={6} lg={12}>
-              <Skeleton variant="rounded" width={'100%'} height={60} />
+              <Skeleton variant="rounded" width={'100%'} height={100} />
             </Grid>
             <Grid xs={4} sm={4} md={6} lg={12}>
-              <Skeleton variant="rounded" width={'100%'} height={60} />
+              <Skeleton variant="rounded" width={'100%'} height={100} />
             </Grid>
             <Grid container xs={4} sm={4} md={6} lg={12}>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
               <Grid xs={4} sm={4} md={6} lg={2.4}>
-                <Skeleton variant="rounded" width={'100%'} height={80} />
+                <Skeleton variant="rounded" width={'100%'} height={130} />
               </Grid>
             </Grid>
             <Grid xs={4} sm={4} md={6} lg={12}>
-              <Skeleton variant="rounded" width={'100%'} height={60} />
+              <Skeleton variant="rounded" width={'100%'} height={100} />
             </Grid>
           </Grid>
         </Grid>

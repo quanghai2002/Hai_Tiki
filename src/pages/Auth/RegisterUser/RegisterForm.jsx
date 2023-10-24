@@ -263,7 +263,10 @@ function RegisterForm() {
         // KHÔNG ở chế độ loading => hiển thị bình thường
         <div className={clsx(style.container)}>
           {/* header => đăng ký */}
-          <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
+          <Link to="/">
+            <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
+          </Link>
+
           {/* form đăng kí user */}
           <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
             <div className={clsx(style.wrapInput)}>

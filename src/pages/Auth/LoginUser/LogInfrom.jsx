@@ -173,7 +173,9 @@ function LogInForm() {
       {isLoading ? (
         <Spin size="large" className={clsx(style.wrapSpinAnt)}>
           <div className={clsx(style.container)}>
-            <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
+            <Link to="/">
+              <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
+            </Link>
             <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
               <div className={clsx(style.wrapInput)}>
                 <label className={clsx(style.label)} htmlFor={idInput2}>
@@ -294,7 +296,9 @@ function LogInForm() {
         // nếu không là loading => thì để bình thường
 
         <div className={clsx(style.container)}>
-          <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
+          <Link to="/">
+            <img src={haiLoGoTiki2} alt="icon logo" className={clsx(style.imageLogo)} />
+          </Link>
           <form onSubmit={handleSubmit(onSubmit)} className={clsx(style.form)}>
             <div className={clsx(style.wrapInput)}>
               <label className={clsx(style.label)} htmlFor={idInput2}>

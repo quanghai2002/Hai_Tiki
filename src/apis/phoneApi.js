@@ -70,6 +70,12 @@ const phoneApi = {
     updataManyPhoneSoLuong: (params) => {
         const url = '/phone/updatemany';
         return axiosClient.post(url, params);
+    },
+
+    // TÌM KIẾM SẢN PHẨM THEO TÊN
+    searchPhoneBuyName: (params) => {
+        const url = `/phone/search?name=${params?.name}&page=${params?.page || 1}`;
+        return axiosClient.get(url);
     }
 
 };

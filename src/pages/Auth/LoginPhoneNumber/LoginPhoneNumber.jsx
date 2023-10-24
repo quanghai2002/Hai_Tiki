@@ -129,7 +129,7 @@ function LoginPhoneNumber() {
       .then(async (response) => {
         // setUser(response.user);
         // setLoading(false);
-        setShowSpin(false);
+
         // data phone Number
         const dataPhoneNumber = response?.user?.phoneNumber;
 
@@ -140,6 +140,44 @@ function LoginPhoneNumber() {
           });
 
           // console.log('data Login Phone Number:', dataUserLoginPhone);
+          // --- CHUẨN BỊ DỮ LIỆU ĐỂ LƯU THÔNG TIN UESER VÀO SERER THÌ MỚI MUA ĐƯỢC SẢN PHẨM NHÉ --
+          const dataRegisterPhoneNumber = {
+            username: dataUserLoginPhone?.data?.phoneNumber,
+            email: `${dataUserLoginPhone?.data?.phoneNumber}${Math.random(1000009999)}@gmail.com`,
+            password: dataUserLoginPhone?.data?.phoneNumber,
+          };
+
+          // console.log({ dataRegisterPhoneNumber });
+
+          //  --- LƯU THÔNG TIN LÊN SERVER ---
+          userApi
+            .postRegister(dataRegisterPhoneNumber)
+            .then((res) => {
+              // console.log('đăng kí thành công tk số điện thoại THANH CÔNG:', res);
+              setShowSpin(false);
+              // ---------LƯU THÔNG TIN USER VÀO REDUX-----------
+              dispatch(login(res?.data));
+              // sau 3s chuyển sang trang chủ
+              setTimeout(() => {
+                navigate('/');
+              }, 3000);
+              // hiện toast message
+              toast.success('Đăng nhập thành công', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'light',
+              });
+              setShowSpin(false);
+            })
+            .catch((err) => {
+              console.log('đăng kí tài khoản số điện thoại thất bại:', err);
+              setShowSpin(false);
+            });
 
           // -----------------LƯU TOKEN VÀO COOKIE ------------------
           // lưu Access token => vào cookies => assetsToken
@@ -149,25 +187,6 @@ function LoginPhoneNumber() {
           // refreshToken => lưu cookies => refresh token
           const refreshToken = dataUserLoginPhone?.refreshToken;
           setRefreshToken(refreshToken);
-
-          // hiện toast message
-          toast.success('Đăng nhập thành công', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
-
-          // ---------LƯU THÔNG TIN USER VÀO REDUX-----------
-          dispatch(login(dataUserLoginPhone?.data));
-          // sau 3s chuyển sang trang chủ
-          setTimeout(() => {
-            navigate('/');
-          }, 3000);
         } catch (error) {
           console.log(error);
         }
@@ -204,7 +223,9 @@ function LoginPhoneNumber() {
                 // khi đang gửi requet => server => SHOW Spin ra
                 <Spin size="large" className={clsx(style.wrapSpinAnt)}>
                   <div className={clsx(style.wrapTitle)}>
-                    <img alt="icon" src={haiLoGoTiki2} className={clsx(style.img)} />
+                    <Link to="/">
+                      <img alt="icon" src={haiLoGoTiki2} className={clsx(style.img)} />
+                    </Link>
                     <Link to="/login" className={clsx(style.backLoginPhone)}>
                       <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
                     </Link>
@@ -245,7 +266,9 @@ function LoginPhoneNumber() {
                 /// khi không hiện thị show SPIN => để như bình thường
                 <>
                   <div className={clsx(style.wrapTitle)}>
-                    <img alt="icon" src={haiLoGoTiki2} className={clsx(style.img)} />
+                    <Link to="/">
+                      <img alt="icon" src={haiLoGoTiki2} className={clsx(style.img)} />
+                    </Link>
                     <Link to="/login" className={clsx(style.backLoginPhone)}>
                       <ArrowBackIosNewIcon className={clsx(style.iconBack)} />
                     </Link>
@@ -289,7 +312,9 @@ function LoginPhoneNumber() {
           ) : (
             <>
               <div className={clsx(style.wrapTitle)}>
-                <img alt="logo" src={haiLoGoTiki2} className={clsx(style.img)} />
+                <Link to="/">
+                  <img alt="logo" src={haiLoGoTiki2} className={clsx(style.img)} />
+                </Link>
                 <Box className={clsx(style.wrapContent)}>
                   <Link to="/login" className={clsx(style.backLoginPhone)}>
                     <ArrowBackIosNewIcon className={clsx(style.iconBack)} />

@@ -12,19 +12,34 @@ import CardActionArea from '@mui/material/CardActionArea';
 import { Rate } from 'antd';
 
 import authentic_brand from '~/assets/images/iconChinhHang.png';
+import { useNavigate } from 'react-router-dom';
 
 // PropTypes
-OnePhone.propTypes = {};
+OnePhone.propTypes = {
+  phoneDetails: PropTypes.object,
+};
 
-function OnePhone(props) {
+function OnePhone({ phoneDetails }) {
+  const navigate = useNavigate();
+  // ---KHI CLICK VÀO SẢN PHẨM ---
+  const hanldeClickGetPhone = (id) => {
+    // --CHUYỂN SANG TRANG XEM CHI TIẾT SẢN PHẨM VÀ TRUYỀN ID QUA
+    navigate(`/phonedetails/${id}`);
+  };
+
   // value rating
-  const [valueRating, setValueRating] = useState(3);
+  const [valueRating, setValueRating] = useState(5);
 
   // price => convert => string
-  const number = 99999999999999;
+  const number = phoneDetails?.price;
   const formattedNumber = number.toLocaleString('vi-VN');
   return (
-    <Box className={clsx(style.wrapOnePhone)}>
+    <Box
+      className={clsx(style.wrapOnePhone)}
+      onClick={() => {
+        hanldeClickGetPhone(phoneDetails?._id);
+      }}
+    >
       {/* card Phone */}
       <Card sx={{ maxWidth: 345 }} className={clsx(style.wrapCard)}>
         <CardActionArea>
@@ -32,7 +47,7 @@ function OnePhone(props) {
           <CardMedia
             component="img"
             height="200"
-            image="https://salt.tikicdn.com/cache/280x280/ts/product/b1/fd/00/37fe3895ebef076d2f62e59136c6699e.jpg.webp"
+            image={phoneDetails?.image_urls[0]}
             alt="anh dien thoai"
             className={clsx(style.cardImage)}
           />
@@ -43,8 +58,7 @@ function OnePhone(props) {
               <img src={authentic_brand} alt="authentic_brand" className={clsx(style.authentic_brand)} />
               {/* name phone */}
               <Typography className={clsx(style.namePhone)} color={(theme) => theme?.palette?.text?.primary4}>
-                Điện thoại Samsung Galaxy A14 LTE 4GB/128GB - Hàng Chính Hãng - Đã kích hoạt bảo hành Đã kích hoạt bảo
-                hành
+                {phoneDetails?.name}
               </Typography>
               {/* rating */}
               <Rate disabled defaultValue={valueRating} className={clsx(style.ratingPhone)} />
@@ -59,7 +73,7 @@ function OnePhone(props) {
               </Box>
 
               <Typography className={clsx(style.promotion)} color={(theme) => theme?.palette?.text?.primary4}>
-                -100%
+                -{phoneDetails?.promotion}
               </Typography>
             </Box>
           </CardContent>

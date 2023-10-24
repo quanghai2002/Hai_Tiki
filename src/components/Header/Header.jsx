@@ -63,7 +63,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
   const userLogin = useSelector((state) => state?.userAuth?.user);
   // console.log(userLogin);
   const isLogin = !!userLogin;
-  console.log({ isLogin });
+  console.log('trạng thái đăng nhập:', isLogin);
 
   // --------------KHI CLICK LOGOUT- -- ĐĂNG XUẤT ---------
   const handleLogoutUser = () => {
@@ -75,11 +75,19 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
   };
 
   const navigate = useNavigate();
+  // --- KHI CLICK VÀO NÚT TÌM KIẾM  || CLICK ENTER
   // khi click vào nút search
-  const onSearch = (value) => console.log(value);
+  const onSearch = (value) => {
+    // --Gía trị cầm tìm kiếm
+    const valueSearch = value.trim();
+    if (valueSearch !== '') {
+      // console.log('giá trị cần tìm kiếm là:', valueSearch);
+      // sau đó chuyển giá tị sang pages search
+      navigate(`/search?name=${encodeURIComponent(valueSearch)}`);
+    }
+  };
 
   //  các hành động lựa chọn khi đã đăng nhập => tùy chỉnh uer,đăng xuất...
-
   const items = useMemo(() => {
     return [
       {
@@ -189,7 +197,8 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
 
         {/* Content Phần Header */}
         <Box className={clsx(style.content)}>
-          {/* input Search */}
+          {/* --- TÌM KIẾM SẢN PHẨM -- */}
+          {/* -- input Search -- */}
           <Box
             className={clsx(style.wrapInputSearch)}
             sx={{
@@ -302,29 +311,37 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
               </Dropdown>
             ) : (
               //------------ CHƯA ĐĂNG NHẬP ----------------
-              <Box
-                className={clsx(style.action)}
-                sx={{
-                  '&:hover': {
-                    cursor: 'pointer',
-                    backgroundColor: (theme) => {
-                      return theme?.palette?.action?.hover;
+              <Link to="/login" className={clsx(style.linkBackLogin)}>
+                <Box
+                  className={clsx(style.action)}
+                  sx={{
+                    '&:hover': {
+                      cursor: 'pointer',
+                      backgroundColor:
+                        location?.pathname === '/info'
+                          ? (theme) => {
+                              return theme?.palette?.action?.hoverActive;
+                            }
+                          : (theme) => {
+                              return theme?.palette?.action?.hover;
+                            },
                     },
-                  },
-                }}
-              >
-                <Avatar className={clsx(style.iconImage)} src={IconAcount} alt="avartar" />
+                  }}
+                >
+                  <Avatar className={clsx(style.iconImage)} src={IconAcount} alt="avartar" />
 
-                <Link to="/login" className={clsx(style.linkBackLogin)}>
                   <Typography
                     className={clsx(style.text)}
                     variant="h6"
-                    color={(theme) => theme?.palette?.text?.secondary}
+                    color={location?.pathname === '/info' ? 'primary' : (theme) => theme?.palette?.text?.secondary}
+                    sx={{
+                      fontWeight: location?.pathname === '/info' ? '600!important' : '400 !important',
+                    }}
                   >
                     Tài khoản
                   </Typography>
-                </Link>
-              </Box>
+                </Box>
+              </Link>
             )}
 
             {/* chế độ dark mode */}
