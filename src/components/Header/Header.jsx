@@ -27,10 +27,10 @@ import IconAcount from '~/assets/images/iconAccount.png';
 import DarkMode from '~/components/DarkMode';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '~/redux/userSlice.js';
-import removeToken from '~/utils/removeToken';
-import getrefreshToken from '~/utils/getRefreshToken';
-import getTokenCookie from '~/utils/getTokenCookie';
+import removeToken from '~/utils/removeToken.js';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import { updatePhoneCart } from '~/redux/GioHang.js';
 
 // Proptypes
 Header.propTypes = {
@@ -63,7 +63,9 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
   const userLogin = useSelector((state) => state?.userAuth?.user);
   // console.log(userLogin);
   const isLogin = !!userLogin;
-  console.log('trạng thái đăng nhập:', isLogin);
+  const isAdmin = userLogin?.admin;
+  // console.log('trạng thái đăng nhập:', isLogin);
+  console.log('bạn có phải ADMIN không ?', isAdmin);
 
   // --------------KHI CLICK LOGOUT- -- ĐĂNG XUẤT ---------
   const handleLogoutUser = () => {
@@ -72,6 +74,9 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
     removeToken('refreshToken');
     // Xóa thông tin User trong redux
     dispatch(logOut());
+
+    // XÓA CÁc sản PHẨM TRONG GIỎ HÀNG ĐÃ LƯU CỦA USER
+    dispatch(updatePhoneCart([]));
   };
 
   const navigate = useNavigate();
@@ -87,97 +92,231 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
     }
   };
 
+  // --CÁC HÀNH ĐỘNG CỦA USER KHI ĐÃ ĐĂNG NHẬP => CÓ THÊM VÀO TRANG CHỦ KHI ADMIN BẰNG TRUE ---
   //  các hành động lựa chọn khi đã đăng nhập => tùy chỉnh uer,đăng xuất...
   const items = useMemo(() => {
-    return [
-      {
-        key: '1',
-        label: (
-          <Box
-            className={clsx(style.wrapMenuDropDownUser)}
-            title="Thông tin tài khoản"
-            sx={{
-              '& .MuiListItemIcon-root': {
-                color: (theme) => theme?.palette?.text?.primary5,
-              },
-            }}
-            onClick={() => {
-              console.log('thông tin tài khoản');
-              navigate('/info');
-            }}
-          >
-            <ListItemIcon className={clsx(style.icon)}>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            <Typography
-              className={clsx(style.text)}
-              color={(theme) => {
-                return theme?.palette?.text?.primary4;
+    // nếu là ADMIN SẼ CÓ THÊM PHẦN CHỌN VÀO TRANG CHỈNH SỬA SẢN PHẨM --
+    if (isAdmin) {
+      return [
+        {
+          key: '1',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Thông tin tài khoản"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                },
+              }}
+              onClick={() => {
+                console.log('thông tin tài khoản');
+                navigate('/info');
               }}
             >
-              Thông tin tài khoản
-            </Typography>
-          </Box>
-        ),
-      },
-      {
-        key: '2',
-        label: (
-          <Box
-            className={clsx(style.wrapMenuDropDownUser)}
-            title="Đơn hàng của tôi"
-            sx={{
-              '& .MuiListItemIcon-root': {
-                color: (theme) => theme?.palette?.text?.primary5,
-              },
-            }}
-            onClick={() => {
-              console.log('đơn hàng của tôi');
-              navigate('/order/history');
-            }}
-          >
-            <ListItemIcon className={clsx(style.icon)}>
-              <AddShoppingCartIcon fontSize="small" />
-            </ListItemIcon>
-            <Typography
-              className={clsx(style.text)}
-              color={(theme) => {
-                return theme?.palette?.text?.primary4;
+              <ListItemIcon className={clsx(style.icon)}>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Thông tin tài khoản
+              </Typography>
+            </Box>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Đơn hàng của tôi"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                },
+              }}
+              onClick={() => {
+                console.log('đơn hàng của tôi');
+                navigate('/order/history');
               }}
             >
-              Đơn hàng của tôi
-            </Typography>
-          </Box>
-        ),
-      },
-      {
-        key: '3',
-        label: (
-          <Box
-            className={clsx(style.wrapMenuDropDownUser)}
-            title="Đăng xuất"
-            sx={{
-              '& .MuiListItemIcon-root': {
-                color: (theme) => theme?.palette?.text?.primary5,
-              },
-            }}
-            onClick={handleLogoutUser}
-          >
-            <ListItemIcon className={clsx(style.icon)}>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            <Typography
-              className={clsx(style.text)}
-              color={(theme) => {
-                return theme?.palette?.text?.primary4;
+              <ListItemIcon className={clsx(style.icon)}>
+                <AddShoppingCartIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Đơn hàng của tôi
+              </Typography>
+            </Box>
+          ),
+        },
+        {
+          key: '3',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Trang Admin"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                },
+              }}
+              onClick={() => {
+                navigate('/admin/home');
               }}
             >
-              Đăng xuất
-            </Typography>
-          </Box>
-        ),
-      },
-    ];
+              <ListItemIcon className={clsx(style.icon)}>
+                <AdminPanelSettingsOutlinedIcon
+                  sx={{
+                    width: '2.2rem !important',
+                    height: '2.2rem !important',
+                  }}
+                />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Trang Admin
+              </Typography>
+            </Box>
+          ),
+        },
+        {
+          key: '4',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Đăng xuất"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                  '& .css-11tpveg-MuiListItemIcon-root': {
+                    minWidth: '26px',
+                  },
+                },
+              }}
+              onClick={handleLogoutUser}
+            >
+              <ListItemIcon className={clsx(style.icon, style.iconLogout)}>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Đăng xuất
+              </Typography>
+            </Box>
+          ),
+        },
+      ];
+    } else {
+      return [
+        {
+          key: '1',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Thông tin tài khoản"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                },
+              }}
+              onClick={() => {
+                console.log('thông tin tài khoản');
+                navigate('/info');
+              }}
+            >
+              <ListItemIcon className={clsx(style.icon)}>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Thông tin tài khoản
+              </Typography>
+            </Box>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Đơn hàng của tôi"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                },
+              }}
+              onClick={() => {
+                console.log('đơn hàng của tôi');
+                navigate('/order/history');
+              }}
+            >
+              <ListItemIcon className={clsx(style.icon)}>
+                <AddShoppingCartIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Đơn hàng của tôi
+              </Typography>
+            </Box>
+          ),
+        },
+        {
+          key: '3',
+          label: (
+            <Box
+              className={clsx(style.wrapMenuDropDownUser)}
+              title="Đăng xuất"
+              sx={{
+                '& .MuiListItemIcon-root': {
+                  color: (theme) => theme?.palette?.text?.primary5,
+                  '& .css-11tpveg-MuiListItemIcon-root': {
+                    minWidth: '26px',
+                  },
+                },
+              }}
+              onClick={handleLogoutUser}
+            >
+              <ListItemIcon className={clsx(style.icon, style.iconLogout)}>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              <Typography
+                className={clsx(style.text)}
+                color={(theme) => {
+                  return theme?.palette?.text?.primary4;
+                }}
+              >
+                Đăng xuất
+              </Typography>
+            </Box>
+          ),
+        },
+      ];
+    }
   }, []);
 
   return (
@@ -350,7 +489,6 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
             </Box>
 
             {/* giỏ hàng => cart */}
-
             <Box
               className={clsx(style.action, style.cart)}
               sx={{

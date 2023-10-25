@@ -60,7 +60,9 @@ function Info(props) {
   };
   // image để hiển thị preview
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(userLogin?.img_url ? userLogin?.img_url : '');
+  const [imageUrl, setImageUrl] = useState(
+    userLogin?.img_url ? userLogin?.img_url : userLogin?.picture ? userLogin?.picture : '',
+  );
   const [isAlert, setIsAlert] = useState(false);
 
   //  ---CẬP NHẬT ẢNH ĐẠI DIỆN USER ---
@@ -404,7 +406,10 @@ function Info(props) {
                 <Box className={clsx(style.sideBar)}>
                   {/* box avartar */}
                   <Box className={clsx(style.headerAvartar)}>
-                    <Avatar srcSet={userLogin?.img_url ? userLogin?.img_url : ''} className={clsx(style.avatar)} />
+                    <Avatar
+                      srcSet={userLogin?.img_url ? userLogin?.img_url : userLogin?.picture ? userLogin?.picture : ''}
+                      className={clsx(style.avatar)}
+                    />
                     <Box className={clsx(style.infoUser)}>
                       <Typography className={clsx(style.text1)}>Tài khoản của</Typography>
                       <Typography className={clsx(style.text2)}>

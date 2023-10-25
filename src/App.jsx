@@ -32,6 +32,14 @@ const RegisterForm = lazy(() => import('~/pages/Auth/RegisterUser'));
 const LogInForm = lazy(() => import('~/pages/Auth/LoginUser'));
 const LoginPhoneNumber = lazy(() => import('~/pages/Auth/LoginPhoneNumber'));
 
+// CÁC PAGE CỦA ADMIN
+const AdminTrangChuNavBar = lazy(() => import('~/pages/Admin/AdminTrangChuNavBar')); // đây là nơi có bav bar để hiện thi nd các page khác tại đây nhé
+const AdminHomePage = lazy(() => import('~/pages/Admin/AdminHomePage'));
+const AdminDonHang = lazy(() => import('~/pages/Admin/AdminDonHang'));
+const AdminQuanLyUser = lazy(() => import('~/pages/Admin/AdminQuanLyUser'));
+const GetAllSanPham = lazy(() => import('~/pages/Admin/AdminSanPham/GetAllSanPham'));
+const AddSanPham = lazy(() => import('~/pages/Admin/AdminSanPham/AddSanPham'));
+
 function App() {
   return (
     <Box
@@ -56,7 +64,7 @@ function App() {
         <Route
           path="/search"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <SearchPhone />
             </Suspense>
           }
@@ -65,7 +73,7 @@ function App() {
         <Route
           path="/info"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <Info />
             </Suspense>
           }
@@ -74,7 +82,7 @@ function App() {
         <Route
           path="/phonedetails/:id"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <PhoneDetails />
             </Suspense>
           }
@@ -84,7 +92,7 @@ function App() {
         <Route
           path="/card"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <CardPhone />
             </Suspense>
           }
@@ -94,7 +102,7 @@ function App() {
         <Route
           path="/payment"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <PayOrder />
             </Suspense>
           }
@@ -104,7 +112,7 @@ function App() {
         <Route
           path="/payment/vnpay_return"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <PayOrderReturnVNP />
             </Suspense>
           }
@@ -114,7 +122,7 @@ function App() {
         <Route
           path="/payment/tienmat"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <PayMentTienMat />
             </Suspense>
           }
@@ -123,7 +131,7 @@ function App() {
         <Route
           path="/order/history"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <OrderHistory />
             </Suspense>
           }
@@ -132,7 +140,7 @@ function App() {
         <Route
           path="/register"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <RegisterForm />
             </Suspense>
           }
@@ -141,7 +149,7 @@ function App() {
         <Route
           path="/login"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <LogInForm />
             </Suspense>
           }
@@ -150,16 +158,71 @@ function App() {
         <Route
           path="/loginphonenumber"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <LoginPhoneNumber />
             </Suspense>
           }
         ></Route>
+        {/*Page ADMIN NAVBAR +> các PAGE TIẾP THEO KẾ THỪA TỪ ĐÂY*/}
+        <Route
+          path="/admin"
+          element={
+            <Suspense fallback={<HomePageLazy />}>
+              <AdminTrangChuNavBar />
+            </Suspense>
+          }
+        >
+          {/* đây là TRANG CHỦ admin */}
+          <Route
+            path="home"
+            element={
+              <Suspense fallback={<HomePageLazy />}>
+                <AdminHomePage />
+              </Suspense>
+            }
+          />
+          {/* đây là trang chủ QUẢN LÝ ĐƠN HÀNG ADMIN */}
+          <Route
+            path="order"
+            element={
+              <Suspense fallback={<HomePageLazy />}>
+                <AdminDonHang />
+              </Suspense>
+            }
+          />
+          {/* đây là trang chủ QUẢN LÝ USER ADMIN */}
+          <Route
+            path="user"
+            element={
+              <Suspense fallback={<HomePageLazy />}>
+                <AdminQuanLyUser />
+              </Suspense>
+            }
+          />
+          {/* đây là trang LẤY TẤT CẢ CÁC SẢN PHẨM*/}
+          <Route
+            path="getallproducts"
+            element={
+              <Suspense fallback={<HomePageLazy />}>
+                <GetAllSanPham />
+              </Suspense>
+            }
+          />
+          {/* đây là trang THÊM SẢN PHẨM*/}
+          <Route
+            path="addproducts"
+            element={
+              <Suspense fallback={<HomePageLazy />}>
+                <AddSanPham />
+              </Suspense>
+            }
+          />
+        </Route>
         {/* page not found */}
         <Route
           path="*"
           element={
-            <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<HomePageLazy />}>
               <NotFound />
             </Suspense>
           }

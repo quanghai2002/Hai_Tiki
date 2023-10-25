@@ -1,0 +1,196 @@
+.wrapHeaderAdmin {
+  height: 64px;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  // sliderText
+  .sliderTextHeaderAdmin {
+    flex: 1;
+
+    .wrapMarquee {
+      .wrapTextHeaderAdmin {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+
+        .iconHeaderAdmin {
+        }
+
+        .textMarquee {
+          font-size: 1.6rem;
+          user-select: none;
+          font-weight: 500;
+        }
+
+        .text2Marquee {
+          font-size: 1.8rem;
+          user-select: none;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // wrapActionAdmin
+  .wrapActionAdmin {
+    display: flex;
+    align-items: center;
+    margin-left: 48px;
+    margin-right: 16px;
+    justify-content: flex-start;
+
+    .link {
+      text-decoration: none;
+    }
+    .action {
+      display: flex;
+      align-items: center;
+      padding: 8px 16.5px;
+      border-radius: 8px;
+      position: relative;
+    }
+    .linkBackLogin {
+      text-decoration: none;
+    }
+
+    .iconImage {
+      width: 24px;
+      height: 24px;
+      margin-right: 4px;
+      object-fit: contain;
+    }
+    .text {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 150%;
+      position: relative;
+      top: 1px;
+    }
+
+    .linktoCart {
+      text-decoration: none;
+      position: relative;
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 40px;
+        height: 39px;
+        top: -8px;
+        left: -7px;
+        background-color: transparent;
+      }
+    }
+    .cart {
+      padding: 8px 8px;
+      position: relative;
+      & svg {
+        width: 24px;
+        height: 24px;
+      }
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        height: 20px;
+        position: absolute;
+        left: -12px;
+        border: 1px solid rgb(235, 235, 240);
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      // hộp thoại hiển thị khi click thêm sản phẩm vào giỏ hàng
+      .wrapNotifyCart {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        padding: 16px;
+        border-radius: 6px;
+        box-shadow: rgb(179, 179, 179) 1px 1px 15px;
+        background-color: rgb(255, 255, 255);
+        width: 272px;
+        &.hiddenNotify {
+          display: none;
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          bottom: 100%;
+          right: 12px;
+          border-width: 8px;
+          border-style: solid;
+          border-color: transparent transparent rgb(255, 255, 255);
+          border-image: initial;
+        }
+        .notify_Header {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          .icon {
+            width: 19px;
+            height: 19px;
+            color: rgb(76, 175, 80);
+          }
+
+          .text {
+            font-size: 1.3rem;
+            user-select: none;
+          }
+        }
+
+        .wrapBtn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 16px;
+          .buttonNotify {
+            font-size: 1.4rem;
+            font-weight: 400;
+          }
+        }
+        .iconClose {
+          width: 19px;
+          height: 19px;
+          position: absolute;
+          top: 6px;
+          right: 6px;
+        }
+      }
+    }
+    & :global .MuiBadge-badge {
+      font-size: 10px;
+    }
+    .backHome {
+      .text {
+        text-decoration: none;
+      }
+      &:hover .text {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+body {
+  & :global .ant-dropdown {
+    animation-duration: 0.1s !important;
+  }
+  & :global .ant-dropdown-menu {
+    padding: 10px 0px !important;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 6px 12px 0px;
+    border: 1px solid rgb(239, 239, 239);
+    min-width: 240px;
+    z-index: 15;
+  }
+  & :global .ant-dropdown-menu-item {
+    padding: 9px 16px !important;
+  }
+}

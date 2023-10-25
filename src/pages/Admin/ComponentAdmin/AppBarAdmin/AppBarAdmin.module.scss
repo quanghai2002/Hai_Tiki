@@ -1,0 +1,149 @@
+.wrapAppBarAdmin {
+  max-width: 250px;
+  min-width: 250px;
+  width: 250px;
+  background-color: #001529;
+  min-height: 100vh;
+  height: 100vh;
+
+  // wrapLogo
+  .wrapLogo {
+    background-color: #002140;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    padding-left: 56px;
+
+    .imageLogo {
+      width: 130px;
+      object-fit: contain;
+    }
+  }
+
+  // wrapContentAppbar
+  .wrapContentAppbar {
+    padding-top: 12px;
+    // linkHomeAdmin
+    .linkHomeAdmin {
+      text-decoration: none;
+      .homPageAdmin {
+        color: hsla(0, 0%, 100%, 0.65);
+        display: flex;
+        align-items: center;
+        padding-left: 16px;
+        height: 40px;
+        gap: 10px;
+        transition: all 0.2s linear;
+        margin: 4px 0;
+
+        // khi active
+        &.active {
+          background-color: #1677ff;
+          color: #fff;
+        }
+
+        &:hover {
+          cursor: pointer;
+          color: #fff;
+        }
+
+        svg {
+          width: 15px !important;
+          height: 15px !important;
+        }
+
+        .textHomePage {
+          font-size: 1.5rem;
+          user-select: none;
+        }
+      }
+    }
+    // Đơn hàng
+    .linkOrder {
+      text-decoration: none;
+      .orderAdmin {
+        color: hsla(0, 0%, 100%, 0.65);
+        display: flex;
+        align-items: center;
+        padding-left: 16px;
+        height: 40px;
+        gap: 10px;
+        transition: all 0.2s linear;
+        margin: 4px 0;
+        width: 100%;
+
+        // khi active
+        &.active {
+          background-color: #1677ff;
+          color: #fff;
+          .textHomePage {
+            color: #fff;
+          }
+        }
+
+        &:hover {
+          cursor: pointer;
+          color: #fff;
+          .textHomePage {
+            color: #fff;
+          }
+        }
+
+        svg {
+          width: 15px !important;
+          height: 15px !important;
+        }
+
+        .textHomePage {
+          font-size: 1.5rem;
+          user-select: none;
+          color: hsla(0, 0%, 100%, 0.65);
+        }
+
+        & :global .ant-badge {
+          .ant-scroll-number {
+            transform: translate(83%, -50%);
+          }
+        }
+      }
+    }
+    // wrapMenuItemSanPham
+    .wrapMenuItemSanPham {
+      // background-color: red;
+
+      & :global .ant-menu-submenu-title {
+        padding-left: 13px !important;
+        color: hsla(0, 0%, 100%, 0.65);
+        gap: 10px;
+
+        &:hover {
+          color: #fff;
+        }
+
+        svg {
+          width: 15px !important;
+          height: 15px !important;
+        }
+
+        .ant-menu-title-content {
+          font-size: 1.5rem;
+          user-select: none;
+        }
+      }
+
+      & :global .ant-menu-sub {
+        .ant-menu-title-content {
+          font-size: 1.5rem;
+          user-select: none;
+        }
+
+        .ant-menu-item {
+          margin-inline: 0px !important;
+          margin-block: 4px !important;
+          width: 100% !important;
+          border-radius: 0px !important;
+        }
+      }
+    }
+  }
+}

@@ -511,7 +511,7 @@ function OneCard({
   // khi click nút ----XÁC NHẬN ---- => đồng ý xóa -- 1 SẢN PHẨM
   const handleClickOK = () => {
     // --KHI Xóa các sản phẩm sẽ lọc ra sản phẩm không thuộc ID đó và cập nhật lại trong redux là OK
-    console.log('id 1 sản phẩm cần xóa', detailsPhone?.id);
+    // console.log('id 1 sản phẩm cần xóa', detailsPhone?.id);
     const newListPhoneCart = listPhoneCart?.filter((item) => {
       return item?._id !== detailsPhone?.id;
     });

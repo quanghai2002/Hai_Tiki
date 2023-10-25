@@ -21,6 +21,9 @@ import imgSlider4 from '~/assets/images/slider4.png.webp';
 import imgSlider5 from '~/assets/images/slider5.png.webp';
 import imgSlider6 from '~/assets/images/slider6.png.webp';
 import bannserImage from '~/assets/images/banner.png.webp';
+import { Link } from 'react-router-dom';
+
+// PropTypes
 Slider.propTypes = {};
 
 function Slider(props) {
@@ -122,14 +125,9 @@ function Slider(props) {
             {urlListImageSlider.map((imageUrl) => {
               return (
                 <Box key={imageUrl?.id} className={clsx(style.wrapIamge)}>
-                  <img
-                    src={imageUrl?.url}
-                    alt="image slider"
-                    className={clsx(style.img)}
-                    onClick={() => {
-                      console.log('id của image:', imageUrl?.id);
-                    }}
-                  />
+                  <Link to="/">
+                    <img src={imageUrl?.url} alt="image slider" className={clsx(style.img)} />
+                  </Link>
                 </Box>
               );
             })}
@@ -140,14 +138,9 @@ function Slider(props) {
       {/* banner */}
       <Grid lg={3.1}>
         <Box className={clsx(style.wrapBanner)}>
-          <img
-            src={bannserImage}
-            alt="banner"
-            className={clsx(style.bannerImage)}
-            onClick={() => {
-              console.log('image banner');
-            }}
-          />
+          <Link to="/">
+            <img src={bannserImage} alt="banner" className={clsx(style.bannerImage)} />
+          </Link>
         </Box>
       </Grid>
     </Grid>
