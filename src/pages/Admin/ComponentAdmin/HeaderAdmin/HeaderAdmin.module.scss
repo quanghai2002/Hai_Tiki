@@ -10,6 +10,20 @@
   // sliderText
   .sliderTextHeaderAdmin {
     flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &::after {
+      position: absolute;
+      display: block;
+      content: '';
+      height: 100%;
+      width: 100%;
+      // background-image: url('~/assets/images/chucmung.svg');
+      z-index: 2;
+    }
 
     .wrapMarquee {
       .wrapTextHeaderAdmin {

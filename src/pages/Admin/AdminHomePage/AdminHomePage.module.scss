@@ -1,0 +1,114 @@
+.wrapHomePageAdmin {
+  max-width: 1134px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 16px;
+
+  // workingHomePageAdmin
+  .workingHomePageAdmin {
+    .workingText {
+      font-weight: 600;
+      font-size: 2rem;
+      user-select: none;
+    }
+
+    .wrapContentWorking {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .textLinkWork {
+        text-decoration: none;
+        color: #000;
+        .contentItem {
+          background-color: rgb(255, 255, 255);
+          width: 200px;
+          border-radius: 4px;
+          padding: 16px 12px;
+          transition: all 0.1s linear;
+
+          &:hover {
+            cursor: pointer;
+            box-shadow: rgba(24, 144, 255, 0.8) 0px 0px 6px;
+          }
+          .label1 {
+            font-size: 1.4rem;
+            user-select: none;
+            font-weight: 600;
+          }
+
+          .label2 {
+            font-size: 2rem;
+            user-select: none;
+            font-weight: 600;
+            padding-top: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  //wrapReactChart
+  .wrapReactChart {
+    margin-top: 23px;
+    .label {
+      font-weight: 600;
+      font-size: 2rem;
+      user-select: none;
+    }
+
+    .contentChart {
+      background-color: #fff;
+      margin-top: 8px;
+      padding: 24px;
+      border-radius: 4px;
+      display: flex;
+
+      // contentLeft
+      .contentLeft {
+        padding-left: 8px;
+        padding-right: 16px;
+        flex: 0.35;
+        .label1 {
+          width: 16px;
+          height: 4px;
+          border-radius: 8px;
+          background-color: rgb(186, 231, 255);
+        }
+
+        .label2 {
+          margin-top: 16px;
+          font-size: 1.4rem;
+          user-select: none;
+          font-weight: 500;
+        }
+
+        .label3 {
+          font-size: 2.2rem;
+          line-height: 2.8rem;
+          font-weight: 600;
+          user-select: none;
+          margin-top: 3px;
+          word-break: break-word;
+        }
+
+        .label4 {
+          width: 16px;
+          height: 4px;
+          border-radius: 8px;
+          background-color: rgb(250, 140, 22);
+        }
+
+        .divider {
+          margin: 28px 0;
+        }
+      }
+
+      // contentRight === Chart
+      .contentRight {
+        flex: 1;
+      }
+    }
+  }
+}

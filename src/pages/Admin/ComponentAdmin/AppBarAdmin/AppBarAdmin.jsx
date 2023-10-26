@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import style from './AppBarAdmin.module.scss';
 import clsx from 'clsx';
@@ -76,6 +76,7 @@ function AppBarAdmin(props) {
   //  ----KHI CLICK THAY ĐỔI TÙY CHỌN SẢN PHẨM ---
   const handleClickSwithSanPham = (e) => {
     const keyActive = Number.parseInt(e?.key);
+
     if (keyActive === 1) {
       naviagate('/admin/getallproducts');
     } else {
@@ -106,6 +107,15 @@ function AppBarAdmin(props) {
 
           '& .ant-menu-item-active': {
             color: '#fff',
+          },
+
+          '& .ant-menu-item:first-of-type': {
+            backgroundColor: location.pathname === '/admin/getallproducts' ? '#1677ff' : 'transparent',
+            color: location.pathname === '/admin/getallproducts' ? '#fff' : '#ffffffa6',
+          },
+          '& .ant-menu-item:last-of-type': {
+            backgroundColor: location.pathname === '/admin/addproducts' ? '#1677ff' : 'transparent',
+            color: location.pathname === '/admin/addproducts' ? '#fff' : '#ffffffa6',
           },
         }}
       >
