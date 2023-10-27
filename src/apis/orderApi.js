@@ -18,6 +18,11 @@ const orderApi = {
     updateOrder: (params) => {
         const url = '/order/update';
         return axiosClient.post(url, params);
+    },
+    // LẤY TẤT CẢ ĐƠN HÀNG KHÔNG PHÂN TRANG
+    getAllOrderNopagination: () => {
+        const url = '/order/getallordernopagination';
+        return axiosClient.get(url);
     }
 
 };

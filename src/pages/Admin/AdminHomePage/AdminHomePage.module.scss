@@ -3,6 +3,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 16px;
+  position: relative;
 
   // workingHomePageAdmin
   .workingHomePageAdmin {
@@ -52,10 +53,24 @@
   //wrapReactChart
   .wrapReactChart {
     margin-top: 23px;
-    .label {
-      font-weight: 600;
-      font-size: 2rem;
-      user-select: none;
+    margin-bottom: 60px;
+
+    .wrapHieuquakd {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      .label {
+        font-weight: 600;
+        font-size: 2rem;
+        user-select: none;
+      }
+
+      .label2 {
+        user-select: none;
+        font-weight: 400;
+        font-size: 1.4rem;
+        color: #595959;
+      }
     }
 
     .contentChart {
@@ -108,7 +123,49 @@
       // contentRight === Chart
       .contentRight {
         flex: 1;
+
+        .wrapTitleChart {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: -6px;
+          padding: 0 2px;
+          .label {
+            font-size: 1.4rem;
+            user-select: none;
+          }
+        }
       }
+    }
+  }
+
+  // wrapHomePageAdminLazy
+  .wrapHomePageAdminLazy {
+    .adminLazy1 {
+      width: 200px;
+    }
+
+    .wrapAdminLazy2 {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      .adminLazy2 {
+        width: 200px;
+        height: 99px;
+      }
+    }
+
+    .adminLazy3 {
+      margin-top: 12px;
+      width: 500px;
+    }
+
+    .adminLazy4 {
+      display: block;
+      margin-top: 5px;
+      width: 1134px;
+      height: 456px;
     }
   }
 }

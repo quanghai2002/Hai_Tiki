@@ -30,6 +30,8 @@ function AdminTrangChuNavBar(props) {
           lg={2}
           sx={{
             width: 'unset !important',
+            padding: '0 !important',
+            minHeight: '100vh !important',
           }}
         >
           <AppBarAdmin />

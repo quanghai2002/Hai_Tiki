@@ -1,23 +1,68 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import style from './AppBarAdmin.module.scss';
 import clsx from 'clsx';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-
-import logo from '~/assets/images/haiLoGoTiki6.png';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { IconHomePageAdmin, IconSanPhamadmin, IconGroupUserAdmin } from '~/assets/iconSVG';
-import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import { Menu } from 'antd';
 import BadgeMUI from '@mui/material/Badge';
+import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+import logo from '~/assets/images/haiLoGoTiki6.png';
+import { IconHomePageAdmin, IconSanPhamadmin, IconGroupUserAdmin } from '~/assets/iconSVG';
+import AppBarAdminLazy from './AppBarAdminLazy.jsx';
+import orderApi from '~/apis/orderApi.js';
+import phoneApi from '~/apis/phoneApi.js';
 
 // Proptypes
 AppBarAdmin.propTypes = {};
 
 function AppBarAdmin(props) {
+  const [loading, setLoading] = useState(true);
   const naviagate = useNavigate();
   const location = useLocation();
+
+  // --STATE LẤY TẤT CẢ ĐƠN HÀNG KHÔNG CẦN PHÂN TRANG ---
+  const [listAllOrders, setListAllOrders] = useState([]);
+  //  --LẤY TẤT CẢ SẢN PHẨM ĐIỆN THOẠI ---
+  const [listAllDienThoai, setListAllDienThoai] = useState([]);
+
+  // ---- TỔNG SỐ LƯỢNG ĐƠN HÀNG CẦN XÁC NHẬN ---
+  const allOrderXacNhan = listAllOrders?.filter((item) => {
+    return item?.status?.code === 1;
+  });
+  const sumOrder = allOrderXacNhan?.length;
+
+  // ---- Tổng số lượng sản phẩm đang hết hàng ---
+  const phoneHetHang = listAllDienThoai?.filter((phone) => {
+    return phone?.stock_quantity === 0;
+  })?.length;
+
+  //  --- CALL API ĐỂ HIỆN THỊ DỮ LIỆU RA MÀN HÌNH --
+  useEffect(() => {
+    orderApi
+      ?.getAllOrderNopagination()
+      .then((response) => {
+        // console.log('lấy tất cả đơn hàng không phân trang thành công:', response);
+        setListAllOrders(response?.data);
+        //  --LẤY TÁT CẢ SẢN PHẨM ĐIỆN THOẠI ---
+        phoneApi
+          .getAllPhonesNoPagiNation()
+          .then((res) => {
+            setListAllDienThoai(res?.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log('lấy tất cả sản phẩm thất bại', error);
+            setLoading(false);
+          });
+      })
+      .catch((err) => {
+        console.log('không lấy đc tất cả đơn hàng', err);
+        setLoading(false);
+      });
+  }, []);
 
   // ---MENU ITEM TÙY CHỌN SẢN PHẨM ---
   function getItem(label, key, icon, children, type) {
@@ -32,7 +77,7 @@ function AppBarAdmin(props) {
   const items = [
     getItem(
       <BadgeMUI
-        badgeContent={4}
+        badgeContent={phoneHetHang}
         color="secondary"
         sx={{
           '& .MuiBadge-badge': {
@@ -53,7 +98,7 @@ function AppBarAdmin(props) {
           [
             getItem(
               <BadgeMUI
-                badgeContent={99}
+                badgeContent={phoneHetHang}
                 color="secondary"
                 sx={{
                   '& .MuiBadge-badge': {
@@ -83,7 +128,11 @@ function AppBarAdmin(props) {
       naviagate('/admin/addproducts');
     }
   };
-  return (
+  //  ---RETURN JSX --
+  // -- KHI ĐANG TẢI DỮ LIỆU THÌ HIỂN THỊ LAZY ---
+  return loading ? (
+    <AppBarAdminLazy />
+  ) : (
     <Box className={clsx(style.wrapAppBarAdmin)}>
       <Box className={clsx(style.wrapLogo)}>
         <Link to="/">
@@ -139,7 +188,7 @@ function AppBarAdmin(props) {
           >
             <AddShoppingCartOutlinedIcon className={clsx(style.iconHomePage)} />
             <BadgeMUI
-              badgeContent={999}
+              badgeContent={sumOrder}
               color="secondary"
               sx={{
                 '& .MuiBadge-badge': {

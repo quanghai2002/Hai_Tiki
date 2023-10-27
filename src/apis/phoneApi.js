@@ -26,10 +26,8 @@ const phoneApi = {
     },
 
     // LẤY TẤT CẢ SẢN PHẨM KO PAGINATION
-    getAllPhones: () => {
-        // params => { }
+    getAllPhonesNoPagiNation: () => {
         const url = '/phone/getallphonenopagination';
-        // console.log('params', params)
         return axiosClient.get(url);
     },
 
