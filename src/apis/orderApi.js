@@ -14,9 +14,14 @@ const orderApi = {
         const url = '/order/insertmany';
         return axiosClient.post(url, params);
     },
-    // --CẬP NHẬT ĐƠN HÀNG -> CÁI NÀY ĐỂ HỦY 1 ĐƠN HÀNG TỪ USER
+    // --CẬP NHẬT 1 ĐƠN HÀNG -> CÁI NÀY ĐỂ HỦY 1 ĐƠN HÀNG TỪ USER
     updateOrder: (params) => {
         const url = '/order/update';
+        return axiosClient.post(url, params);
+    },
+    // cẬP NHẬT NHIỀU ĐƠN HÀNG 1 LÚC => CẬP NHẬT TRONG ADMIN => XÁC NHẬN TẤT CẢ ĐƠN HÀNG
+    updateManyOrder: (params) => {
+        const url = '/order/updatemanyorder';
         return axiosClient.post(url, params);
     },
     // LẤY TẤT CẢ ĐƠN HÀNG KHÔNG PHÂN TRANG
@@ -24,7 +29,6 @@ const orderApi = {
         const url = '/order/getallordernopagination';
         return axiosClient.get(url);
     }
-
 };
 
 export default orderApi;

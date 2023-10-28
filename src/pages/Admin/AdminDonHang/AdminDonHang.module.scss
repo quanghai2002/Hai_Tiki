@@ -1,0 +1,145 @@
+.wrapAdminDonHang {
+  padding: 22px 32px 0;
+  background-color: #fff;
+  min-height: 100vh;
+  position: relative;
+
+  // breadcrumbAdminDonHang
+  .breadcrumbAdminDonHang {
+    .contentBreadcrumb {
+      font-size: 1.5rem;
+      user-select: none;
+    }
+  }
+
+  // labelContentAdminDonhang
+  .labelContentAdminDonhang {
+    margin-bottom: 16px;
+    font-size: 2.4rem;
+    font-weight: 600;
+    user-select: none;
+    padding-top: 5px;
+  }
+
+  // wrapTabbarAdminDonHang
+  .wrapTabbarAdminDonHang {
+    .tabsAdminDonHang {
+      & :global .ant-tabs-nav-list {
+        .ant-tabs-tab {
+          font-size: 1.5rem;
+          border-color: rgb(217, 217, 217) !important;
+          background-color: rgb(245, 245, 245);
+          margin-right: 4px;
+          font-weight: 700;
+          padding: 12px 16px;
+          border-radius: 4px 4px 0px 0px;
+          user-select: none;
+        }
+
+        .ant-tabs-tab-active {
+          border-top: 3px solid rgb(24, 144, 255) !important;
+          background-color: rgb(255, 255, 255);
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  // wrapTableContentAdmin
+  .wrapTableContentAdmin {
+    // wrapInfoHeader
+    .wrapInfoHeader {
+      display: flex;
+      align-items: center;
+      .buttonXacnhanAll {
+        font-size: 1.4rem;
+      }
+
+      .textSoLuongXacNhan {
+        font-size: 1.5rem;
+        user-select: none;
+        font-weight: 500;
+      }
+    }
+
+    // contentTables
+    .contentTables {
+      & :global .ant-table-thead {
+        .ant-table-cell {
+          user-select: none;
+        }
+      }
+
+      & :global .ant-table-row {
+        .ant-table-cell {
+          user-select: none;
+        }
+      }
+
+      & :global .ant-table-pagination {
+        .ant-pagination-item-active {
+          background-color: #1677ff;
+
+          & a {
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    // wrapActionTable
+    .wrapActionTable {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      & button {
+        width: 100%;
+        font-size: 1.3rem;
+      }
+    }
+
+    //wrapImageGiaoHangNhanh
+    .wrapImageGiaoHangNhanh {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 120px;
+        object-fit: contain;
+      }
+    }
+  }
+}
+// wrapAdminDonHangLazy => lazy danh sách đơn hàng khi đang tải
+.wrapAdminDonHangLazy {
+  padding: 22px 32px 0;
+  min-height: 100vh;
+  width: 100%;
+
+  .donhangLazy1 {
+    display: block;
+    margin-top: 4px !important;
+    height: 28px !important;
+    width: 242px !important;
+  }
+  .donhangLazy2 {
+    display: block;
+    margin-top: 12px !important;
+    height: 59px !important;
+    width: 716px !important;
+  }
+  .donhangLazy3 {
+    display: block;
+    margin-top: 12px !important;
+    height: 59px !important;
+    width: 242px !important;
+  }
+  .donhangLazy4 {
+    display: block;
+    margin-top: 12px !important;
+    height: 400px !important;
+    width: 100% !important;
+  }
+}
