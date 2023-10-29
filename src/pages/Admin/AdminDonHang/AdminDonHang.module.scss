@@ -112,6 +112,7 @@
     }
   }
 }
+
 // wrapAdminDonHangLazy => lazy danh sách đơn hàng khi đang tải
 .wrapAdminDonHangLazy {
   padding: 22px 32px 0;
@@ -141,5 +142,78 @@
     margin-top: 12px !important;
     height: 400px !important;
     width: 100% !important;
+  }
+}
+
+//  ---IN PHIẾU ĐƠN HÀNG --
+// wrapModalPrintOrder => IN đơn hàng
+.wrapModalPrintOrder {
+  width: 620px !important;
+  & :global .ant-modal-title {
+    user-select: none;
+  }
+
+  // REACT TO PRINT KHÔNG NHẬN CSS => NÊN CSS TRỰC TIẾP LUÔN
+  .wrapContentPrint {
+    border: 1px solid #000;
+    .headerPrint {
+      text-align: center;
+    }
+
+    .wrapmavach {
+      .left {
+        .textLeft {
+        }
+      }
+      .right {
+        .textRight {
+        }
+
+        .imgmavach {
+        }
+
+        .textRight2 {
+        }
+      }
+    }
+
+    .wrapnguoinhan {
+      .user {
+        .text1 {
+        }
+
+        .text2 {
+        }
+      }
+
+      .address {
+        .textAddress {
+        }
+      }
+    }
+
+    .wrapQRcode {
+      .qa1 {
+      }
+      .qr2 {
+      }
+      .qr3 {
+        .contentQR {
+        }
+      }
+    }
+
+    .tonggiatridonhang {
+      .price {
+      }
+    }
+
+    .footerPrint {
+      .textFooter {
+      }
+
+      .img {
+      }
+    }
   }
 }

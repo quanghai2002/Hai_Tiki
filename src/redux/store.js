@@ -16,6 +16,7 @@ import OrderPreview from './OrderPreview.js';
 import OrderPayTienMat from './OrderTienMat.js';
 import OrderPayVNP from './OrderVNP.js';
 import GioHang from './GioHang.js';
+import AppBarAdminRerender from './AppBarAdminRerender.js';
 
 const persistConfig = {
   key: 'root',
@@ -29,7 +30,8 @@ const rootReducer = combineReducers(
     orderPreview: OrderPreview,
     orderPayTienMat: OrderPayTienMat,
     orderPayVNP: OrderPayVNP,
-    gioHang: GioHang
+    gioHang: GioHang,
+    AppBarAdminRerender: AppBarAdminRerender
 
   }
 );

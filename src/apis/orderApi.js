@@ -28,6 +28,11 @@ const orderApi = {
     getAllOrderNopagination: () => {
         const url = '/order/getallordernopagination';
         return axiosClient.get(url);
+    },
+    // LẤY THÔNG TIN CỦA 1 ĐƠN HÀNG
+    getOneOrderBuyId: (prams) => {
+        const url = `/order/getbuyid/${prams}`;
+        return axiosClient.get(url);
     }
 };
 

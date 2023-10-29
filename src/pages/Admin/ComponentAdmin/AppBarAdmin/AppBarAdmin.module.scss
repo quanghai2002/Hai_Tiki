@@ -156,9 +156,33 @@
   height: 100%;
   min-height: 100vh !important;
   box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
+  background-color: #001529;
+  position: relative;
 
   .lazyAppbar {
     width: 100% !important;
     height: 100% !important;
+  }
+  // wrapLogo
+  .wrapLogo {
+    background-color: #002140;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    padding-left: 56px;
+
+    .imageLogo {
+      width: 130px;
+      object-fit: contain;
+    }
+  }
+
+  // progressLoading
+  .progressLoading {
+    position: absolute;
+    top: 100px;
+    z-index: 10;
+    left: 40%;
+    transform: translateX(-50%);
   }
 }
