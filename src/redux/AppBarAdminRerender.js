@@ -7,7 +7,6 @@ const AppBarAdminRerender = createSlice({
   name: 'AppBarAdminRerender',
   initialState: 0,
   reducers: {
-
     //--- THAY ĐỔI ĐỂ APP BAR ADMIN RENDER --
     rerender(state) {
       return state = Math.random() * 190000;

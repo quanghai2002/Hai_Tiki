@@ -25,7 +25,7 @@ function AdminDonHang(props) {
   const dispatch = useDispatch();
   // -- THÔNG TIN CHI TIẾT 1 ĐƠN HÀNG ĐỂ IN SẢN PHẨM ---
   const [orderDetailPrint, setOrderDetailPrint] = useState({});
-  console.log('thông tin chi tiết 1 đơn hàng:', orderDetailPrint);
+
   //  --- KHI CLICK IN SẢN PHẨM THÌ HIỂN THỊ SPIN RA --
   const [isSpinPrintOrder, setIsPrintOrder] = useState(false);
   //  --- DATE HIỂN THỊ NGÀY THÁNG MUA HÀNG TRONG PHIẾU IN --
@@ -34,7 +34,6 @@ function AdminDonHang(props) {
   const componentRefPrint = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRefPrint.current,
-    // copyStyles: true,
   });
   //  ---- MODAL HIỂN THỊ PUPUP KHI CLICK VÀO IN SẢN PHẨM ---
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,7 +76,7 @@ function AdminDonHang(props) {
 
   // console.log('key của tabs hiện tại là:', keyTabs);
 
-  // --- DƯ LIỆU ĐỂ HIỂN THỊ CÁC ĐƠN HÀNG ---
+  // --- DỮ LIỆU ĐỂ HIỂN THỊ CÁC ĐƠN HÀNG -----
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   //  --- CÁC COLUMNS ĐỂ HIỂN THỊ => RA MÀN HÌNH ---- Render
@@ -118,7 +117,7 @@ function AdminDonHang(props) {
     },
   ];
 
-  //  --- KHI CLICK ĐỒNG Ý HỦY ĐƠN HÀNG => LẤY ID ĐƠN HÀNG CẦN HỦY => ĐỂ CHUẨN BỊ CẬP NHẬT LẠI
+  //  --- KHI CLICK ĐỒNG Ý HỦY 1 ĐƠN HÀNG => LẤY ID ĐƠN HÀNG CẦN HỦY => ĐỂ CHUẨN BỊ CẬP NHẬT LẠI
   const handleConfirmHuyDonhang = (id) => {
     seLoadingDataOrder(true);
 
@@ -138,6 +137,7 @@ function AdminDonHang(props) {
         setGoiLaiAPI(Math.random() * 10000);
         setSelectedRowKeys([]);
         // seLoadingDataOrder(false);
+        //  dispatch render => để tạo 1 số bất kì để render lại phần appbar
         dispatch(rerender());
       })
       .catch((err) => {
@@ -150,7 +150,7 @@ function AdminDonHang(props) {
 
   // ----KHI CLICK XÁC NHẬN 1 ĐƠN HÀNG ---
   const handleXacNhanDonHang = (id) => {
-    console.log('ID đơn hàng cần xác nhận là:', id);
+    // console.log('ID đơn hàng cần xác nhận là:', id);
     seLoadingDataOrder(true);
 
     // -- dữ liệu để chuẩn bị cập nhât ---
@@ -1036,49 +1036,54 @@ function AdminDonHang(props) {
               sx={{
                 flex: '0.5',
                 borderRight: '1px dashed #000',
-                height: ' 70px ',
+                height: ' 120px ',
               }}
             >
               <Typography
                 sx={{
                   height: '50%',
                   borderBottom: '1px dashed #000',
-                  color: 'transparent',
+                  paddingLeft: '3px',
                 }}
               >
-                Test
+                Tên sản phẩm:
               </Typography>
-              <Typography
-                sx={{
-                  color: 'transparent',
-                }}
-              >
-                Test
-              </Typography>
+              <Typography sx={{ paddingLeft: '3px' }}>Số lượng:</Typography>
             </Box>
             <Box
               className={clsx(style.qr2)}
               sx={{
                 flex: '1',
                 borderRight: '1px dashed #000',
-                height: ' 70px ',
+                height: ' 120px ',
               }}
             >
               <Typography
                 sx={{
                   height: '50%',
                   borderBottom: '1px dashed #000',
-                  color: 'transparent',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: '3',
+                  overflow: ' hidden',
+                  textOverFlow: 'ellipsis',
+                  paddingLeft: '3px',
                 }}
               >
-                Test
+                {orderDetailPrint?.products?.name}
               </Typography>
               <Typography
                 sx={{
-                  color: 'transparent',
+                  wordBreak: 'break-word',
+                  display: '-webkit-box',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: '3',
+                  overflow: ' hidden',
+                  textOverFlow: 'ellipsis',
+                  paddingLeft: '3px',
                 }}
               >
-                Test
+                {orderDetailPrint?.products?.sumQuantity}
               </Typography>
             </Box>
             <Box className={clsx(style.qr3)}>

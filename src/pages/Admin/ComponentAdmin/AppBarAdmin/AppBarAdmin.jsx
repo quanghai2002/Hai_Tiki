@@ -15,15 +15,15 @@ import logo from '~/assets/images/haiLoGoTiki6.png';
 import { IconHomePageAdmin, IconSanPhamadmin, IconGroupUserAdmin } from '~/assets/iconSVG';
 import orderApi from '~/apis/orderApi.js';
 import phoneApi from '~/apis/phoneApi.js';
-import { rerender } from '~/redux/AppBarAdminRerender.js';
 
 // Proptypes
 AppBarAdmin.propTypes = {};
 
 function AppBarAdmin(props) {
   //  --LẤY TỪ REDUX ĐỂ TẢI LẠI APP BAR ADMIN KHI CÁC TRANG BÊN CẬP NHẬT DỮ LIỆU --
+  //  --- KHI NÀO CẦN APPBAR RENDER LẠI => THÌ DISPATCH CẬP NHẬT LẠI TRONG REDUX LÀ ĐƯỢC --
   const rerenderAppbar = useSelector((state) => state?.AppBarAdminRerender);
-  console.log('rerenderAppbar:', rerenderAppbar);
+  // console.log('Render lại App bar:', rerenderAppbar);
 
   const [loading, setLoading] = useState(true);
   const naviagate = useNavigate();
