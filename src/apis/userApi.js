@@ -33,6 +33,16 @@ const userApi = {
     updateOneUser: (params) => {
         const url = '/users/updateuser';
         return axiosClient.patch(url, params);
+    },
+    // LẤY TẤT CẢ USER NO PAGINATIONS
+    getAllUserNoPagination: () => {
+        const url = '/users/getallusernopagination';
+        return axiosClient.get(url);
+    },
+    // XÓA 1 USER
+    deleteOneUser: (params) => {
+        const url = `/users/delete/${params}`;
+        return axiosClient.delete(url);
     }
 };
 

@@ -152,7 +152,7 @@ function CardPhone(props) {
   };
 
   // value rating
-  const [valueRating, setValueRating] = useState(3);
+  const [valueRating, setValueRating] = useState(5);
 
   return (
     <Box className={clsx(style.wrapCard)}>

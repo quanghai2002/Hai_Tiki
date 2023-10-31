@@ -1,6 +1,6 @@
-.wrapForm {
-  margin-top: 30px !important;
-  width: 80%;
+.wrapFormAddUser {
+  // margin-top: 30px !important;
+  width: 90%;
   margin: 0 auto;
   font-size: 1.8rem;
 
@@ -92,66 +92,59 @@
     }
   }
 
+  & :global .ant-input-affix-wrapper {
+    position: relative;
+    padding: 6px 11px;
+    &::before {
+      content: unset;
+    }
+
+    .ant-input {
+      padding-right: 13px;
+    }
+    .ant-input-suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 3px;
+
+      .anticon-close-circle {
+        svg {
+          width: 1.6rem !important;
+          height: 1.6rem !important;
+        }
+      }
+    }
+  }
+
   & .ant-select-item-option-content {
     color: red !important;
   }
-  .btnAdd {
-    font-size: 1.6rem !important;
+  .btnAddUser {
+    font-size: 1.5rem !important;
+  }
+
+  .wrapBtnActionFormUpdateUser {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    .btnHuy {
+      font-size: 1.4rem !important;
+    }
+
+    .btnAdd {
+      font-size: 1.4rem !important;
+    }
   }
 }
 
-// .inputSelect {
-//   & :global .rc-virtual-list-holder-inner {
-//     background-color: red !important;
-//   }
-// }
-
-body {
-  & :global .ant-select-item-option-content {
-    font-size: 1.3rem !important;
-  }
-
-  & :global .anticon-down {
-    svg {
-      width: 1.8rem !important;
-      height: 1.8rem !important;
+.wrapToastMessage {
+  //  toast messages
+  .toastMessage {
+    font-size: 1.6rem;
+    & :global .Toastify__toast-body {
+      font-size: 1.7rem;
     }
-  }
-  & :global .anticon-close-circle {
-    svg {
-      width: 2rem !important;
-      height: 2rem !important;
-    }
-  }
-
-  & :global .ant-select-clear {
-    transform: translateY(-50%);
-    margin-right: 6px;
-  }
-
-  & :global .ant-select-selection-placeholder {
-    font-size: 1.4rem;
-  }
-
-  & :global .ant-spin {
-    max-height: unset !important;
-  }
-
-  & :global .ant-spin-dot-spin {
-    font-size: 26px !important;
-  }
-
-  & :global .ant-spin-dot-item {
-    width: 11px !important;
-    height: 11px !important;
-    background-color: #2e333b !important;
-  }
-}
-
-//  toast messages
-.toastMessage {
-  font-size: 1.6rem;
-  & :global .Toastify__toast-body {
-    font-size: 2.6rem;
   }
 }
