@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { getAllPhoneProductsNoPagination } from '~/redux/PhoneSlice';
+
 // upload ảnh
 const getBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -116,24 +117,6 @@ function AddPhone({ phoneBuyId, idUpdate }) {
     };
   });
 
-  // update
-  // const fileListOldPhone = phoneBuyId?.image_urls?.map((itemImage, index) => {
-  //   return {
-  //     uid: index,
-  //     lastModified: Date.now(),
-  //     lastModifiedDate: Date.now(),
-  //     name: 'image.png',
-  //     originFileObj: {
-  //       uid: index,
-  //       name: 'image.png',
-  //       type: 'image/webp',
-  //       webkitRelativePath: '',
-  //     },
-  //     status: 'done',
-  //     thumbUrl: itemImage,
-  //     type: 'image/webp',
-  //   };
-  // });
   // upload => ảnh
   const [uploadError, setUploadError] = useState(fileListOldPhone ? true : false);
   const uploadRef = useRef();

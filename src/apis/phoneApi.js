@@ -30,8 +30,13 @@ const phoneApi = {
         const url = '/phone/getallphonenopagination';
         return axiosClient.get(url);
     },
+    // XÓA 1 SẢN PHẨM THEO ID
+    deleteOnePhone: (params) => {
+        const url = `/phone/delete/${params}`;
+        return axiosClient.delete(url);
+    },
 
-    // xóa sản phẩm
+    // xóa NHIỀU sản phẩm
     deletePhones: (params) => {
         // params => { }
         const url = '/phone/deletemany/deletemanyphone';

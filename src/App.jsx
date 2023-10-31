@@ -207,7 +207,8 @@ function App() {
                 <GetAllSanPham />
               </Suspense>
             }
-          />
+          ></Route>
+
           {/* đây là trang THÊM SẢN PHẨM*/}
           <Route
             path="addproducts"
