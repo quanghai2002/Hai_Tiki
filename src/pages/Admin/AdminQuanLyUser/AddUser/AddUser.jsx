@@ -359,7 +359,15 @@ function AddUser({ setIsModalOpenUser, setReRenderGetAllUsers, idUpdateUser, use
             <Controller
               name="password"
               control={control}
-              render={({ field }) => <Input {...field} placeholder="Nhập mật khẩu" id="password" allowClear={true} />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="Nhập mật khẩu"
+                  id="password"
+                  allowClear={true}
+                  disabled={idUpdateUser ? true : false} // không cho cập nhật mật khẩu
+                />
+              )}
             />
           </Form.Item>
 

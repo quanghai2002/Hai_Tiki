@@ -63,6 +63,7 @@ function Info(props) {
   const [imageUrl, setImageUrl] = useState(
     userLogin?.img_url ? userLogin?.img_url : userLogin?.picture ? userLogin?.picture : '',
   );
+
   const [isAlert, setIsAlert] = useState(false);
 
   //  ---CẬP NHẬT ẢNH ĐẠI DIỆN USER ---
