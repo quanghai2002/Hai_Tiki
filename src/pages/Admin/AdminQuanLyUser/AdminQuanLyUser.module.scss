@@ -57,6 +57,27 @@
       .btnAddUser {
         font-size: 1.4rem;
       }
+
+      // btn export csv
+      .btnExportCSV {
+        font-size: 1.4rem;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 500;
+        transition: all 0.2s linear;
+        display: flex;
+        align-items: center;
+        background-color: #00c853;
+        padding: 7.6px 24px;
+        border-radius: 4px;
+        gap: 2px;
+        .iconCSV {
+          color: #fff;
+        }
+        &:hover {
+          background-color: #1b5e20;
+        }
+      }
     }
 
     // contentTablesGetAllUser

@@ -11,11 +11,13 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import { CSVLink, CSVDownload } from 'react-csv';
 
 import iconActiveUser from '~/assets/images/dotvanchuyen.png';
 import userApi from '~/apis/userApi.js';
 import AdminDonHangLazy from '~/pages/Admin/AdminDonHang/AdminDonHangLazy.jsx'; // mượn layzy dùng chung của addmin đơn hàng
 import AddUser from './AddUser';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 // PropTypes
 AdminQuanLyUser.propTypes = {};
@@ -275,6 +277,24 @@ function AdminQuanLyUser(props) {
     };
   });
 
+  // ----------------------------------EXPORT FILE CSV --------------------------
+
+  const csvData = listAllUsers?.map((item) => {
+    return {
+      userName: item?.username,
+      email: item?.email,
+      admin: item?.admin,
+      phoneNumber: item?.phoneNumber,
+    };
+  });
+
+  // ----- Header của file CSV khi tải về ---
+  const headersCSV = [
+    { label: 'Họ và tên', key: 'userName' },
+    { label: 'Email', key: 'email' },
+    { label: 'Admin', key: 'admin' },
+    { label: 'Số điện thoại', key: 'phoneNumber' },
+  ];
   // ---RETURN JSX -----
   // --KHI ĐANG CALL API HIỂN THỊ LOADING CHO TẤT CẢ TOÀN TRANG ---
   // --KHI CLICK XÓA THÌ HIỂN THỊ SPIN --
@@ -375,10 +395,21 @@ function AdminQuanLyUser(props) {
         {/* ---DATA ĐỂ HIỂN THỊ DANH SÁCH Users */}
         <Box className={clsx(style.wrapTableContentAdminGetAllUser)}>
           <Box className={clsx(style.wrapCacHanhDongUser)}>
-            {/* BUTTON THÊM USERS */}
+            {/* BUTTON THÊM USERS  và export file CSV */}
             <Button variant="contained" className={clsx(style.btnAddUser)} onClick={showModalUser}>
               Thêm Người Dùng
             </Button>
+            {/* Button export CSV */}
+            <CSVLink
+              data={csvData}
+              headers={headersCSV}
+              className={clsx(style.btnExportCSV)}
+              filename={'danh_sach_user_HaiTiki.csv'} // tên file tải về
+              separator={';'} // phân cách để file csv chuẩn
+            >
+              <FileDownloadOutlinedIcon className={clsx(style.iconCSV)} />
+              Export CSV
+            </CSVLink>
           </Box>
 
           {/* -- DATA HIỂN THỊ TABLE => DANH SÁCH CÁC TÀI KHOẢN ĐÃ ĐĂNG KÍ ---- */}
