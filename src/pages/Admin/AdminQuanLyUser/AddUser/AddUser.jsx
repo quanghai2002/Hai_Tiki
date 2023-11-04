@@ -70,12 +70,12 @@ function AddUser({ setIsModalOpenUser, setReRenderGetAllUsers, idUpdateUser, use
       // --- DATA CHUẨN BỊ ĐỂ CẬP NHẬT 1 USER ---
       const dataUpdateUser = {
         _id: idUpdateUser,
-        email: data?.email,
-        username: data?.nameUser,
-        password: data?.password,
+        email: data?.email.trim(),
+        username: data?.nameUser.trim(),
+        password: data?.password.trim(),
         admin: data?.admin.trim() === 'true' ? true : false,
       };
-      // console.log('dữ liệu cập nhật sản phẩm:', dataUpdateUser);
+      console.log('dữ liệu cập nhật user là:', dataUpdateUser);
 
       // --CALL API CẬP NHẬT DỮ LIỆU USER --
       userApi
@@ -131,9 +131,9 @@ function AddUser({ setIsModalOpenUser, setReRenderGetAllUsers, idUpdateUser, use
 
       // --- DATA CHUẨN BỊ ĐỂ THÊM MỚI 1 USER ---
       const dataCreateUser = {
-        email: data?.email,
-        username: data?.nameUser,
-        password: data?.password,
+        email: data?.email.trim(),
+        username: data?.nameUser.trim(),
+        password: data?.password.trim(),
         admin: data?.admin.trim() === 'true' ? true : false,
       };
       // console.log('dữ liệu để thêm user là:', dataCreateUser);
@@ -359,15 +359,7 @@ function AddUser({ setIsModalOpenUser, setReRenderGetAllUsers, idUpdateUser, use
             <Controller
               name="password"
               control={control}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  placeholder="Nhập mật khẩu"
-                  id="password"
-                  allowClear={true}
-                  disabled={idUpdateUser ? true : false} // không cho cập nhật mật khẩu
-                />
-              )}
+              render={({ field }) => <Input {...field} placeholder="Nhập mật khẩu" id="password" allowClear={true} />}
             />
           </Form.Item>
 

@@ -81,11 +81,10 @@ function LogInForm() {
   const onSubmit = async (data) => {
     // data => LOGIN => Email
     const dataLoginEmail = {
-      email: data.email,
-      password: data.password,
+      email: data?.email.trim(),
+      password: data?.password.trim(),
     };
 
-    // console.log({ dataLoginEmail });
     setIsLoading(true);
     // POST => Login
     try {

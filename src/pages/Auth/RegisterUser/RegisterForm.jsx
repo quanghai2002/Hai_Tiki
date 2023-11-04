@@ -69,12 +69,11 @@ function RegisterForm() {
 
     // data => POST => server => đăng kí userName
     const dataRegister = {
-      username: data.fullName,
-      email: data.email,
-      password: data.password,
+      username: data?.fullName.trim(),
+      email: data?.email.trim(),
+      password: data?.password.trim(),
     };
 
-    // console.log('dataRegister', dataRegister);
     // khi pending bắt đầu ấn đăng kí => setloading => true
     setLoading(true);
     setIsEmail(false);

@@ -57,6 +57,7 @@
         & :global .ant-input-affix-wrapper {
           padding: 8px 11px 8px 0px;
           border-left-color: transparent;
+          border-color: transparent !important;
           &:focus {
             box-shadow: unset !important;
           }
@@ -66,6 +67,7 @@
           border-color: rgb(221, 221, 227);
           box-shadow: unset !important;
           border-left-color: transparent;
+          border-color: transparent !important;
           &:hover {
             border-color: rgb(221, 221, 227);
             border-left-color: transparent;
