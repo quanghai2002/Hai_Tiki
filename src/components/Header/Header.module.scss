@@ -55,6 +55,9 @@
         }
 
         & :global .ant-input-affix-wrapper {
+          & .ant-input {
+            background-color: transparent !important;
+          }
           padding: 8px 11px 8px 0px;
           border-left-color: transparent;
           border-color: transparent !important;

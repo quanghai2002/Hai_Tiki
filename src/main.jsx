@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <CssVarsProvider theme={theme}>
     <GlobalStyle>
       <CssBaseline />
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <GoogleOAuthProvider clientId={clientIds}>
           <Provider store={store}>
             <PersistGate persistor={persistor}>

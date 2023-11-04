@@ -6,21 +6,27 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-} from 'chart.js';
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   PointElement,
+//   LineElement,
+// } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import orderApi from '~/apis/orderApi.js';
 import phoneApi from '~/apis/phoneApi.js';
 import { format } from 'date-fns';
+
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+
+// ---- REACT - CHART -- BIỂU ĐỒ HIỆN THỊ THÔNG TIN --
+// ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 import AdminHomePageLazy from './AdminHomePageLazy.jsx';
 
@@ -81,9 +87,6 @@ function AdminHomePage(props) {
         setLoading(false);
       });
   }, []);
-
-  // ---- REACT - CHART -- BIỂU ĐỒ HIỆN THỊ THÔNG TIN --
-  ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
   //  ---- PHẦN TÍNH TOÁN DỮ LIỆU CHO REACT- CHART ----
   const currentDate = new Date(); // Lấy ngày hiện tại

@@ -276,7 +276,7 @@ function PayOrder(props) {
           amount: sumPriceCurrent,
         })
         .then((res) => {
-          console.log('thanh công', res);
+          console.log('thành công', res);
           window.location.href = res?.urlRedirect;
         })
         .catch((err) => {

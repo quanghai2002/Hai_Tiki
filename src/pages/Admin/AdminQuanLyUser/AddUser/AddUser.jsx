@@ -37,7 +37,7 @@ function AddUser({ setIsModalOpenUser, setReRenderGetAllUsers, idUpdateUser, use
   const schema = yup.object().shape({
     email: yup.string().required('Vui lòng nhập email !').matches(emailRegex, 'Vui lòng nhập định dạng email hợp lệ !'),
     nameUser: yup.string().required('Vui lòng nhập tên người dùng !').min(3, 'Nhập tối thiểu 3 kí tự'),
-    password: yup.string().required('Vui lòng nhập mật khẩu !').min(6, 'Nhập tối thiểu 6 kí tự'),
+    password: yup.string().required('Vui lòng nhập mật khẩu !').min(8, 'Nhập tối thiểu 8 kí tự'),
     admin: yup.string().required('Vui lòng chọn loại tài khoản !'),
   });
 
@@ -75,7 +75,7 @@ function AddUser({ setIsModalOpenUser, setReRenderGetAllUsers, idUpdateUser, use
         password: data?.password.trim(),
         admin: data?.admin.trim() === 'true' ? true : false,
       };
-      console.log('dữ liệu cập nhật user là:', dataUpdateUser);
+      // console.log('dữ liệu cập nhật user là:', dataUpdateUser);
 
       // --CALL API CẬP NHẬT DỮ LIỆU USER --
       userApi

@@ -32,10 +32,15 @@
   margin: 0 auto;
   font-size: 1.8rem;
 
-  & :global .css-dev-only-do-not-override-nnuwmp {
+  & :global .ant-form-item {
     display: block !important;
+
+    & .ant-form-item-row {
+      display: block;
+    }
   }
-  & :global .css-dev-only-do-not-override-nnuwmp {
+  & :global .ant-form-item-label {
+    // min-width: 166px;
     text-align: start;
     & label {
       font-size: 1.6rem;
