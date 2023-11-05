@@ -17,12 +17,14 @@ import Divider from '@mui/material/Divider';
 //   PointElement,
 //   LineElement,
 // } from 'chart.js';
+
 import { Bar } from 'react-chartjs-2';
 import orderApi from '~/apis/orderApi.js';
 import phoneApi from '~/apis/phoneApi.js';
 import { format } from 'date-fns';
-
 import { Chart, registerables } from 'chart.js';
+
+// ---ĐĂNG KÍ REACT CHART --
 Chart.register(...registerables);
 
 // ---- REACT - CHART -- BIỂU ĐỒ HIỆN THỊ THÔNG TIN --
@@ -149,7 +151,10 @@ function AdminHomePage(props) {
       const month = dateOrder.getMonth();
       const year = dateOrder.getFullYear();
       const totalPrice = order?.total_price;
-      const dateKey = `${year}-${month + 1}-${day}`; // Tạo key dựa trên ngày, tháng và năm của đơn hàng được tạo
+
+      // Hàm để thêm số 0 đằng trước nếu cần => kiểm tra xem nếu ngày nhỏ hơn 10 thì thêm số 0 vào
+      const newDayCurentAdd0 = day < 10 ? `0${day}` : day;
+      const dateKey = `${year}-${month + 1}-${newDayCurentAdd0}`; // Tạo key dựa trên ngày, tháng và năm của đơn hàng được tạo
 
       // Đánh dấu ngày đã được kiểm tra => Thêm key Ngày-Tháng-Năm của đơn hàng đó vào CheckDay => ngày đơn hàng ngày đó đã được kiểm tra
       checkedDays.push(dateKey);
@@ -193,7 +198,6 @@ function AdminHomePage(props) {
   });
 
   // console.log('tổng đơn hàng trong 1 ngày là:', dailySales);
-
   // --TỔNG DOANH THU TRONG 1 NGÀY ---
   const sumPriceFordays = dailySales?.map((item) => {
     return item?.total;
