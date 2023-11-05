@@ -7,6 +7,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  // ---MOBILE --
+  @media (max-width: 600px) {
+    display: none;
+  }
+
   .wrapItem1 {
     display: flex;
     align-items: center;

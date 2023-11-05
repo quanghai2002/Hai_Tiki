@@ -17,7 +17,7 @@ function CardPhoneLazy(props) {
     <>
       {arrayLazy.map((item, index) => {
         return (
-          <Grid lg={2.4} key={index}>
+          <Grid xs={6} sm={4} md={4} lg={2.4} key={index}>
             <Skeleton.Image active={true} className={clsx(style.phoneLazy)} />
           </Grid>
         );

@@ -30,32 +30,45 @@ function HomePage(props) {
         className={clsx(style.wrapContent)}
         sx={{
           paddingTop: '102px',
+
+          '@media (max-width: 600px)': {
+            paddingTop: '80px',
+          },
         }}
       >
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
           {/* app bar */}
-          <Grid xs={4} sm={4} md={3} lg={2.1}>
+          <Grid sm={0} md={0} lg={2.1}>
             <AppBar />
           </Grid>
 
-          <Grid container rowSpacing={2} xs={4} sm={4} md={9} lg={9.9}>
+          <Grid container rowSpacing={2} xs={12} sm={12} md={12} lg={9.9}>
             {/*slider show and banner  */}
-            <Grid lg={12}>
+            <Grid md={12} lg={12}>
               <Slider />
             </Grid>
 
             {/* các actions => thể hiện độ tin cậy, uy tín khi mua hàng */}
-            <Grid lg={12}>
+            <Grid
+              md={12}
+              lg={12}
+              sx={{
+                // ---TABLET ---
+                '@media (min-width: 601px) and (max-width: 900px)': {
+                  width: '100%',
+                },
+              }}
+            >
               <Action />
             </Grid>
 
             {/* content nội dung điện thoại */}
-            <Grid lg={12}>
+            <Grid xs={12} sm={12} md={12} lg={12}>
               <CardPhone />
             </Grid>
 
             {/* footer */}
-            <Grid lg={12}>
+            <Grid xs={12} sm={12} md={12} lg={12}>
               <Footer />
             </Grid>
           </Grid>

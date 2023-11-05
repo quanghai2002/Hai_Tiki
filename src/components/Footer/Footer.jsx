@@ -42,7 +42,7 @@ function Footer(props) {
       }}
     >
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 2 }}>
-        <Grid lg={2.4}>
+        <Grid xs={6} sm={4} md={4} lg={2.4}>
           <Box className={clsx(style.footer)}>
             <Typography className={clsx(style.textHeader)}>Hỗ trợ khách hàng</Typography>
             <Typography className={clsx(style.text)}>
@@ -65,7 +65,7 @@ function Footer(props) {
             </Typography>
           </Box>
         </Grid>
-        <Grid lg={2.4}>
+        <Grid xs={6} sm={4} md={4} lg={2.4}>
           <Box className={clsx(style.footer)}>
             <Typography className={clsx(style.textHeader)}>Về Hải Tiki</Typography>
             <Typography className={clsx(style.text)}>Giới thiệu Hải Tiki</Typography>
@@ -79,7 +79,7 @@ function Footer(props) {
             <Typography className={clsx(style.text)}>Điều kiện vận chuyển</Typography>
           </Box>
         </Grid>
-        <Grid lg={2.4}>
+        <Grid xs={6} sm={4} md={4} lg={2.4}>
           <Box className={clsx(style.footer)}>
             <Typography className={clsx(style.textHeader)}>Hợp tác và liên kết</Typography>
             <Typography className={clsx(style.text)}>Quy chế hoạt động Sàn GDTMĐT</Typography>
@@ -98,7 +98,7 @@ function Footer(props) {
             </Box>
           </Box>
         </Grid>
-        <Grid lg={2.4}>
+        <Grid xs={6} sm={4} md={4} lg={2.4}>
           <Box className={clsx(style.footer)}>
             <Typography className={clsx(style.textHeader)}>Phương thức thanh toán</Typography>
             <Box className={clsx(style.payMent)}>
@@ -126,7 +126,7 @@ function Footer(props) {
             <TikiNow />
           </Box>
         </Grid>
-        <Grid lg={2.4}>
+        <Grid xs={6} sm={4} md={4} lg={2.4}>
           <Box className={clsx(style.footer)}>
             <Typography className={clsx(style.textHeader)}>Kết nối với Quang Hải</Typography>
             <Box className={clsx(style.social)}>

@@ -211,13 +211,13 @@ function CardPhone(props) {
 
       {/* DANH SÁCH SẢN PHẨM ĐIỆN THOẠI */}
       {/*----------- NẾU ĐANG LẤY THÔNG TIN ĐIỆN THOAI API => HIỆN LAZY CARD RA -------------*/}
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}>
+      <Grid container rowSpacing={1} columnSpacing={{ md: 1, lg: 1 }}>
         {loading ? (
           <CardPhoneLazy />
         ) : (
           listPhone?.map((phone) => {
             return (
-              <Grid lg={2.4} key={phone?._id}>
+              <Grid xs={6} sm={4} md={3} lg={2.4} key={phone?._id}>
                 <Box
                   className={clsx(style.cardPhone)}
                   onClick={() => {

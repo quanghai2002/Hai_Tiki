@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { memo, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import style from './Header.module.scss';
 import clsx from 'clsx';
@@ -17,8 +17,9 @@ import { Dropdown } from 'antd';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import { Mentions } from 'antd';
+import { Drawer } from 'antd';
 import CloseIcon from '@mui/icons-material/Close';
+import FormatIndentIncreaseIcon from '@mui/icons-material/FormatIndentIncrease';
 
 const { Search } = Input;
 import HomeIcon from '~/assets/images/iconHome.png';
@@ -39,6 +40,15 @@ Header.propTypes = {
 };
 
 function Header({ isHidenNotify = true, setIsHidenNotify }) {
+  // ---HIỂN THỊ DẤU 3 CHẤM ĐỂ CLICK KHI ĐANG Ở MÀN HÌNH ĐIỆN THOẠI DI ĐÔNG ---
+  const [openMobile, setOpenMobile] = useState(false);
+  const showDrawerMobile = () => {
+    setOpenMobile(true);
+  };
+  const onCloseMobile = () => {
+    setOpenMobile(false);
+  };
+
   // ---NẾU ĐANG Ở TRANG TRỦ THÌ ACTIVE ICON TRANG CHỦ NÊN --
   const location = useLocation();
 
@@ -327,6 +337,187 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
           height: (theme) => theme?.haitiki?.heightHeader,
         }}
       >
+        {/* --HIỂN THỊ GẠCH 3 CHẤM KHI ĐANG Ở MÀN HÌNH ĐIỆN THOẠI --- */}
+        <Box className={clsx(style.wrapMenuMobileHeader)} onClick={showDrawerMobile}>
+          <FormatIndentIncreaseIcon className={clsx(style.menuIcon)} />
+        </Box>
+
+        {/* -----DRAWER KÉO THẢ TRÊN MOBILE --- */}
+        <Drawer
+          title={
+            <Box className={clsx(style.logoMobile)}>
+              <Link
+                to="/"
+                style={{
+                  textDecoration: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+              >
+                <img
+                  src={Logo}
+                  alt="logo hải tiki"
+                  className={clsx(style.logoImageMobile)}
+                  style={{
+                    width: '160px',
+                  }}
+                ></img>
+              </Link>
+            </Box>
+          }
+          placement="left"
+          closable={false}
+          onClose={onCloseMobile}
+          open={openMobile}
+          key="left"
+          width={300}
+          className={clsx(style.WrapDrawerMobile)}
+        >
+          {/* chế độ dark mode khi ở chế độ mobile */}
+          <Box className={clsx(style.WrapDarkModeMobile)}>
+            <DarkMode />
+          </Box>
+
+          {/* action => xem tài khoản => KHI Ở CHẾ ĐỘ TRÊN MÀN HÌNH ĐIỆN THOẠI --- */}
+          {/* nếu đã đăng nhập thì hiển thị avartar và cho tùy chỉnh user  */}
+          {/* nếu không chuyển đến trang đăng nhập  */}
+          {isLogin ? (
+            // đã đăng nhập => hover => có tùy chỉnh sửa thông tin user hoặc đăng xuất
+            <Dropdown
+              // danh sách trong dropdown hover
+              menu={{
+                items,
+              }}
+              placement="bottomLeft"
+            >
+              <Box
+                className={clsx(style.action)}
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer',
+                    backgroundColor:
+                      location?.pathname === '/info'
+                        ? (theme) => {
+                            return theme?.palette?.action?.hoverActive;
+                          }
+                        : (theme) => {
+                            return theme?.palette?.action?.hover;
+                          },
+                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                }}
+              >
+                <Avatar
+                  className={clsx(style.iconImage)}
+                  srcSet={userLogin?.picture || userLogin?.img_url}
+                  alt="avartar"
+                />
+
+                <Typography
+                  className={clsx(style.text)}
+                  variant="h5"
+                  color={location?.pathname === '/info' ? 'primary' : (theme) => theme?.palette?.text?.primary4}
+                  sx={{
+                    fontWeight: location?.pathname === '/info' ? '600!important' : '400 !important',
+                  }}
+                >
+                  Tài khoản
+                </Typography>
+              </Box>
+            </Dropdown>
+          ) : (
+            //------------ CHƯA ĐĂNG NHẬP --Ở CHẾ ĐỘ MOBILE ----------------
+            <Link
+              to="/login"
+              className={clsx(style.linkBackLoginMobile)}
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              <Box
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer',
+                    backgroundColor:
+                      location?.pathname === '/info'
+                        ? (theme) => {
+                            return theme?.palette?.action?.hoverActive;
+                          }
+                        : (theme) => {
+                            return theme?.palette?.action?.hover;
+                          },
+                  },
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                  paddingTop: '6px',
+                }}
+              >
+                <Avatar
+                  src={IconAcount}
+                  alt="avartar"
+                  sx={{
+                    width: '30px',
+                    height: '30px',
+                  }}
+                />
+
+                <Typography
+                  variant="h5"
+                  color={location?.pathname === '/info' ? 'primary' : (theme) => theme?.palette?.text?.primary4}
+                  sx={{
+                    fontWeight: location?.pathname === '/info' ? '600!important' : '400 !important',
+                  }}
+                >
+                  Tài khoản
+                </Typography>
+              </Box>
+            </Link>
+          )}
+          {/* giỏ hàng => cart */}
+          <Box
+            className={clsx(style.action, style.cart)}
+            sx={{
+              '&:hover': {
+                cursor: 'pointer',
+                backgroundColor: (theme) => {
+                  return theme?.palette?.action?.hoverActive;
+                },
+              },
+            }}
+          >
+            <Link
+              to="/card"
+              style={{
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                marginTop: '23px',
+              }}
+            >
+              <Badge
+                badgeContent={listPhoneCart?.length}
+                color="secondary"
+                showZero
+                sx={{
+                  '& svg': {
+                    width: '3rem',
+                    height: '3rem',
+                  },
+                }}
+              >
+                <AddShoppingCartIcon color="primary" />
+              </Badge>
+              <Typography color={(theme) => theme?.palette?.text?.primary4} variant="h5" sx={{}}>
+                Giỏ hàng
+              </Typography>
+            </Link>
+          </Box>
+        </Drawer>
+
+        {/* ---------------------------------- */}
         {/* Logo web Hải Tiki */}
         <Box className={clsx(style.logo)}>
           <Link to="/" className={clsx(style.logoLink)}>

@@ -6,6 +6,17 @@
   margin-left: auto;
   padding-top: 16px;
   // height: 100vh;
+  // ---MOBILE --
+  @media (max-width: 600px) {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  // ---TABLET ---
+  @media (min-width: 601px) and (max-width: 900px) {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
 
 // backTop
@@ -13,4 +24,24 @@
   & :global .ant-float-btn-icon {
     color: rgb(10, 104, 255) !important;
   }
+}
+
+//  -----------RESPONSIVE---------chung của phần HEADER ---
+// ---Còn responsive riêng trong từng file scss rồi---
+
+// ---MOBILE --
+@media (max-width: 600px) {
+}
+
+// ---TABLET ---
+@media (min-width: 601px) and (max-width: 900px) {
+}
+
+// ---MOBILE --AND TABLET---
+@media (max-width: 900px) {
+}
+
+/* Điều chỉnh cho PC (lg và xl) */
+@media (min-width: 901px) {
+  /* Kiểu dáng cho PC */
 }

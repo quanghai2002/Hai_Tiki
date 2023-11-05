@@ -6,6 +6,21 @@
   right: 0;
   z-index: 999;
 
+  // -----  RESPONSIVE -----
+  // -------MOBILE -----
+  @media (max-width: 600px) {
+  }
+
+  // ---TABLET ---
+  @media (min-width: 601px) and (max-width: 900px) {
+  }
+
+  /* Điều chỉnh cho PC (lg và xl) */
+  @media (min-width: 901px) {
+    /* Kiểu dáng cho PC */
+  }
+
+  // ------------------------------------------------
   .contentHeader {
     max-width: 1440px;
     // height: 80px;
@@ -16,7 +31,42 @@
     display: flex;
     align-items: center;
     gap: 48px;
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      gap: 16px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    // ---MENU ĐỂ HIỆN THỊ KHI CLICK VÀO TRÊN MOBILE --
+    .wrapMenuMobileHeader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .menuIcon {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      // ---TABLET ---
+      @media (min-width: 601px) and (max-width: 900px) {
+        display: none;
+      }
+
+      /* ---LAPTOP ---- */
+      @media (min-width: 901px) {
+        /* Kiểu dáng cho PC */
+        display: none;
+      }
+    }
+
+    // ------------LOGO -------
     .logo {
+      // -------MOBILE -----
+      @media (max-width: 600px) {
+        display: none;
+      }
+
       .logoLink {
       }
       .logoImage {
@@ -43,10 +93,16 @@
           border-color: rgb(221, 221, 227);
         }
 
-        & :global .css-dev-only-do-not-override-nnuwmp {
+        & :global .ant-input-affix-wrapper {
           border: none;
           caret-color: rgb(10, 104, 255);
           // padding: 8px 11px;
+
+          // ---MOBILE --
+          @media (max-width: 600px) {
+            font-size: 2rem;
+          }
+
           &:hover {
             // border-color: rgb(221, 221, 227);
             // border-left-color: transparent;
@@ -63,6 +119,10 @@
           border-color: transparent !important;
           &:focus {
             box-shadow: unset !important;
+          }
+          // ---MOBILE --
+          @media (max-width: 600px) {
+            padding: 6px 11px 6px 0px;
           }
         }
 
@@ -102,6 +162,11 @@
             border-end-end-radius: 8px;
             & span {
               font-size: 1.6rem;
+
+              // ---MOBILE --
+              @media (max-width: 600px) {
+                font-size: 2rem;
+              }
             }
             &:hover {
               background-color: rgba(10, 104, 255, 0.2);
@@ -129,12 +194,27 @@
           svg {
             width: 1.7rem;
             height: 1.7rem;
+
+            // ---MOBILE --
+            @media (max-width: 600px) {
+              width: 2rem;
+              height: 2rem;
+            }
+          }
+          // ---MOBILE --
+          @media (max-width: 600px) {
+            -webkit-tap-highlight-color: transparent;
           }
         }
+
         & :global .ant-input-suffix {
           padding-right: 64px;
           position: relative;
           top: 2px;
+          // ---MOBILE --
+          @media (max-width: 600px) {
+            padding-right: 83px;
+          }
         }
 
         & :global .ant-input-wrapper {
@@ -152,6 +232,16 @@
         align-items: center;
         margin-left: 48px;
         justify-content: flex-start;
+
+        // -------MOBILE -----
+        @media (max-width: 600px) {
+          display: none;
+        }
+
+        // ---TABLET ---
+        @media (min-width: 601px) and (max-width: 900px) {
+          margin-left: 0;
+        }
 
         .link {
           text-decoration: none;
@@ -279,11 +369,22 @@
           font-size: 10px;
         }
         .backHome {
+          // ---PC--
           .text {
             text-decoration: none;
           }
           &:hover .text {
             text-decoration: none;
+          }
+
+          // ---MOBILE --
+          @media (max-width: 600px) {
+            display: none;
+          }
+
+          // ---TABLET ---
+          @media (min-width: 601px) and (max-width: 900px) {
+            display: none;
           }
         }
       }
@@ -315,6 +416,7 @@
   }
 }
 
+// body
 body {
   & :global .ant-dropdown {
     animation-duration: 0.1s !important;
@@ -329,5 +431,17 @@ body {
 
   & :global .ant-dropdown-menu-item {
     padding: 9px 16px !important;
+  }
+
+  // WrapDrawerMobile TRÊN MOBILDE ĐỂ KÉO THẢ ---
+  & .WrapDrawerMobile {
+    & :global .ant-drawer-title {
+      // ---MOBILE --
+      @media (max-width: 600px) {
+        display: flex;
+        justify-content: center;
+        justify-content: center;
+      }
+    }
   }
 }

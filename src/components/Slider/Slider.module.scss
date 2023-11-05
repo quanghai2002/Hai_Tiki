@@ -4,6 +4,12 @@
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s linear;
+
+  // ---MOBILE --
+  @media (max-width: 600px) {
+    display: none;
+  }
+
   &:hover :global .custom-prev-arrow {
     background-color: rgba(0, 0, 0, 0.65) !important;
     border: 1px solid rgba(241, 230, 230, 0.3);
@@ -113,6 +119,16 @@
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
+
+  // ---MOBILE --
+  @media (max-width: 600px) {
+    display: none;
+  }
+
+  // ---TABLET ---
+  @media (min-width: 601px) and (max-width: 900px) {
+    display: none;
+  }
   &:hover .bannerImage {
     opacity: 0.95;
   }
