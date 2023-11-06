@@ -46,7 +46,7 @@ function DangVanChuyen({ keyTab, listAllOrder, loading }) {
   // console.log('Thông tin các đơn hàng của USER -- ĐANG VẬN CHUYỂN LÀ:', DataSort);
   // // ------------CLICK ĐỒNG Ý XÓA ĐƠN HÀNG ---------
   const handelAgreeDeleteOrder = (id) => {
-    console.log('ID đơn hàng CẦN HỦY LÀ', id);
+    // console.log('ID đơn hàng CẦN HỦY LÀ', id);
   };
 
   //  --- RETURN JSX --

@@ -48,7 +48,7 @@ function PayMentVNPSuccess(props) {
   useEffect(() => {
     // ---NẾU SỐ ĐƠN HÀNG LÀ 1 ==> THÌ THÊM 1 ĐƠN HÀNG KIỂU KHÁC --
     if (lengtOrderVnp === 1) {
-      console.log('đây là API thanh toán VNP cho 1 ĐƠN HÀNG');
+      // console.log('đây là API thanh toán VNP cho 1 ĐƠN HÀNG');
       orderApi
         .addOrderDatabase(orderPreviewVNP)
         .then((response) => {
@@ -88,7 +88,7 @@ function PayMentVNPSuccess(props) {
         });
     } else {
       // --ĐÂY LÀ TRANG THANH TOÁN VNP CHO NHIỀU ĐƠN HÀNG --
-      console.log('đây là Thanh Toán VNP cho Nhiều Đơn Hàng');
+      // console.log('đây là Thanh Toán VNP cho Nhiều Đơn Hàng');
 
       //  DANH SÁCH CÁC ĐƠN HÀNG CON ĐỂ CẬP NHẬT LÊN SERVER LÀ:
       const newPhoneCartMany = orderPreviewVNP?.products2?.map((oneCart) => {

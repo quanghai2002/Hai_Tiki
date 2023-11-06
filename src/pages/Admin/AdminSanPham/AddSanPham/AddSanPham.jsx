@@ -183,7 +183,7 @@ function AddSanPham({ phoneBuyId, idUpdate, setIsModalOpen, setIsUpdatePhone, se
           },
         })
         .then((response) => {
-          console.log('thay đổi hình ảnh trong UPDATEd');
+          // console.log('thay đổi hình ảnh trong UPDATEd');
           // console.log({ response });
 
           // tùy chỉnh 1 tẹo => để update sản phẩm cho đúng
@@ -352,7 +352,7 @@ function AddSanPham({ phoneBuyId, idUpdate, setIsModalOpen, setIsUpdatePhone, se
       else {
         // --KHI THÊM MỚI SẢN PHẨM => SET LOADING CHO TRANGG THÊM MỚI SẢN PHẨM --
         setLoading(true);
-        console.log('đây là thêm mới sản phấm');
+        // console.log('đây là thêm mới sản phấm');
         try {
           // add danh mục sản phẩm => và lấy id danh mục sản phẩm về
           const category = await categoryApi.insertCategory(paramCategory);

@@ -43,7 +43,7 @@ function DaHuy({ keyTab, listAllOrder, loading }) {
   // console.log('Thông tin các đơn hàng của USER -- ĐÃ HỦY  LÀ:', DataSort);
   // ------------CLICK ĐỒNG Ý HỦY ĐƠN HÀNG ---------
   const handelAgreeDeleteOrder = (id) => {
-    console.log('ID đơn hàng cần HỦY LÀ:', id);
+    // console.log('ID đơn hàng cần HỦY LÀ:', id);
   };
   // ----  RENDER JSX ---
   // --- KHI đang Tải thông tin thì hiển thị Lazy Loading

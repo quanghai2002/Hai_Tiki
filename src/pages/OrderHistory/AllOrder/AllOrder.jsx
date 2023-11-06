@@ -49,7 +49,7 @@ function AllOrder({ keyTab, listAllOrder, loading, setLoading, setKeyTab }) {
   // const dataTest = [];
   // ------------CLICK ĐỒNG Ý XÓA ĐƠN HÀNG ---------
   const handelAgreeDeleteOrder = (id) => {
-    console.log('ID đơn hàng cần HỦY LÀ', id);
+    // console.log('ID đơn hàng cần HỦY LÀ', id);
     setLoading(true);
 
     //  --- KHI ẤN HỦY THÌ CHUẨN BỊ DỮ LIỆU ĐỂ CẬP NHẬT LÊN SERVER ---

@@ -75,7 +75,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
   const isLogin = !!userLogin;
   const isAdmin = userLogin?.admin;
   // console.log('trạng thái đăng nhập:', isLogin);
-  console.log('bạn có phải ADMIN không ?', isAdmin);
+  // console.log('bạn có phải ADMIN không ?', isAdmin);
 
   // --------------KHI CLICK LOGOUT- -- ĐĂNG XUẤT ---------
   const handleLogoutUser = () => {
@@ -120,7 +120,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                 },
               }}
               onClick={() => {
-                console.log('thông tin tài khoản');
+                // console.log('thông tin tài khoản');
                 navigate('/info');
               }}
             >
@@ -150,7 +150,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                 },
               }}
               onClick={() => {
-                console.log('đơn hàng của tôi');
+                // console.log('đơn hàng của tôi');
                 navigate('/order/history');
               }}
             >
@@ -247,7 +247,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                 },
               }}
               onClick={() => {
-                console.log('thông tin tài khoản');
+                // console.log('thông tin tài khoản');
                 navigate('/info');
               }}
             >
@@ -277,7 +277,7 @@ function Header({ isHidenNotify = true, setIsHidenNotify }) {
                 },
               }}
               onClick={() => {
-                console.log('đơn hàng của tôi');
+                // console.log('đơn hàng của tôi');
                 navigate('/order/history');
               }}
             >

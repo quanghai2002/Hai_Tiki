@@ -19,7 +19,7 @@ function PayOrderReturnVNP(props) {
     axiosClient
       .get(`/payment/vnpay_return?${window?.location?.href?.split('?')[1]}`)
       .then((response) => {
-        console.log('kết quả giao dịch THANH TOÁN', response?.code);
+        // console.log('kết quả giao dịch THANH TOÁN', response?.code);
         if (response?.code === '00') {
           setIsSuccess(true);
         } else {

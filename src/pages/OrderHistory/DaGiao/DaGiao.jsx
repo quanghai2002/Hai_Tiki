@@ -42,7 +42,7 @@ function DaGiao({ keyTab, listAllOrder, loading }) {
   // console.log('Thông tin các đơn hàng của USER -- ĐÃ GIAO LÀ:', DataSort);
   // ------------CLICK ĐỒNG Ý XÓA ĐƠN HÀNG ---------
   const handelAgreeDeleteOrder = (id) => {
-    console.log('ID đơn hàng HỦY LÀ', id);
+    // console.log('ID đơn hàng HỦY LÀ', id);
   };
 
   // --- RENDER JSX --

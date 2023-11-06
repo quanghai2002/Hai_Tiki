@@ -35,7 +35,7 @@ function PayMentTienMat(props) {
 
   // -------KHI CLICK VÀO NÚT XEM ĐƠN HÀNG -----
   const handleHistoryOrder = () => {
-    console.log('xem đơn hàng');
+    // console.log('xem đơn hàng');
     naviagate('/order/history');
   };
 

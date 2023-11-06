@@ -100,7 +100,7 @@ function PayOrder(props) {
     if (value === 1) {
       // ---CHECK XEM NẾU LÀ THANH TOÁN CHO 1 ĐƠN HÀNG THÌ SẼ INSERT 1 ĐƠN HÀNG VÀO Database
       const isLengthCartPhone = dataOrder?.listProductCard?.length;
-      console.log('số lượng sản phẩm  trong 1 đơn hàng là:', isLengthCartPhone);
+      // console.log('số lượng sản phẩm  trong 1 đơn hàng là:', isLengthCartPhone);
 
       //  ---NẾU ĐƠN HÀNG CHỈ CÓ 1 SẢN PHẨM THÌ => THÊM 1 ĐƠN HÀNG BÌNH THƯỜNG ---
       if (isLengthCartPhone === 1) {
@@ -276,7 +276,7 @@ function PayOrder(props) {
           amount: sumPriceCurrent,
         })
         .then((res) => {
-          console.log('thành công', res);
+          // console.log('thành công', res);
           window.location.href = res?.urlRedirect;
         })
         .catch((err) => {

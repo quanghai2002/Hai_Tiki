@@ -51,7 +51,7 @@ function PayMentError(props) {
     setLoading(true);
 
     if (lengthPayThanhToanLai === 1) {
-      console.log('thanh toán lại bằng KHI CÓ 1 SẢN PHẨM');
+      // console.log('thanh toán lại bằng KHI CÓ 1 SẢN PHẨM');
       // --DỮ LIỆU CHUẨN BỊ ĐỂ THÊM MỚI 1 ĐƠN HÀNG => sửa thanh toán VNP = Tiền mặt
       const newDataOrderPreview = {
         ...dataOrderPreview,

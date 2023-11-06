@@ -106,7 +106,7 @@ function AddressUser({ isModalAddresss, setIsAddress }) {
     userApi
       .updateOneUser(dataUpdateUser)
       .then((response) => {
-        console.log('cập nhật USER thành công', response);
+        // console.log('cập nhật USER thành công', response);
         //  sau đó cập lấy thông tin cập nhật set lại vào redux
         toast.success('Cập nhật địa chỉ thành công', {
           position: 'top-right',
