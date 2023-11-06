@@ -7,6 +7,12 @@
   // height: 100vh;
   padding-top: 102px;
 
+  // ---MOBILE --
+  @media (max-width: 600px) {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+
   // headerCard
   .headerCard {
     font-size: 2rem;
@@ -31,6 +37,11 @@
     position: sticky;
     top: 93px;
     margin-bottom: 10px;
+
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      display: none;
+    }
 
     &::before {
       content: '';
@@ -69,6 +80,11 @@
         border-radius: 100px;
         background: rgb(219, 238, 255) !important;
         transition: width 0.5s ease-in 0s;
+
+        // ---TABLET ---
+        @media (min-width: 601px) and (max-width: 900px) {
+          width: 342px;
+        }
       }
     }
 
@@ -78,6 +94,11 @@
           background: rgb(0, 171, 86) !important;
           width: 427px;
           transition: width 0.5s ease-in 0s;
+
+          // ---TABLET ---
+          @media (min-width: 601px) and (max-width: 900px) {
+            width: 342px;
+          }
         }
       }
       & .ant-steps-icon {
@@ -175,6 +196,18 @@
     top: 187px;
     margin-bottom: 10px;
 
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      grid-template-columns: 162px 107px 101px 30px;
+      padding: 8px;
+      position: unset;
+    }
+
+    // ---TABLET ---
+    @media (min-width: 601px) and (max-width: 900px) {
+      grid-template-columns: 302px 128px 130px 130px 30px;
+    }
+
     &::before {
       content: '';
       background: rgb(245, 245, 250);
@@ -194,6 +227,10 @@
       left: 0px;
       bottom: -10px;
       right: 0px;
+      // ---MOBILE --
+      @media (max-width: 600px) {
+        display: none;
+      }
     }
 
     .wrapChecked {
@@ -221,6 +258,11 @@
       font-weight: 410;
       font-size: 1.3rem;
       user-select: none;
+
+      // ---MOBILE --
+      @media (max-width: 600px) {
+        display: none;
+      }
     }
 
     .quantity {
@@ -283,6 +325,10 @@
     border-radius: 4px;
     padding: 8px 15px;
     // box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 1px 0px;
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      padding: 8px;
+    }
   }
   .wrapListAllCard {
     display: grid;
@@ -291,6 +337,15 @@
     align-items: center;
     padding: 15px 0;
     border-bottom: 1px solid rgb(242, 242, 242);
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      grid-template-columns: 162px 107px 101px 30px;
+    }
+
+    // ---TABLET ---
+    @media (min-width: 601px) and (max-width: 900px) {
+      grid-template-columns: 302px 128px 130px 130px 30px;
+    }
 
     &:last-child {
       border-bottom: 1px solid transparent;
@@ -313,6 +368,11 @@
         width: 76px;
         height: 76px;
         object-fit: contain;
+        // ---MOBILE --
+        @media (max-width: 600px) {
+          width: 40px;
+          height: 40px;
+        }
       }
 
       .contents {
@@ -333,6 +393,10 @@
           display: flex;
           align-items: center;
           gap: 4px;
+          // ---MOBILE --
+          @media (max-width: 600px) {
+            display: none;
+          }
           .icon {
             width: 32px;
             height: 16px;
@@ -353,6 +417,12 @@
     .wrapUnitPrice {
       display: flex;
       align-items: center;
+
+      // ---MOBILE --
+      @media (max-width: 600px) {
+        display: none;
+      }
+
       .number {
         font-weight: 500;
         font-size: 1.3rem;
@@ -462,6 +532,12 @@
       align-items: center;
       gap: 3px;
       user-select: none;
+
+      // ---MOBILE --
+      @media (max-width: 600px) {
+        padding-left: 3px;
+      }
+
       .text {
         word-break: break-word;
         font-size: 1.3rem;

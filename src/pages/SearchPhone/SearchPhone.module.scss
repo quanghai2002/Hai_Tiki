@@ -7,6 +7,13 @@
     margin-right: auto;
     margin-left: auto;
 
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      padding-left: 3px;
+      padding-right: 3px;
+      padding-top: 86px;
+    }
+
     // Pagination  Phân trang
     .wrapPagination {
       padding: 13px 0;
@@ -132,6 +139,10 @@
         font-size: 1.8rem;
         line-height: 1.8rem;
         user-select: none;
+        // ---MOBILE --
+        @media (max-width: 600px) {
+          font-size: 1.6rem;
+        }
       }
     }
 

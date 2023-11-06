@@ -313,14 +313,22 @@ function CardPhone(props) {
       <Box className={clsx(style.wrapCardPhone)}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
           {/* header card => label  */}
-          <Grid lg={12}>
+          <Grid xs={12} sm={12} md={12} lg={12}>
             <Typography className={clsx(style.headerCard)}>Giỏ hàng</Typography>
           </Grid>
 
           {/* wrap list card => danh sách đơn hàng trong => giỏ hàng */}
-          <Grid container lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+          <Grid
+            container
+            xs={12}
+            sm={12}
+            md={12}
+            lg={8.8}
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}
+          >
             {/* contents list => card*/}
-            <Grid lg={12}>
+            <Grid xs={12} sm={12} md={12} lg={12}>
               {/* step các các mức fresship */}
               <Box
                 className={clsx(style.wrapStepCard)}
@@ -521,16 +529,33 @@ function CardPhone(props) {
           </Grid>
 
           {/* wrap details price phone*/}
-          <Grid container lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+          <Grid
+            container
+            xs={12}
+            sm={12}
+            md={12}
+            lg={3.2}
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}
+          >
             <Box
               sx={{
                 minWidth: '308px',
+                // ---TABLET ---
+                '@media (min-width: 601px) and (max-width: 900px)': {
+                  width: '100%',
+                },
+
+                // ---MOBILE --
+                '@media (max-width: 600px)': {
+                  width: '100%',
+                },
               }}
             >
               <Box className={clsx(style.wrapAddressBuyPhone)}>
                 {/* ADDRESS USER => ĐỊA CHỈ GIAO HÀNG XEM ĐÃ CÓ HAY CHƯA BẠN NHÉ */}
                 {/* nếu có địa chỉ rồi thì hiển thị > nếu không bắt chọn địa chỉ  */}
-                <Grid lg={12}>
+                <Grid xs={12} sm={12} md={12} lg={12}>
                   {isAddressUser ? (
                     <Box className={clsx(style.wrapAddressCard)}>
                       <Box className={clsx(style.col1)}>
@@ -580,7 +605,7 @@ function CardPhone(props) {
                 </Grid>
 
                 {/* sum price => tổng giá trị đơn hàng */}
-                <Grid lg={12}>
+                <Grid xs={12} sm={12} md={12} lg={12}>
                   <Box className={clsx(style.wrapSumPriceCard)}>
                     <Box className={clsx(style.header)}>
                       <Typography className={clsx(style.text)} color={(theme) => theme?.palette?.text?.primary6}>
@@ -628,7 +653,7 @@ function CardPhone(props) {
                 </Grid>
 
                 {/* btn buy card => nút mua sản phẩm*/}
-                <Grid lg={12}>
+                <Grid xs={12} sm={12} md={12} lg={12}>
                   <Button
                     className={clsx(style.btnBuyPhone)}
                     variant="contained"
@@ -644,7 +669,7 @@ function CardPhone(props) {
           </Grid>
 
           {/* footer */}
-          <Grid lg={12}>
+          <Grid xs={12} sm={12} md={12} lg={12}>
             <Footer />
           </Grid>
         </Grid>

@@ -20,6 +20,8 @@ function SeachPhoneLazy(props) {
 
       <Box className={clsx(style.lazyContent)}>
         <Grid
+          xs={12}
+          sm={12}
           md={12}
           lg={12}
           container
@@ -31,7 +33,7 @@ function SeachPhoneLazy(props) {
         >
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]?.map((item, index) => {
             return (
-              <Grid lg={2.4} md={3} key={item}>
+              <Grid xs={6} sm={4} md={4} lg={2.4} key={item}>
                 <Skeleton.Image active={true} className={clsx(style.lazy2)} />
               </Grid>
             );

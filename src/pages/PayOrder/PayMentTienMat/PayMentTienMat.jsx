@@ -131,7 +131,7 @@ function PayMentTienMat(props) {
       ) : (
         <Box className={clsx(style.wrapContent)}>
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 3 }}>
-            <Grid lg={8}>
+            <Grid xs={12} sm={12} md={12} lg={8}>
               <Box className={clsx(style.content)}>
                 <Box className={clsx(style.hederBackground)}></Box>
                 {/*  */}
@@ -143,7 +143,14 @@ function PayMentTienMat(props) {
                       Chuẩn bị tiền mặt {infoOrderTienMat?.total_price.toLocaleString('vi-VN')} ₫
                     </Typography>
 
-                    <Box className={clsx(style.summary)}>
+                    <Box
+                      className={clsx(style.summary)}
+                      sx={{
+                        ' @media (max-width: 600px)': {
+                          paddingTop: '63px !important',
+                        },
+                      }}
+                    >
                       <Typography className={clsx(style.method1)} color={(theme) => theme?.palette?.text?.primary6}>
                         Phương thức thanh toán
                       </Typography>
@@ -190,7 +197,7 @@ function PayMentTienMat(props) {
             </Grid>
 
             {/*  */}
-            <Grid lg={4}>
+            <Grid xs={12} sm={12} md={12} lg={4}>
               <Box className={clsx(style.content2)}>
                 <Box className={clsx(style.orderPakageHeader)}>
                   <Typography className={clsx(style.text1)} color={(theme) => theme?.palette?.text?.primary4}>

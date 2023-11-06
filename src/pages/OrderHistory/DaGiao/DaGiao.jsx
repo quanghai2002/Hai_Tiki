@@ -57,7 +57,7 @@ function DaGiao({ keyTab, listAllOrder, loading }) {
       {DataSort?.length > 0 ? (
         DataSort?.map((item) => {
           return (
-            <Box className={clsx(style.dagiao)} key={item?.id}>
+            <Box className={clsx(style.dagiao)} key={`${item?.id} ${Math.random() * 12000}`}>
               {/* header */}
               {/* Trạng thái 1 => Chờ xác nhận. 2 Đang Vận Chuyện. 3: Giao Hàng Thành Công. 4: Đã hủy */}
               <Box className={clsx(style.header)}>

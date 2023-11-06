@@ -90,14 +90,22 @@ function SearchPhone(props) {
       <Box className={clsx(style.wrapContainedSearchPhone)}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
           {/* app bar */}
-          <Grid xs={4} sm={4} md={3} lg={2.1}>
+          <Grid xs={0} sm={0} md={3} lg={2.1}>
             <AppBar />
           </Grid>
 
-          <Grid container rowSpacing={2} xs={4} sm={4} md={9} lg={9.9}>
+          <Grid container rowSpacing={2} xs={12} sm={12} md={9} lg={9.9}>
             {/* KHI ĐANG TẢI THÔNG TIN SẢN PHẨM TÌM KIẾM THÌ HIỆN LAZY LOADING RA MÀN HÌNH */}
             {loading ? (
-              <Grid md={12} lg={12} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}>
+              <Grid
+                xs={12}
+                sm={12}
+                md={12}
+                lg={12}
+                container
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}
+              >
                 <SeachPhoneLazy />
               </Grid>
             ) : (
@@ -108,6 +116,9 @@ function SearchPhone(props) {
                     {/* MÀ NẾU SỐ LƯỢNG SẢN PHẨM TÌM THẤY > 0 => MỚI HIỆN THỊ RA DANH SÁCH  => NẾU KHÔNG HIện thị không tìm thấy sản phẩm*/}
                     {/* các actions => thể hiện độ tin cậy, uy tín khi mua hàng */}
                     <Grid
+                      xs={12}
+                      sm={12}
+                      md={12}
                       lg={12}
                       sx={{
                         marginTop: '5px',
@@ -117,7 +128,6 @@ function SearchPhone(props) {
                     </Grid>
                     {/* --SẼ HIỂN THỊ DANH SÁCH SẢN PHẨM RA ĐẤY NẾU TÌM THẤY CÁC SẢN PHẨM THỎA MÃN ĐIÊU KIỆN --- */}
                     {/* content nội dung các sản phẩm  điện thoại */}
-
                     <Box
                       sx={{
                         paddingLeft: '12px',
@@ -126,10 +136,18 @@ function SearchPhone(props) {
                         width: '100%',
                       }}
                     >
-                      <Grid md={12} lg={12} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}>
+                      <Grid
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        lg={12}
+                        container
+                        rowSpacing={1}
+                        columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}
+                      >
                         {listPhoneSearch?.map((item) => {
                           return (
-                            <Grid lg={2.4} md={3} key={item?._id}>
+                            <Grid xs={6} sm={4} md={4} lg={2.4} key={item?._id}>
                               <OnePhone phoneDetails={item} />
                             </Grid>
                           );
@@ -138,7 +156,7 @@ function SearchPhone(props) {
                     </Box>
 
                     {/* Phân trang React Paninaiton  -- PHÂN TRANG CŨNG CHỈ HIỆN THỊ KHI TÌM THẤY SẢN PHẨM MÀ THÔI BẠN NHÉ */}
-                    <Grid lg={12}>
+                    <Grid xs={12} sm={12} md={12} lg={12}>
                       <Box
                         className={clsx(style.wrapPagination)}
                         sx={{
@@ -173,7 +191,15 @@ function SearchPhone(props) {
                   </>
                 ) : (
                   // Nếu số lượng sản phẩm không tìm thấy => hiển thị không tìm thấy kết quả
-                  <Grid md={12} lg={12} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}>
+                  <Grid
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 1 }}
+                  >
                     <Box className={clsx(style.wrapSearchNotFound)}>
                       <img src={searchNotFound} alt="searchNotFound" className={clsx(style.imageNotFound)} />
                       <Typography className={clsx(style.text1)}>Không tìm thấy kết quả nào</Typography>

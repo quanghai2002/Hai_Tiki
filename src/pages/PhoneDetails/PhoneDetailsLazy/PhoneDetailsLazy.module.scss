@@ -24,6 +24,16 @@
     margin-right: auto;
     margin-left: auto;
     padding-top: 16px;
+
+    // ---TABLET ---
+    @media (min-width: 601px) and (max-width: 900px) {
+      padding-left: 10px;
+    }
+
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      padding-left: 6px;
+    }
   }
 
   // lazyImage

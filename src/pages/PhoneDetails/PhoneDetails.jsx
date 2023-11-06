@@ -67,25 +67,33 @@ function PhoneDetails(props) {
           <Box className={clsx(style.wrapContent)}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
               {/* phone details */}
-              <Grid container lg={12} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
+              <Grid
+                container
+                xs={12}
+                sm={12}
+                md={12}
+                lg={12}
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}
+              >
                 {/* React slick phone Details */}
-                <Grid lg={3.5}>
+                <Grid xs={12} sm={12} md={12} lg={3.5}>
                   <ReactSlickPhone phoneDetails={phoneDetails} />
                 </Grid>
 
                 {/* Phone Description */}
-                <Grid lg={5}>
+                <Grid xs={12} sm={12} md={12} lg={5}>
                   <PhoneDescription phoneDetails={phoneDetails} />
                 </Grid>
 
                 {/* Buy Phone */}
-                <Grid lg={3.5}>
+                <Grid xs={12} sm={12} md={12} lg={3.5}>
                   <BuyPhone phoneDetails={phoneDetails} setIsHidenNotify={setIsHidenNotify} />
                 </Grid>
               </Grid>
 
               {/* footer */}
-              <Grid lg={12}>
+              <Grid xs={12} sm={12} md={12} lg={12}>
                 <Footer />
               </Grid>
             </Grid>

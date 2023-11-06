@@ -296,7 +296,7 @@ function PayOrder(props) {
           {/* Content PayMents */}
           <Box className={clsx(style.contents)}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
-              <Grid lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+              <Grid xs={12} sm={12} md={12} lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
                 {/* danh sách các sản phẩm có => map qua để  */}
                 <Box className={clsx(style.wrapContent_PayMent_Info)}>
                   {dataOrder?.listProductCard?.map((item, index) => {
@@ -458,7 +458,7 @@ function PayOrder(props) {
               </Grid>
 
               {/* grid phần 2 */}
-              <Grid lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+              <Grid xs={12} sm={12} md={12} lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
                 {/* Địa chỉ giao hàng */}
                 <Box className={clsx(style.actionAddress)}>
                   {/* nếu đã có địa chỉ giao hàng => hiển thị ĐỊA CHỈ GIAO HÀNG ra màn hình */}
@@ -606,7 +606,7 @@ function PayOrder(props) {
         {/* Content PayMents */}
         <Box className={clsx(style.contents)}>
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
-            <Grid lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+            <Grid xs={12} sm={12} md={12} lg={8.8} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
               {/* danh sách các sản phẩm có => map qua để  */}
               <Box className={clsx(style.wrapContent_PayMent_Info)}>
                 {dataOrder?.listProductCard?.map((item, index) => {
@@ -765,7 +765,7 @@ function PayOrder(props) {
             </Grid>
 
             {/* grid phần 2 */}
-            <Grid lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
+            <Grid xs={12} sm={12} md={12} lg={3.2} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}>
               {/* Địa chỉ giao hàng */}
               <Box className={clsx(style.actionAddress)}>
                 {/* nếu đã có địa chỉ giao hàng => hiển thị ĐỊA CHỈ GIAO HÀNG ra màn hình */}

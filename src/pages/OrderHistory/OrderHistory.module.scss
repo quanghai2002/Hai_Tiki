@@ -7,6 +7,19 @@
     padding-right: 15px;
     margin-right: auto;
     margin-left: auto;
+
+    // ---MOBILE --
+    @media (max-width: 600px) {
+      padding-left: 3px;
+      padding-right: 3px;
+      padding-bottom: 10px;
+    }
+
+    // ---TABLET ---
+    @media (min-width: 601px) and (max-width: 900px) {
+      padding-bottom: 20px;
+    }
+
     .contentOrderHistory {
       // breadcrumb
       .breadcrumb {
@@ -125,6 +138,12 @@
             & :global .ant-tabs-nav-list {
               width: 100%;
               align-items: center;
+
+              // ---MOBILE --
+              @media (max-width: 600px) {
+                overflow-x: scroll;
+                padding: 0px 10px;
+              }
 
               .ant-tabs-tab {
                 flex: 1;

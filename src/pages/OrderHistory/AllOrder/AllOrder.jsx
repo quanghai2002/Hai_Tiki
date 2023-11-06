@@ -91,7 +91,7 @@ function AllOrder({ keyTab, listAllOrder, loading, setLoading, setKeyTab }) {
         {dataTest?.length > 0 ? (
           dataTest?.map((item) => {
             return (
-              <Box className={clsx(style.wrapAllOrder)} key={item?.id}>
+              <Box className={clsx(style.wrapAllOrder)} key={`${item?.id} ${Math.random() * 10000}`}>
                 {/* header */}
                 {/* Trạng thái 1 => Chờ xác nhận. 2 Đang Vận Chuyện. 3: Giao Hàng Thành Công. 4: Đã hủy */}
                 <Box className={clsx(style.header)}>

@@ -17,12 +17,12 @@ function PhoneDetailLazy(props) {
       <Skeleton.Input active={true} size="large" className={clsx(style.headerLazy)} />
       {/* content lazy */}
       <Box className={clsx(style.content)}>
-        <Grid container lg={12} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
-          <Grid lg={3.5}>
+        <Grid container xs={12} sm={12} md={12} lg={12} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 3 }}>
+          <Grid xs={12} sm={12} md={12} lg={3.5}>
             {/* avartar slider */}
             <Skeleton.Image active={true} className={clsx(style.lazyImage)} />
           </Grid>
-          <Grid lg={5}>
+          <Grid xs={12} sm={12} md={12} lg={5}>
             <Box className={clsx(style.wrapContentDetalis)}>
               <Skeleton.Input active={true} size="large" className={clsx(style.content1)} />
               <Skeleton.Input active={true} size="large" className={clsx(style.content2)} />
@@ -32,7 +32,7 @@ function PhoneDetailLazy(props) {
               <Skeleton.Input active={true} size="large" className={clsx(style.content5)} />
             </Box>
           </Grid>
-          <Grid lg={3.5}>
+          <Grid xs={12} sm={12} md={12} lg={3.5}>
             <Box className={clsx(style.contentRight)}>
               <Skeleton.Input active={true} size="large" className={clsx(style.right1)} />
               <Skeleton.Input active={true} size="large" className={clsx(style.right2)} />

@@ -47,6 +47,12 @@ function App() {
         backgroundColor: (theme) => {
           theme?.palette?.background?.default;
         },
+        '@media (min-width: 601px) and (max-width: 900px)': {
+          overflow: 'hidden',
+        },
+        '@media (max-width: 600px)': {
+          overflow: 'hidden',
+        },
       }}
     >
       {/* react router DOM */}

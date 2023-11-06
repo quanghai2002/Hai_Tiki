@@ -13,12 +13,12 @@ function VNPlazy(props) {
   return (
     <Box className={clsx(style.wrapVNPlazy)}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 3 }}>
-        <Grid lg={8}>
+        <Grid xs={12} sm={12} md={12} lg={8}>
           <Skeleton.Input active={true} className={clsx(style.lazy1)} />
           <Skeleton.Input active={true} className={clsx(style.lazy2)} />
           <Skeleton.Input active={true} className={clsx(style.lazy2)} />
         </Grid>
-        <Grid lg={4}>
+        <Grid xs={12} sm={12} md={12} lg={4}>
           <Skeleton.Input active={true} className={clsx(style.lazy3)} />
         </Grid>
       </Grid>

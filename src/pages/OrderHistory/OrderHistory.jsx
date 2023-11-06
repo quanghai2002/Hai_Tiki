@@ -162,7 +162,7 @@ function OrderHistory(props) {
           <Box className={clsx(style.wrapContentOrderHistory)}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
               {/* slider bar account */}
-              <Grid lg={2.6}>
+              <Grid xs={12} sm={12} md={12} lg={2.6}>
                 <Box className={clsx(style.sideBar)}>
                   {/* box avartar */}
                   <Box className={clsx(style.headerAvartar)}>
@@ -205,7 +205,7 @@ function OrderHistory(props) {
               </Grid>
 
               {/* container order history*/}
-              <Grid lg={9.4}>
+              <Grid xs={12} sm={12} md={12} lg={9.4}>
                 <Box className={clsx(style.container)}>
                   {/* header */}
                   <Typography className={clsx(style.label)}>Đơn hàng của tôi</Typography>

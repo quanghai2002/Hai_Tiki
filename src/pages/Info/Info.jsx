@@ -403,7 +403,7 @@ function Info(props) {
           <Box className={clsx(style.wrapAccount)}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, lg: 2 }}>
               {/* slider bar account */}
-              <Grid lg={2.6}>
+              <Grid xs={12} sm={12} md={4} lg={2.6}>
                 <Box className={clsx(style.sideBar)}>
                   {/* box avartar */}
                   <Box className={clsx(style.headerAvartar)}>
@@ -450,7 +450,7 @@ function Info(props) {
                 </Box>
               </Grid>
               {/* container account */}
-              <Grid lg={9.4}>
+              <Grid xs={12} sm={12} md={8} lg={9.4}>
                 {/* KHI ĐANG CẬP NHẬT THÔNG TIN HIỂN THỊ SPIN RA NHÉ */}
                 {loading ? (
                   <Spin>
