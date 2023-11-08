@@ -30,6 +30,7 @@ const firebaseConfig = {
   measurementId: 'G-8WPMSR591F'
 };
 
+
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 // const firebaseConfig = {
 //   apiKey: 'AIzaSyCL8SuwSauC6Nnv-sXMGJdUmuCNL4lyxBQ',
