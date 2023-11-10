@@ -7,7 +7,10 @@ A:---Công nghệ sử dụng ----------
 
 B:----Link demo website:
 1. https://nguyenquanghai.online
+ 
+----Link video demo:
 
+3. https://youtu.be/FBUX4WFpTnc?si=RXLJj3Mk0kH78woA
 
 C:---MÔ TẢ CHỨC NĂNG CHÍNH ------
 
