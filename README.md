@@ -1,8 +1,21 @@
-# React + Vite
+# Website bán hàng điện thoại di động: Hải Tiki
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# A:---Công nghệ sử dụng ----------
 
-Currently, two official plugins are available:
+-Frontend: React js. Redux
+-Backend:Nodejs,Express.
+-Cơ sở dữ liệu: NoSQL: MongoDB
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# B:----Link demo website:
+
+https://nguyenquanghai.online
+
+# C:---MÔ TẢ CHỨC NĂNG CHÍNH ------
+
+1: CRUD: Sản phẩm điện thoại di động.
+2: CRUD: Tài khoản người dùng.
+3: Đăng kí, đăng nhập.
+4: Tích hợp chat trực tiếp facebook.
+3: Trang giỏ hàng: (Thêm sản phẩm vào giỏ hàng,xóa sản phẩm trông giỏ hàng...)
+4:Thanh toán đơn hàng: (Tiền mặt || Thanh toán VNP).
+5:Xem lịch sử đơn hàng và cập nhật thông tin user. 6. Biểu đồ thể hiện tổng doanh thu, và tổng số lượng đơn hàng trong 1 ngày:
