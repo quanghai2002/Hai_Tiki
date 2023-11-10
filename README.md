@@ -8,7 +8,6 @@ A:---Công nghệ sử dụng ----------
 B:----Link demo website:
 https://nguyenquanghai.online
 
-
 C:---MÔ TẢ CHỨC NĂNG CHÍNH ------
 1: CRUD: Sản phẩm điện thoại di động.
 2: CRUD: Tài khoản người dùng.
