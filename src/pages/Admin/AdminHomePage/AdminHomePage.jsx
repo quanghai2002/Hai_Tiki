@@ -6,17 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   PointElement,
-//   LineElement,
-// } from 'chart.js';
+import { CSVLink, CSVDownload } from 'react-csv';
 
 import { Bar } from 'react-chartjs-2';
 import orderApi from '~/apis/orderApi.js';
@@ -260,6 +250,45 @@ function AdminHomePage(props) {
     },
   };
 
+  //  ---DỮ LIỆU TẤT CẢ CÁC SẢN PHẨM ĐIỆN THOẠI KHÔNG PHÂN TRANG => VÌ table antd đã hỗ trợ phân trang rồi --
+  const [dataListPhoneAll, setDataListPhoneAll] = useState([]);
+
+  // --CALL API LẤY DATA DỮ LIỆU VỀ --
+  useEffect(() => {
+    phoneApi
+      .getAllPhonesNoPagiNation()
+      .then((response) => {
+        setDataListPhoneAll(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log('lấy tất cả sản phẩm thất bại', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const listAllPhoneHetHang = dataListPhoneAll?.filter((item) => {
+    return item?.stock_quantity === 0;
+  });
+
+  //  --- CÁC COLUMNS ĐỂ HIỂN THỊ TIÊU ĐỀ TABLE => DANH SÁCH sản phẩm hết hàng --
+  const csvData = listAllPhoneHetHang?.map((item) => {
+    return {
+      namePhone: item?.name,
+      soluong: item?.stock_quantity,
+      dongia: `${item?.price.toLocaleString('vn-VN')}đ`,
+      thuonghieu: item?.brand?.name,
+    };
+  });
+
+  // ----- Header của file CSV danh thống kê đơn hàng khi tải về -----
+  const headersCSV = [
+    { label: 'Tên phẩm hết hàng', key: 'namePhone' },
+    { label: 'Số lượng', key: 'soluong' },
+    { label: 'Đơn giá', key: 'dongia' },
+    { label: 'Thương hiệu', key: 'thuonghieu' },
+  ];
+
   return (
     <Box className={clsx(style.wrapHomePageAdmin)}>
       {/* Nếu đang tải dữ liệu thì hiển thị lazy */}
@@ -283,6 +312,16 @@ function AdminHomePage(props) {
                   <Typography className={clsx(style.label2)}>{phoneHetHang < 99 ? phoneHetHang : '99+'}</Typography>
                 </Box>
               </Link>
+              {/* Button export CSV */}
+              <CSVLink
+                data={csvData}
+                headers={headersCSV}
+                className={clsx(style.thongkedonhang)}
+                filename={'thong_ke_san_pham.csv'} // tên file tải về
+                separator={';'} // phân cách để file csv chuẩn
+              >
+                Thống kê sản phẩm
+              </CSVLink>
             </Box>
           </Box>
 

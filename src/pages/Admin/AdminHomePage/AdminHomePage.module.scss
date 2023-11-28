@@ -47,6 +47,24 @@
           }
         }
       }
+
+      // thongkedonhang
+      .thongkedonhang {
+        display: inline-block;
+        padding: 38.3px 29.1px;
+        text-decoration: none;
+        font-size: 1.5rem;
+        user-select: none;
+        font-weight: 600;
+        color: #000;
+        background-color: rgb(255, 255, 255);
+        border-radius: 4px;
+        transition: all 0.1s linear;
+
+        &:hover {
+          box-shadow: rgba(24, 144, 255, 0.8) 0px 0px 6px;
+        }
+      }
     }
   }
 

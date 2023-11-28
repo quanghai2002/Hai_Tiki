@@ -47,14 +47,61 @@
       }
     }
   }
-  // cardPhone
+
+  // cardPhone => 1 phone
   .cardPhone {
     background-color: white;
     border-radius: 4px;
     position: relative;
+    // border: 1px solid transparent;
+
     &:hover {
       box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
       z-index: 1;
+    }
+
+    &:hover::after {
+      transform: scaleY(1);
+    }
+
+    &:hover .cardImage {
+      transform: scale(1.05);
+      transition: filter 0.6s, opacity 0.6s, transform 0.6s, box-shadow 0.3s, -webkit-filter 0.6s,
+        -webkit-transform 0.6s, -webkit-box-shadow 0.3s;
+    }
+
+    &::after {
+      display: block;
+      content: '';
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      border-left: 1px solid rgb(10, 104, 255);
+      border-right: 1px solid rgb(10, 104, 255);
+      transform: scaleY(0);
+      transition: all 0.5s ease-out 0s;
+      border-radius: 4px;
+    }
+
+    &:hover::before {
+      transform: scaleX(1);
+    }
+
+    &::before {
+      display: block;
+      content: '';
+      position: absolute;
+      top: -1px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      border-top: 1px solid rgb(10, 104, 255);
+      border-bottom: 1px solid rgb(10, 104, 255);
+      transform: scaleX(0);
+      transition: all 0.5s ease-out 0s;
+      border-radius: 4px;
     }
 
     .wrapCard {
@@ -63,10 +110,12 @@
         height: 200px;
         object-fit: contain;
         margin: 0 auto;
+        margin-bottom: 6px;
       }
 
       .wrapCardContents {
         padding: 4px 8px;
+        margin-top: 6px;
         .info {
           height: 108.1px;
         }

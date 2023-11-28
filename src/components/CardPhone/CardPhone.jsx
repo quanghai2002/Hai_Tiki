@@ -210,7 +210,7 @@ function CardPhone(props) {
       </Box>
 
       {/* DANH SÁCH SẢN PHẨM ĐIỆN THOẠI */}
-      {/*----------- NẾU ĐANG LẤY THÔNG TIN ĐIỆN THOAI API => HIỆN LAZY CARD RA -------------*/}
+      {/*----------- NẾU ĐANG LẤY THÔNG TIN ĐIỆN THOAI API => HIỆN LAZY Các sản phẩm điện thoại RA -------------*/}
       <Grid container rowSpacing={1} columnSpacing={{ md: 1, lg: 1 }}>
         {loading ? (
           <CardPhoneLazy />

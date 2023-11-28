@@ -77,6 +77,41 @@ function HomePage(props) {
 
       {/* back to top */}
       <FloatButton.BackTop duration={450} visibilityHeight={60} className={clsx(style.backTop)} />
+
+      {/* hiển thị nháy zalo và số điện thoại */}
+      {/* <Box
+        sx={{
+          position: 'fixed',
+          zIndex: 999,
+          bottom: '99px',
+        }}
+      >
+        <Box>
+          <Box
+            sx={{
+              background: '#2196f3',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '50%',
+            }}
+          >
+            <a href="tel:0968107500">
+              <img
+                src="https://garanhalloween.vn/wp-content/plugins/button-contact-vr/img/zalo.png"
+                alt="anh"
+                style={{
+                  maxHeight: '25px',
+                  maxWidth: '27px',
+                  objectFit: 'contain',
+                }}
+              />
+            </a>
+          </Box>
+        </Box>
+      </Box> */}
     </Box>
   );
 }
