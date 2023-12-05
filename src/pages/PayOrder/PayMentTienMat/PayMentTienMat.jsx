@@ -63,9 +63,9 @@ function PayMentTienMat(props) {
       .then((response) => {
         // console.log('thông tin sản phẩm trên server là:', response?.data);
         // console.log(
-        //   'số lượng sản phẩm hiện tại trên server là:',
+        //   'số lượng sản phẩm đã bán là:',
         //   response?.data.map((item) => {
-        //     return item?.stock_quantity;
+        //     return item?.quantitySold;
         //   }),
         // );
 
@@ -84,6 +84,7 @@ function PayMentTienMat(props) {
             const dataUpdate = {
               _id: response?.data[index]?._id,
               stock_quantity: newStockquantity,
+              quantitySold: sumquantity[index],
             };
 
             // console.log('số lượng sản phẩm hiện tại là:', dataUpdate);
@@ -93,10 +94,13 @@ function PayMentTienMat(props) {
             const dataUpdate = {
               _id: response?.data[index]?._id,
               stock_quantity: 0,
+              quantitySold: sumquantity[index],
             };
             // console.log('số lượng sản phẩm hiện tại là:', dataUpdate);
             listSoluongUpdate.push(dataUpdate);
           }
+
+          //  cập nhật thêm =>tổng số lượng sản phẩm đã bán vào trong điện thoại
         }
 
         //  --- SAU vòng lặp for => sẽ được danh sách số lượng sản phẩm mơi nhất

@@ -52,6 +52,11 @@ function AdminHomePage(props) {
     return total + item;
   }, 0);
 
+  // ---THỐNG KÊ SỐ LƯỢNG ĐIỆN THOẠI BÁN CHẠY NHẤT ---
+  const listAllPhonSortSold = listAllDienThoai?.sort((a, b) => {
+    return b?.quantitySold - a?.quantitySold;
+  });
+
   //  --- Tổng số đơn hàng ---
   const sumDonHang = listAllOrders?.length;
 
@@ -283,12 +288,29 @@ function AdminHomePage(props) {
 
   // ----- Header của file CSV danh thống kê đơn hàng khi tải về -----
   const headersCSV = [
-    { label: 'Tên phẩm hết hàng', key: 'namePhone' },
+    { label: 'Tên sản phẩm hết hàng', key: 'namePhone' },
     { label: 'Số lượng', key: 'soluong' },
     { label: 'Đơn giá', key: 'dongia' },
     { label: 'Thương hiệu', key: 'thuonghieu' },
   ];
 
+  //  --- CÁC COLUMNS ĐỂ HIỂN THỊ TIÊU ĐỀ TABLE => DANH SÁCH SẢN PHẨM BÁN CHẠY --
+  const csvDataPhoneQuantitySold = listAllPhonSortSold?.map((item) => {
+    return {
+      namePhoneSold: item?.name,
+      dongiaSold: `${item?.price.toLocaleString('vn-VN')}đ`,
+      thuonghieuSold: item?.brand?.name,
+      soluongSold: item?.quantitySold,
+    };
+  });
+
+  // ----- Header của file CSV danh sách Sản phẩm bán chạy -----
+  const headersCSVPhoneQuantitySold = [
+    { label: 'Tên sản phẩm', key: 'namePhoneSold' },
+    { label: 'Đơn giá', key: 'dongiaSold' },
+    { label: 'Thương hiệu', key: 'thuonghieuSold' },
+    { label: 'Số lượng đã bán', key: 'soluongSold' },
+  ];
   return (
     <Box className={clsx(style.wrapHomePageAdmin)}>
       {/* Nếu đang tải dữ liệu thì hiển thị lazy */}
@@ -321,6 +343,16 @@ function AdminHomePage(props) {
                 separator={';'} // phân cách để file csv chuẩn
               >
                 Thống kê sản phẩm
+              </CSVLink>
+              {/* Button export CSV */}
+              <CSVLink
+                data={csvDataPhoneQuantitySold}
+                headers={headersCSVPhoneQuantitySold}
+                className={clsx(style.thongkedonhang)}
+                filename={'sản phẩm bán chạy HảiTiki.csv'} // tên file tải về
+                separator={';'} // phân cách để file csv chuẩn
+              >
+                Sản phẩm bán chạy
               </CSVLink>
             </Box>
           </Box>

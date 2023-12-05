@@ -191,6 +191,7 @@ function PayMentVNPSuccess(props) {
             const dataUpdate = {
               _id: response?.data[index]?._id,
               stock_quantity: newStockquantity,
+              quantitySold: sumquantity[index],
             };
 
             // console.log('số lượng sản phẩm hiện tại là:', dataUpdate);
@@ -200,6 +201,7 @@ function PayMentVNPSuccess(props) {
             const dataUpdate = {
               _id: response?.data[index]?._id,
               stock_quantity: 0,
+              quantitySold: sumquantity[index],
             };
             // console.log('số lượng sản phẩm hiện tại là:', dataUpdate);
             listSoluongUpdate.push(dataUpdate);
@@ -207,7 +209,6 @@ function PayMentVNPSuccess(props) {
         }
 
         //  --- SAU vòng lặp for => sẽ được danh sách số lượng sản phẩm mơi nhất
-        // console.log('số lượng sản phẩm mới nhất là:', listSoluongUpdate);
 
         //  -- SAU ĐÓ CẬP NHẬT LẠI SỐ LƯỢNG SẢN PHẨM MỚI NHẤT TRÊN SERVER --
         phoneApi
